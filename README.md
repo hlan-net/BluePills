@@ -14,15 +14,17 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-# Getting Started with Flutter on Debian (WSL)
+# Getting Started with Flutter on Linux
 
-This guide outlines the steps to set up Flutter development on a Debian system running within Windows Subsystem for Linux (WSL).
+This guide outlines the steps to set up Flutter development on a Linux system.
 
 ## 1. Install Flutter SDK
 
-1. **Download the Flutter SDK:** Go to the official Flutter website ([https://flutter.dev/docs/get-started/install](https://flutter.dev/docs/get-started/install)) and download the latest Flutter SDK archive (e.g., `flutter_linux_2.x.x-stable.tar.xz`).
+1. **Download the Flutter SDK:** Go to the official Flutter website ([https://flutter.dev/docs/get-started/install](https://flutter.dev/docs/get-started/install)) and download the latest Flutter SDK archive.
 
-2. **Extract the Archive:** Open your terminal (within WSL) and navigate to the directory where you downloaded the archive.  Extract it using:
+   **Important for Raspberry Pi users:** Ensure you download the ARM64 version of the SDK, not the x64 (Intel/AMD) version.
+
+2. **Extract the Archive:** Open your terminal and navigate to the directory where you downloaded the archive. Extract it using:
 
    ```bash
-   tar -xf flutter_linux_2.x.x-stable.tar.xz
+   tar -xf flutter_linux_*.tar.xz
