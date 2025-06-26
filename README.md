@@ -20,11 +20,11 @@ This guide outlines the steps to set up Flutter development on a Linux system.
 
 ## 1. Install Flutter SDK
 
-1. **Download the Flutter SDK:** Go to the official Flutter website ([https://flutter.dev/docs/get-started/install](https://flutter.dev/docs/get-started/install)) and download the latest Flutter SDK archive.
-
-   **Important for Raspberry Pi users:** Ensure you download the ARM64 version of the SDK, not the x64 (Intel/AMD) version.
-
-2. **Extract the Archive:** Open your terminal and navigate to the directory where you downloaded the archive. Extract it using:
+1. **Clone the Flutter repository:** Open your terminal and clone the Flutter SDK from GitHub:
 
    ```bash
-   tar -xf flutter_linux_*.tar.xz
+   git clone https://github.com/flutter/flutter.git -b stable
+   ```
+   **Important for Raspberry Pi users:** After cloning, ensure you switch to the appropriate branch or tag that supports ARM64, or follow the official Flutter documentation for ARM-based Linux systems. The `stable` branch generally supports all architectures, but specific versions might be optimized.
+
+2. **Add Flutter to your PATH:**
