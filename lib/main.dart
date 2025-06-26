@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/screens/medication_form_screen.dart';
@@ -6,6 +7,8 @@ import 'package:bluepills/screens/medication_form_screen.dart';
 void main() async {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize sqflite for desktop
+  databaseFactory = databaseFactoryFfi;
   
   // Initialize the database
   await DatabaseHelper().database;

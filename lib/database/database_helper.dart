@@ -1,22 +1,31 @@
 
 import 'dart:io';
 import 'dart:convert';
-import 'dart:html' if (dart.library.io) 'dart:io' as html;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/medication.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   static Database? _database;
+  late SharedPreferences _prefs;
 
   factory DatabaseHelper() {
     return _instance;
   }
 
-  DatabaseHelper._internal();
+  DatabaseHelper._internal() {
+    _initSharedPreferences();
+  }
+
+  Future<void> _initSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
 
   Future<dynamic> get database async {
     if (kIsWeb) {
@@ -59,13 +68,13 @@ class DatabaseHelper {
   void _saveToLocalStorage(List<Map<String, dynamic>> medications) {
     if (kIsWeb) {
       final String data = jsonEncode(medications);
-      html.window.localStorage['medications'] = data;
+      _prefs.setString('medications', data);
     }
   }
 
   List<Map<String, dynamic>> _getFromLocalStorage() {
     if (kIsWeb) {
-      final String? data = html.window.localStorage['medications'];
+      final String? data = _prefs.getString('medications');
       if (data != null && data.isNotEmpty) {
         final List<dynamic> decoded = jsonDecode(data);
         return decoded.map((item) => Map<String, dynamic>.from(item)).toList();
