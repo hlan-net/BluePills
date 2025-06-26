@@ -2,5 +2,6 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "hlan-net",
         "projectKey": "hlan-net_BluePills"
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
