@@ -30,7 +30,9 @@ class Medication {
       name: map['name'],
       dosage: map['dosage'],
       frequency: map['frequency'],
-      reminderTime: DateTime.parse(map['reminderTime']),
+      reminderTime: map['reminderTime'] != null 
+          ? DateTime.parse(map['reminderTime']) 
+          : DateTime.now(),
     );
   }
 }
