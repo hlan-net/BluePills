@@ -1,4 +1,8 @@
 
+import 'dart:io';
+import 'dart:convert';
+import 'dart:html' if (dart.library.io) 'dart:io' as html;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,12 +18,17 @@ class DatabaseHelper {
 
   DatabaseHelper._internal();
 
-  Future<Database> get database async {
-    if (_database != null) {
+  Future<dynamic> get database async {
+    if (kIsWeb) {
+      // Web platform doesn't need initialization
+      return null;
+    } else {
+      if (_database != null) {
+        return _database!;
+      }
+      _database = await _initDatabase();
       return _database!;
     }
-    _database = await _initDatabase();
-    return _database!;
   }
 
   Future<Database> _initDatabase() async {
@@ -45,36 +54,97 @@ class DatabaseHelper {
       '''
     );
   }
+  
+  // Helper methods for web storage
+  void _saveToLocalStorage(List<Map<String, dynamic>> medications) {
+    if (kIsWeb) {
+      final String data = jsonEncode(medications);
+      html.window.localStorage['medications'] = data;
+    }
+  }
+
+  List<Map<String, dynamic>> _getFromLocalStorage() {
+    if (kIsWeb) {
+      final String? data = html.window.localStorage['medications'];
+      if (data != null && data.isNotEmpty) {
+        final List<dynamic> decoded = jsonDecode(data);
+        return decoded.map((item) => Map<String, dynamic>.from(item)).toList();
+      }
+    }
+    return [];
+  }
 
   Future<int> insertMedication(Medication medication) async {
-    Database db = await database;
-    return await db.insert('medications', medication.toMap());
+    if (kIsWeb) {
+      final List<Map<String, dynamic>> medications = _getFromLocalStorage();
+      
+      // Generate a new ID
+      int newId = 1;
+      if (medications.isNotEmpty) {
+        newId = medications.map<int>((m) => m['id'] as int).reduce((a, b) => a > b ? a : b) + 1;
+      }
+      
+      medication.id = newId;
+      final Map<String, dynamic> medicationMap = medication.toMap();
+      medications.add(medicationMap);
+      
+      _saveToLocalStorage(medications);
+      return newId;
+    } else {
+      Database db = await database as Database;
+      return await db.insert('medications', medication.toMap());
+    }
   }
 
   Future<List<Medication>> getMedications() async {
-    Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('medications');
-    return List.generate(maps.length, (i) {
-      return Medication.fromMap(maps[i]);
-    });
+    if (kIsWeb) {
+      final List<Map<String, dynamic>> medications = _getFromLocalStorage();
+      return medications.map((map) => Medication.fromMap(map)).toList();
+    } else {
+      Database db = await database as Database;
+      final List<Map<String, dynamic>> maps = await db.query('medications');
+      return List.generate(maps.length, (i) {
+        return Medication.fromMap(maps[i]);
+      });
+    }
   }
 
   Future<int> updateMedication(Medication medication) async {
-    Database db = await database;
-    return await db.update(
-      'medications',
-      medication.toMap(),
-      where: 'id = ?',
-      whereArgs: [medication.id],
-    );
+    if (kIsWeb) {
+      final List<Map<String, dynamic>> medications = _getFromLocalStorage();
+      int index = medications.indexWhere((m) => m['id'] == medication.id);
+      
+      if (index >= 0) {
+        medications[index] = medication.toMap();
+        _saveToLocalStorage(medications);
+        return 1;
+      }
+      return 0;
+    } else {
+      Database db = await database as Database;
+      return await db.update(
+        'medications',
+        medication.toMap(),
+        where: 'id = ?',
+        whereArgs: [medication.id],
+      );
+    }
   }
 
   Future<int> deleteMedication(int id) async {
-    Database db = await database;
-    return await db.delete(
-      'medications',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    if (kIsWeb) {
+      final List<Map<String, dynamic>> medications = _getFromLocalStorage();
+      int initialLength = medications.length;
+      medications.removeWhere((m) => m['id'] == id);
+      _saveToLocalStorage(medications);
+      return initialLength - medications.length;
+    } else {
+      Database db = await database as Database;
+      return await db.delete(
+        'medications',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
   }
 }
