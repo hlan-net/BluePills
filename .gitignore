@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+linux/build/
 
 # Symbolication related
 app.*.symbols
