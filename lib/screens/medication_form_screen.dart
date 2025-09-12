@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
 
+import 'package:bluepills/notifications/notification_helper.dart';
+
 class MedicationFormScreen extends StatefulWidget {
   final Medication? medication;
 
@@ -65,10 +67,19 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
       );
 
       if (widget.medication == null) {
-        await DatabaseHelper().insertMedication(newMedication);
+        final newId = await DatabaseHelper().insertMedication(newMedication);
+        newMedication.id = newId;
       } else {
         await DatabaseHelper().updateMedication(newMedication);
       }
+
+      await NotificationHelper().scheduleNotification(
+        newMedication.id!,
+        'Medication Reminder',
+        'Time to take your ${newMedication.name}!',
+        newMedication.reminderTime,
+      );
+
       if (mounted) {
         Navigator.pop(context, true); // Pass true to indicate a change
       }

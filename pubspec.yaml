@@ -40,6 +40,7 @@ dependencies:
   sqflite_common_ffi: ^2.3.6
   shared_preferences: ^2.5.3
   localstorage: ^6.0.0
+  flutter_local_notifications: ^19.4.1
 
 dev_dependencies:
   flutter_test:
