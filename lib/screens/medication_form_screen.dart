@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
+
+import 'package:bluepills/notifications/notification_helper.dart';
 
 class MedicationFormScreen extends StatefulWidget {
   final Medication? medication;
@@ -65,10 +68,19 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
       );
 
       if (widget.medication == null) {
-        await DatabaseHelper().insertMedication(newMedication);
+        final newId = await DatabaseHelper().insertMedication(newMedication);
+        newMedication.id = newId;
       } else {
         await DatabaseHelper().updateMedication(newMedication);
       }
+
+      await NotificationHelper().scheduleNotification(
+        newMedication.id!,
+        'Medication Reminder',
+        'Time to take your ${newMedication.name}!',
+        newMedication.reminderTime,
+      );
+
       if (mounted) {
         Navigator.pop(context, true); // Pass true to indicate a change
       }
@@ -77,9 +89,13 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.medication == null ? 'Add Medication' : 'Edit Medication'),
+        title: Text(widget.medication == null 
+            ? (localizations?.addMedication ?? 'Add Medication')
+            : (localizations?.editMedication ?? 'Edit Medication')),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
@@ -90,37 +106,37 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Medication Name'),
+                decoration: InputDecoration(labelText: localizations?.medicationName ?? 'Medication Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a medication name';
+                    return localizations?.pleaseEnterMedicationName ?? 'Please enter a medication name';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _dosageController,
-                decoration: const InputDecoration(labelText: 'Dosage'),
+                decoration: InputDecoration(labelText: localizations?.dosage ?? 'Dosage'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the dosage';
+                    return localizations?.pleaseEnterDosage ?? 'Please enter the dosage';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _frequencyController,
-                decoration: const InputDecoration(labelText: 'Frequency'),
+                decoration: InputDecoration(labelText: localizations?.frequency ?? 'Frequency'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the frequency';
+                    return localizations?.pleaseEnterFrequency ?? 'Please enter the frequency';
                   }
                   return null;
                 },
               ),
               ListTile(
                 title: Text(
-                  'Reminder Time: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
+                  '${localizations?.reminderTime ?? 'Reminder Time'}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
                 ),
                 trailing: const Icon(Icons.access_time),
                 onTap: () => _selectTime(context),
@@ -128,7 +144,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _saveMedication,
-                child: const Text('Save Medication'),
+                child: Text(localizations?.saveMedication ?? 'Save Medication'),
               ),
             ],
           ),

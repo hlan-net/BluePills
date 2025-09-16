@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/screens/medication_form_screen.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
+import 'package:bluepills/l10n/app_localizations_delegate.dart';
+
+import 'package:bluepills/notifications/notification_helper.dart';
 
 void main() async {
   // Ensure Flutter is initialized
@@ -11,7 +16,8 @@ void main() async {
   databaseFactory = databaseFactoryFfi;
   
   // Initialize the database
-  await DatabaseHelper().database;
+  await DatabaseHelper().init();
+  await NotificationHelper().init();
   
   runApp(const MyApp());
 }
@@ -27,6 +33,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      // Force English locale to effectively "translate" from Finnish
+      locale: const Locale('en', 'US'),
       home: const MedicationListScreen(),
     );
   }
@@ -56,9 +71,11 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Medications'),
+        title: Text(localizations?.myMedications ?? 'My Medications'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: FutureBuilder<List<Medication>>(
@@ -67,24 +84,48 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('${localizations?.error ?? 'Error'}: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No medications added yet.'));
+            return Center(child: Text(localizations?.noMedicationsYet ?? 'No medications added yet.'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 Medication medication = snapshot.data![index];
                 return Card(
-                  margin: const EdgeInsets.all(8.0),
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
-                    title: Text(medication.name),
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: const Icon(Icons.medical_services, color: Colors.white),
+                    ),
+                    title: Text(medication.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: Text('${medication.dosage} - ${medication.frequency}'),
                     trailing: IconButton(
-                      icon: const Icon(Icons.delete),
+                      icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () async {
-                        await DatabaseHelper().deleteMedication(medication.id!);
-                        _refreshMedicationList();
+                        final confirm = await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Delete Medication?'),
+                            content: const Text('Are you sure you want to delete this medication?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirm == true) {
+                          await DatabaseHelper().deleteMedication(medication.id!);
+                          _refreshMedicationList();
+                        }
                       },
                     ),
                     onTap: () async {
