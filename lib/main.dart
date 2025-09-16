@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/screens/medication_form_screen.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
+import 'package:bluepills/l10n/app_localizations_delegate.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
@@ -30,6 +33,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      // Force English locale to effectively "translate" from Finnish
+      locale: const Locale('en', 'US'),
       home: const MedicationListScreen(),
     );
   }
@@ -59,9 +71,11 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Medications'),
+        title: Text(localizations?.myMedications ?? 'My Medications'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: FutureBuilder<List<Medication>>(
@@ -70,9 +84,9 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('${localizations?.error ?? 'Error'}: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No medications added yet.'));
+            return Center(child: Text(localizations?.noMedicationsYet ?? 'No medications added yet.'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
