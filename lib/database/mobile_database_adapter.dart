@@ -34,7 +34,12 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
         name TEXT,
         dosage TEXT,
         frequency TEXT,
-        reminderTime TEXT
+        reminderTime TEXT,
+        remoteId TEXT,
+        lastSynced TEXT,
+        needsSync INTEGER DEFAULT 1,
+        createdAt TEXT,
+        updatedAt TEXT
       )
       '''
     );

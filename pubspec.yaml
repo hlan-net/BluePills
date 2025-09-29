@@ -1,5 +1,5 @@
 name: bluepills
-description: "A new Flutter project."
+description: "Privacy-focused medication management with optional BlueSky sync"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.8.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -43,6 +43,10 @@ dependencies:
   shared_preferences: ^2.5.3
   localstorage: ^6.0.0
   flutter_local_notifications: ^19.4.1
+  # HTTP client for AT Protocol integration
+  http: ^1.1.0
+  # JSON annotation for serialization
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +58,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  # Code generation for JSON serialization
+  json_serializable: ^6.7.1
+  build_runner: ^2.4.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

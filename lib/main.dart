@@ -4,8 +4,11 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/screens/medication_form_screen.dart';
+import 'package:bluepills/screens/settings_screen.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/l10n/app_localizations_delegate.dart';
+import 'package:bluepills/services/config_service.dart';
+import 'package:bluepills/services/sync_service.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
@@ -15,7 +18,8 @@ void main() async {
   // Initialize sqflite for desktop
   databaseFactory = databaseFactoryFfi;
   
-  // Initialize the database
+  // Initialize services
+  await ConfigService().init();
   await DatabaseHelper().init();
   await NotificationHelper().init();
   
@@ -72,11 +76,48 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final configService = ConfigService();
     
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations?.myMedications ?? 'My Medications'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          // Sync status indicator
+          if (configService.isSyncEnabled)
+            IconButton(
+              icon: Icon(
+                Icons.sync,
+                color: Colors.green,
+              ),
+              onPressed: () async {
+                final syncService = SyncService();
+                await syncService.performFullSync();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(syncService.syncStatus == SyncStatus.success 
+                          ? 'Sync completed successfully'
+                          : 'Sync failed: ${syncService.lastError ?? 'Unknown error'}'),
+                      backgroundColor: syncService.syncStatus == SyncStatus.success 
+                          ? Colors.green 
+                          : Colors.red,
+                    ),
+                  );
+                }
+              },
+            ),
+          // Settings button
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              ).then((_) => setState(() {})); // Refresh when returning from settings
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Medication>>(
         future: _medications,

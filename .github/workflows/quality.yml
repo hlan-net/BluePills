@@ -1,0 +1,207 @@
+name: Code Quality & Auto-fixes
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+
+jobs:
+  # Auto-format code
+  auto-format:
+    name: Auto-format Code
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: ${{ github.head_ref }}
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.x'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Format code
+      run: dart format .
+
+    - name: Fix imports
+      run: |
+        # Install dart_code_metrics if needed for import sorting
+        dart pub global activate dart_code_metrics
+        dart pub global run dart_code_metrics:metrics analyze lib --reporter=console
+
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        if ! git diff --cached --quiet; then
+          git commit -m "style: auto-format code and fix imports"
+          git push
+        fi
+
+  # Lint and suggestions
+  lint-check:
+    name: Advanced Linting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.x'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Run custom lints
+      run: |
+        # Check for common issues
+        echo "## Lint Results" > lint-report.md
+        echo "" >> lint-report.md
+        
+        # Run security check
+        ./scripts/security-check.sh
+        
+        # Check for print statements in production code
+        if grep -r "print(" lib/ --include="*.dart"; then
+          echo "⚠️ Found print() statements in production code" >> lint-report.md
+        fi
+        
+        # Check for missing documentation
+        echo "### Missing Documentation" >> lint-report.md
+        find lib -name "*.dart" -exec grep -L "///" {} \; >> lint-report.md || echo "All files documented!" >> lint-report.md
+        
+        # Check for TODO/FIXME comments
+        echo "### TODO Items" >> lint-report.md
+        grep -r "TODO\|FIXME" lib/ --include="*.dart" >> lint-report.md || echo "No TODO items found!" >> lint-report.md
+
+    - name: Analyze code metrics
+      run: |
+        dart pub global activate dart_code_metrics
+        dart pub global run dart_code_metrics:metrics analyze lib --reporter=console --set-exit-on-violation-level=warning
+
+    - name: Comment lint results on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          try {
+            const lintReport = fs.readFileSync('lint-report.md', 'utf8');
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Automated Lint Report\n\n${lintReport}`
+            });
+          } catch (error) {
+            console.log('No lint report found or error:', error);
+          }
+
+  # Performance checks
+  performance-check:
+    name: Performance Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.x'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Build size analysis
+      run: |
+        echo "## Build Size Analysis" > performance-report.md
+        echo "" >> performance-report.md
+        
+        # Android build size
+        flutter build apk --analyze-size --target-platform android-arm64 | tee -a performance-report.md
+        
+        # Web build size  
+        echo "### Web Build Size" >> performance-report.md
+        flutter build web --analyze-size | tee -a performance-report.md
+
+    - name: Upload performance report
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-report
+        path: performance-report.md
+        retention-days: 30
+
+  # Accessibility checks
+  accessibility-check:
+    name: Accessibility Check
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.x'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Check for accessibility issues
+      run: |
+        echo "## Accessibility Check Results" > accessibility-report.md
+        echo "" >> accessibility-report.md
+        
+        # Check for missing semantics labels
+        if grep -r "Image(" lib/ --include="*.dart" | grep -v "semanticLabel"; then
+          echo "⚠️ Found images without semantic labels" >> accessibility-report.md
+        fi
+        
+        # Check for buttons without proper labels
+        if grep -r "IconButton(" lib/ --include="*.dart" | grep -v "tooltip\|semanticsLabel"; then
+          echo "⚠️ Found icon buttons without tooltips or semantic labels" >> accessibility-report.md
+        fi
+        
+        # Check color contrast (basic check for hardcoded colors)
+        if grep -r "Color(0x" lib/ --include="*.dart"; then
+          echo "⚠️ Found hardcoded colors - consider using theme colors for better accessibility" >> accessibility-report.md
+        fi
+
+    - name: Comment accessibility results on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          try {
+            const accessibilityReport = fs.readFileSync('accessibility-report.md', 'utf8');
+            if (accessibilityReport.length > 100) {  // Only comment if there are actual issues
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## Accessibility Check Results\n\n${accessibilityReport}`
+              });
+            }
+          } catch (error) {
+            console.log('No accessibility report found or error:', error);
+          }

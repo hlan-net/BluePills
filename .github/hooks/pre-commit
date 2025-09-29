@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Pre-commit hook for BluePills
+# This script runs before each commit to ensure code quality
+
+set -e
+
+echo "🔍 Running pre-commit checks..."
+
+# Check if Flutter is installed
+if ! command -v flutter &> /dev/null; then
+    echo "❌ Flutter is not installed. Please install Flutter first."
+    exit 1
+fi
+
+# Get Flutter dependencies
+echo "📦 Getting Flutter dependencies..."
+flutter pub get
+
+# Generate code if needed
+echo "🏗️ Generating code..."
+dart run build_runner build --delete-conflicting-outputs
+
+# Format code
+echo "🎨 Formatting code..."
+dart format .
+
+# Check for any formatting changes
+if ! git diff --quiet --exit-code; then
+    echo "⚠️ Code was reformatted. Please review and stage the changes."
+    echo "Run: git add . && git commit --amend --no-edit"
+    exit 1
+fi
+
+# Analyze code
+echo "🔍 Analyzing code..."
+flutter analyze --fatal-infos
+
+# Run tests
+echo "🧪 Running tests..."
+flutter test
+
+# Check for TODO/FIXME comments in commit
+if git diff --cached --name-only | xargs grep -l "TODO\|FIXME" 2>/dev/null; then
+    echo "⚠️ Warning: Found TODO/FIXME comments in staged files:"
+    git diff --cached --name-only | xargs grep -n "TODO\|FIXME" 2>/dev/null || true
+    read -p "Do you want to proceed with the commit? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "❌ Commit aborted."
+        exit 1
+    fi
+fi
+
+# Check commit message format
+commit_regex='^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,50}'
+commit_msg_file="$1"
+
+if [ -f "$commit_msg_file" ]; then
+    commit_msg=$(head -n1 "$commit_msg_file")
+    if ! echo "$commit_msg" | grep -qE "$commit_regex"; then
+        echo "❌ Invalid commit message format!"
+        echo "Format: type(scope): description"
+        echo "Types: feat, fix, docs, style, refactor, test, chore"
+        echo "Example: feat(auth): add BlueSky authentication"
+        exit 1
+    fi
+fi
+
+echo "✅ Pre-commit checks passed!"
