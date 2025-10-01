@@ -21,7 +21,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.24.x'
+        flutter-version: '3.32.7'
 
     - name: Get dependencies
       run: flutter pub get
@@ -43,7 +43,7 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
-        if ! git diff --cached --quiet; then
+        if ! git diff --cached --quiet;
           git commit -m "style: auto-format code and fix imports"
           git push
         fi
@@ -59,7 +59,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.24.x'
+        flutter-version: '3.32.7'
 
     - name: Get dependencies
       run: flutter pub get
@@ -123,7 +123,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.24.x'
+        flutter-version: '3.32.7'
 
     - name: Get dependencies
       run: flutter pub get
@@ -161,7 +161,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.24.x'
+        flutter-version: '3.32.7'
 
     - name: Get dependencies
       run: flutter pub get

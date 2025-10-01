@@ -12,7 +12,7 @@ on:
         type: string
 
 env:
-  FLUTTER_VERSION: '3.24.x'
+  FLUTTER_VERSION: '3.32.7'
 
 jobs:
   # Create GitHub Release
