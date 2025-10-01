@@ -4,12 +4,7 @@ import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/services/at_protocol_service.dart';
 import 'package:bluepills/services/config_service.dart';
 
-enum SyncStatus {
-  idle,
-  syncing,
-  success,
-  error,
-}
+enum SyncStatus { idle, syncing, success, error }
 
 class SyncService {
   static final SyncService _instance = SyncService._internal();
@@ -22,7 +17,7 @@ class SyncService {
 
   SyncStatus _syncStatus = SyncStatus.idle;
   String? _lastError;
-  
+
   SyncStatus get syncStatus => _syncStatus;
   String? get lastError => _lastError;
 
@@ -44,7 +39,7 @@ class SyncService {
 
       // Step 2: Fetch remote medications
       final remoteMedications = await _atProtocolService.fetchMedications();
-      
+
       // Step 3: Get local medications that need sync
       final localMedications = await _databaseHelper.getMedications();
       final localMedicationsNeedingSync = localMedications
@@ -99,7 +94,7 @@ class SyncService {
           localMedication,
           remoteMedication,
         );
-        
+
         if (shouldUpdateLocal) {
           // Update local with remote data
           final mergedMedication = localMedication.copyWith(
@@ -121,21 +116,18 @@ class SyncService {
     // For now, we'll skip this to avoid accidental data loss
   }
 
-  bool _shouldUpdateFromRemote(
-    Medication local,
-    Medication remote,
-  ) {
+  bool _shouldUpdateFromRemote(Medication local, Medication remote) {
     // Simple conflict resolution: use the most recently updated
     // In a more sophisticated system, you might want to:
     // 1. Prompt the user for conflict resolution
     // 2. Use a more complex merge strategy
     // 3. Keep both versions and let the user decide
-    
+
     if (local.lastSynced == null) {
       // Local was never synced, prioritize remote
       return true;
     }
-    
+
     return remote.updatedAt.isAfter(local.updatedAt);
   }
 
@@ -176,8 +168,10 @@ class SyncService {
 
   Future<void> markMedicationForSync(int medicationId) async {
     final medications = await _databaseHelper.getMedications();
-    final medication = medications.where((m) => m.id == medicationId).firstOrNull;
-    
+    final medication = medications
+        .where((m) => m.id == medicationId)
+        .firstOrNull;
+
     if (medication != null) {
       final updatedMedication = medication.copyWith(needsSync: true);
       await _databaseHelper.updateMedication(updatedMedication);

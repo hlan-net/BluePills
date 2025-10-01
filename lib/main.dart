@@ -17,12 +17,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize sqflite for desktop
   databaseFactory = databaseFactoryFfi;
-  
+
   // Initialize services
   await ConfigService().init();
   await DatabaseHelper().init();
   await NotificationHelper().init();
-  
+
   runApp(const MyApp());
 }
 
@@ -77,7 +77,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final configService = ConfigService();
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations?.myMedications ?? 'My Medications'),
@@ -86,10 +86,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
           // Sync status indicator
           if (configService.isSyncEnabled)
             IconButton(
-              icon: Icon(
-                Icons.sync,
-                color: Colors.green,
-              ),
+              icon: Icon(Icons.sync, color: Colors.green),
               onPressed: () async {
                 final scaffoldMessenger = ScaffoldMessenger.of(context);
                 final syncService = SyncService();
@@ -97,10 +94,13 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                 if (!mounted) return;
                 scaffoldMessenger.showSnackBar(
                   SnackBar(
-                    content: Text(syncService.syncStatus == SyncStatus.success
-                        ? 'Sync completed successfully'
-                        : 'Sync failed: ${syncService.lastError ?? 'Unknown error'}'),
-                    backgroundColor: syncService.syncStatus == SyncStatus.success
+                    content: Text(
+                      syncService.syncStatus == SyncStatus.success
+                          ? 'Sync completed successfully'
+                          : 'Sync failed: ${syncService.lastError ?? 'Unknown error'}',
+                    ),
+                    backgroundColor:
+                        syncService.syncStatus == SyncStatus.success
                         ? Colors.green
                         : Colors.red,
                   ),
@@ -114,7 +114,9 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              ).then((_) => setState(() {})); // Refresh when returning from settings
+              ).then(
+                (_) => setState(() {}),
+              ); // Refresh when returning from settings
             },
           ),
         ],
@@ -125,9 +127,17 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('${localizations?.error ?? 'Error'}: ${snapshot.error}'));
+            return Center(
+              child: Text(
+                '${localizations?.error ?? 'Error'}: ${snapshot.error}',
+              ),
+            );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text(localizations?.noMedicationsYet ?? 'No medications added yet.'));
+            return Center(
+              child: Text(
+                localizations?.noMedicationsYet ?? 'No medications added yet.',
+              ),
+            );
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -135,14 +145,25 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                 Medication medication = snapshot.data![index];
                 return Card(
                   elevation: 4,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor: Theme.of(context).colorScheme.primary,
-                      child: const Icon(Icons.medical_services, color: Colors.white),
+                      child: const Icon(
+                        Icons.medical_services,
+                        color: Colors.white,
+                      ),
                     ),
-                    title: Text(medication.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text('${medication.dosage} - ${medication.frequency}'),
+                    title: Text(
+                      medication.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      '${medication.dosage} - ${medication.frequency}',
+                    ),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () async {
@@ -150,21 +171,27 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                           context: context,
                           builder: (context) => AlertDialog(
                             title: const Text('Delete Medication?'),
-                            content: const Text('Are you sure you want to delete this medication?'),
+                            content: const Text(
+                              'Are you sure you want to delete this medication?',
+                            ),
                             actions: [
                               TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
                                 child: const Text('Cancel'),
                               ),
                               TextButton(
-                                onPressed: () => Navigator.of(context).pop(true),
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
                                 child: const Text('Delete'),
                               ),
                             ],
                           ),
                         );
                         if (confirm == true) {
-                          await DatabaseHelper().deleteMedication(medication.id!);
+                          await DatabaseHelper().deleteMedication(
+                            medication.id!,
+                          );
                           _refreshMedicationList();
                         }
                       },
@@ -173,7 +200,8 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                       final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MedicationFormScreen(medication: medication),
+                          builder: (context) =>
+                              MedicationFormScreen(medication: medication),
                         ),
                       );
                       if (result == true) {

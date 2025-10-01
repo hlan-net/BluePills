@@ -23,10 +23,7 @@ class ATProtocolService {
       final response = await http.post(
         Uri.parse('${config.pdsUrl}/xrpc/com.atproto.server.createSession'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'identifier': handle,
-          'password': password,
-        }),
+        body: jsonEncode({'identifier': handle, 'password': password}),
       );
 
       if (response.statusCode == 200) {
@@ -51,11 +48,12 @@ class ATProtocolService {
 
       final config = _configService.config;
       final response = await http.get(
-        Uri.parse('${config.pdsUrl}/xrpc/com.atproto.repo.listRecords')
-            .replace(queryParameters: {
-          'repo': config.blueskyHandle,
-          'collection': 'app.bluepills.medication',
-        }),
+        Uri.parse('${config.pdsUrl}/xrpc/com.atproto.repo.listRecords').replace(
+          queryParameters: {
+            'repo': config.blueskyHandle,
+            'collection': 'app.bluepills.medication',
+          },
+        ),
         headers: {
           'Authorization': 'Bearer $_accessJwt',
           'Content-Type': 'application/json',
@@ -65,7 +63,7 @@ class ATProtocolService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final records = data['records'] as List;
-        
+
         return records.map((record) {
           final medication = _parseATProtoRecord(record);
           return medication;

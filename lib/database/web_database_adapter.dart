@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bluepills/models/medication.dart';
@@ -17,7 +16,11 @@ class WebDatabaseAdapter extends DatabaseAdapter {
     final List<Map<String, dynamic>> medications = _getFromLocalStorage();
     int newId = 1;
     if (medications.isNotEmpty) {
-      newId = medications.map<int>((m) => m['id'] as int).reduce((a, b) => a > b ? a : b) + 1;
+      newId =
+          medications
+              .map<int>((m) => m['id'] as int)
+              .reduce((a, b) => a > b ? a : b) +
+          1;
     }
     medication.id = newId;
     final Map<String, dynamic> medicationMap = medication.toMap();

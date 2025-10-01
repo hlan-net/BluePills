@@ -26,7 +26,9 @@ void main() {
     when(mockDatabaseAdapter.init()).thenAnswer((_) async {});
   });
 
-  testWidgets('Medication list screen loads with no medications', (WidgetTester tester) async {
+  testWidgets('Medication list screen loads with no medications', (
+    WidgetTester tester,
+  ) async {
     // Stub the getMedications method to return an empty list.
     when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => []);
 
@@ -49,19 +51,23 @@ void main() {
     expect(find.byIcon(Icons.add), findsOneWidget);
   });
 
-  testWidgets('Medication list screen loads with medications', (WidgetTester tester) async {
+  testWidgets('Medication list screen loads with medications', (
+    WidgetTester tester,
+  ) async {
     // Stub the getMedications method to return a list with one medication.
-    when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [
-      Medication(
-        id: 1,
-        name: 'Test Medication',
-        dosage: '10mg',
-        frequency: 'Daily',
-        reminderTime: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      ),
-    ]);
+    when(mockDatabaseAdapter.getMedications()).thenAnswer(
+      (_) async => [
+        Medication(
+          id: 1,
+          name: 'Test Medication',
+          dosage: '10mg',
+          frequency: 'Daily',
+          reminderTime: DateTime.now(),
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+      ],
+    );
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());

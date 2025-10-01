@@ -1,4 +1,3 @@
-
 import 'package:bluepills/models/medication.dart';
 
 abstract class DatabaseAdapter {

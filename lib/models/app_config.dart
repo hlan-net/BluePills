@@ -18,7 +18,8 @@ class AppConfig {
     this.syncMode = SyncMode.localOnly,
   });
 
-  factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);
+  factory AppConfig.fromJson(Map<String, dynamic> json) =>
+      _$AppConfigFromJson(json);
   Map<String, dynamic> toJson() => _$AppConfigToJson(this);
 
   AppConfig copyWith({
@@ -38,11 +39,7 @@ class AppConfig {
   }
 }
 
-enum SyncMode {
-  localOnly,
-  syncEnabled,
-  syncOnly,
-}
+enum SyncMode { localOnly, syncEnabled, syncOnly }
 
 extension SyncModeExtension on SyncMode {
   String get displayName {

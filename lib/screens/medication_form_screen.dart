@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
@@ -25,9 +24,15 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.medication?.name ?? '');
-    _dosageController = TextEditingController(text: widget.medication?.dosage ?? '');
-    _frequencyController = TextEditingController(text: widget.medication?.frequency ?? '');
+    _nameController = TextEditingController(
+      text: widget.medication?.name ?? '',
+    );
+    _dosageController = TextEditingController(
+      text: widget.medication?.dosage ?? '',
+    );
+    _frequencyController = TextEditingController(
+      text: widget.medication?.frequency ?? '',
+    );
     _selectedReminderTime = widget.medication?.reminderTime ?? DateTime.now();
   }
 
@@ -90,12 +95,14 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.medication == null 
-            ? (localizations?.addMedication ?? 'Add Medication')
-            : (localizations?.editMedication ?? 'Edit Medication')),
+        title: Text(
+          widget.medication == null
+              ? (localizations?.addMedication ?? 'Add Medication')
+              : (localizations?.editMedication ?? 'Edit Medication'),
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Padding(
@@ -106,30 +113,39 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             children: <Widget>[
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: localizations?.medicationName ?? 'Medication Name'),
+                decoration: InputDecoration(
+                  labelText: localizations?.medicationName ?? 'Medication Name',
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return localizations?.pleaseEnterMedicationName ?? 'Please enter a medication name';
+                    return localizations?.pleaseEnterMedicationName ??
+                        'Please enter a medication name';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _dosageController,
-                decoration: InputDecoration(labelText: localizations?.dosage ?? 'Dosage'),
+                decoration: InputDecoration(
+                  labelText: localizations?.dosage ?? 'Dosage',
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return localizations?.pleaseEnterDosage ?? 'Please enter the dosage';
+                    return localizations?.pleaseEnterDosage ??
+                        'Please enter the dosage';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _frequencyController,
-                decoration: InputDecoration(labelText: localizations?.frequency ?? 'Frequency'),
+                decoration: InputDecoration(
+                  labelText: localizations?.frequency ?? 'Frequency',
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return localizations?.pleaseEnterFrequency ?? 'Please enter the frequency';
+                    return localizations?.pleaseEnterFrequency ??
+                        'Please enter the frequency';
                   }
                   return null;
                 },

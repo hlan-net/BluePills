@@ -1,11 +1,10 @@
-
 class Medication {
   int? id;
   String name;
   String dosage;
   String frequency;
   DateTime reminderTime;
-  
+
   // Sync metadata
   String? remoteId;
   DateTime? lastSynced;
@@ -48,19 +47,19 @@ class Medication {
       name: map['name'],
       dosage: map['dosage'],
       frequency: map['frequency'],
-      reminderTime: map['reminderTime'] != null 
-          ? DateTime.parse(map['reminderTime']) 
+      reminderTime: map['reminderTime'] != null
+          ? DateTime.parse(map['reminderTime'])
           : DateTime.now(),
       remoteId: map['remoteId'],
-      lastSynced: map['lastSynced'] != null 
-          ? DateTime.parse(map['lastSynced']) 
+      lastSynced: map['lastSynced'] != null
+          ? DateTime.parse(map['lastSynced'])
           : null,
       needsSync: map['needsSync'] == 1,
-      createdAt: map['createdAt'] != null 
-          ? DateTime.parse(map['createdAt']) 
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
           : DateTime.now(),
-      updatedAt: map['updatedAt'] != null 
-          ? DateTime.parse(map['updatedAt']) 
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'])
           : DateTime.now(),
     );
   }

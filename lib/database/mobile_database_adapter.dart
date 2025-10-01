@@ -1,4 +1,3 @@
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,16 +18,11 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   Future<Database> _initDatabase() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'medications.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute(
-      '''
+    await db.execute('''
       CREATE TABLE medications(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -41,8 +35,7 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
         createdAt TEXT,
         updatedAt TEXT
       )
-      '''
-    );
+      ''');
   }
 
   @override
@@ -74,11 +67,7 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   @override
   Future<int> deleteMedication(int id) async {
     final db = await database;
-    return await db.delete(
-      'medications',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('medications', where: 'id = ?', whereArgs: [id]);
   }
 
   Future<Database> get database async {

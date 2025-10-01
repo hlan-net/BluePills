@@ -39,13 +39,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
-    
+
     try {
       await _configService.enableSync(
         blueskyHandle: _handleController.text.trim(),
         pdsUrl: _pdsUrlController.text.trim(),
       );
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -123,7 +123,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final config = _configService.config;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -146,8 +146,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           Icon(
                             Icons.sync,
-                            color: config.syncEnabled 
-                                ? Colors.green 
+                            color: config.syncEnabled
+                                ? Colors.green
                                 : Colors.grey,
                           ),
                           const SizedBox(width: 8),
@@ -208,14 +208,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           width: double.infinity,
                           child: ElevatedButton.icon(
                             onPressed: _isLoading ? null : _enableSync,
-                            icon: _isLoading 
+                            icon: _isLoading
                                 ? const SizedBox(
                                     width: 16,
                                     height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
                                   )
                                 : const Icon(Icons.sync),
-                            label: Text(_isLoading ? 'Enabling...' : 'Enable BlueSky Sync'),
+                            label: Text(
+                              _isLoading
+                                  ? 'Enabling...'
+                                  : 'Enable BlueSky Sync',
+                            ),
                           ),
                         ),
                       ] else ...[
@@ -334,9 +340,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const Icon(Icons.schedule, size: 20, color: Colors.grey),
             const SizedBox(width: 8),
             Text(
-              'Last sync: ${config.lastSyncTime != null 
-                  ? _formatDateTime(config.lastSyncTime!) 
-                  : 'Never'}'
+              'Last sync: ${config.lastSyncTime != null ? _formatDateTime(config.lastSyncTime!) : 'Never'}',
             ),
           ],
         ),
@@ -346,7 +350,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} '
-           '${dateTime.hour.toString().padLeft(2, '0')}:'
-           '${dateTime.minute.toString().padLeft(2, '0')}';
+        '${dateTime.hour.toString().padLeft(2, '0')}:'
+        '${dateTime.minute.toString().padLeft(2, '0')}';
   }
 }

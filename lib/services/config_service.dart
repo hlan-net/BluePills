@@ -63,14 +63,12 @@ class ConfigService {
   }
 
   Future<void> updateLastSyncTime([DateTime? time]) async {
-    final newConfig = _config.copyWith(
-      lastSyncTime: time ?? DateTime.now(),
-    );
+    final newConfig = _config.copyWith(lastSyncTime: time ?? DateTime.now());
     await updateConfig(newConfig);
   }
 
   bool get isSyncEnabled => _config.syncEnabled;
-  bool get hasValidSyncConfig => 
-      _config.blueskyHandle?.isNotEmpty == true && 
+  bool get hasValidSyncConfig =>
+      _config.blueskyHandle?.isNotEmpty == true &&
       _config.pdsUrl?.isNotEmpty == true;
 }
