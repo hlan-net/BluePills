@@ -103,6 +103,13 @@ flutter run
 - **🗑️ Delete**: Long press or use delete button
 - **🔄 Sync**: Manual sync button when enabled
 
+## 🛠️ **Tooling**
+
+This project was developed with the assistance of AI-powered tools:
+
+- **GitHub Copilot**: For code completion and suggestions.
+- **Gemini CLI**: For code generation, refactoring, and fixing issues.
+
 ## 🏗️ **Technical Architecture**
 
 ### **Storage Flexibility**
@@ -282,6 +289,7 @@ BluePills is open source software licensed under the [MIT License](LICENSE).
 
 ## 🙏 **Acknowledgments**
 
+- **AI-Powered Tools**: This project was developed with the assistance of GitHub Copilot and the Gemini CLI.
 - **AT Protocol Team**: Decentralized social networking protocol
 - **BlueSky Team**: Reference PDS implementation and ecosystem
 - **Flutter Team**: Amazing cross-platform framework
