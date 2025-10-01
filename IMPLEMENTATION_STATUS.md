@@ -45,6 +45,11 @@ BluePills is a medication reminder and management application that provides user
 - **Manual Sync**: Manual sync trigger button
 - **Setup Wizard**: Guided BlueSky configuration process
 
+### 7. **Testing**
+- **Unit & Widget Tests**: Comprehensive tests for services and widgets.
+- **Mocking**: Uses `mockito` to mock dependencies for reliable testing.
+- **Testable Architecture**: Refactored `DatabaseHelper` for easy testing.
+
 ## 🚧 Current Implementation Details
 
 ### Database Schema Updates
@@ -167,6 +172,7 @@ dependencies:
 dev_dependencies:
   json_serializable: ^6.7.1   # JSON code generation
   build_runner: ^2.4.7        # Build system for code generation
+  mockito: ^5.4.4             # Mocking framework for testing
 ```
 
 ### Code Generation

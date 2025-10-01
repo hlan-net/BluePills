@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/services/config_service.dart';
@@ -37,7 +38,7 @@ class ATProtocolService {
         throw Exception('Authentication failed: ${response.statusCode}');
       }
     } catch (e) {
-      print('Authentication error: $e');
+      debugPrint('Authentication error: $e');
       return false;
     }
   }
@@ -73,7 +74,7 @@ class ATProtocolService {
         throw Exception('Failed to fetch medications: ${response.statusCode}');
       }
     } catch (e) {
-      print('Fetch medications error: $e');
+      debugPrint('Fetch medications error: $e');
       return [];
     }
   }
@@ -104,15 +105,13 @@ class ATProtocolService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         // Update medication with remote ID if this was a new record
-        if (medication.remoteId == null) {
-          medication.remoteId = data['uri']?.split('/').last;
-        }
+        medication.remoteId ??= data['uri']?.split('/').last;
         return true;
       } else {
         throw Exception('Failed to sync medication: ${response.statusCode}');
       }
     } catch (e) {
-      print('Sync medication error: $e');
+      debugPrint('Sync medication error: $e');
       return false;
     }
   }
@@ -139,7 +138,7 @@ class ATProtocolService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Delete medication error: $e');
+      debugPrint('Delete medication error: $e');
       return false;
     }
   }
@@ -194,7 +193,7 @@ class ATProtocolService {
         _refreshJwt = data['refreshJwt'];
       }
     } catch (e) {
-      print('Token refresh error: $e');
+      debugPrint('Token refresh error: $e');
     }
   }
 

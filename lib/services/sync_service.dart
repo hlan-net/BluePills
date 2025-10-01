@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/services/at_protocol_service.dart';
@@ -74,7 +75,7 @@ class SyncService {
     } catch (e) {
       _lastError = e.toString();
       _syncStatus = SyncStatus.error;
-      print('Sync error: $e');
+      debugPrint('Sync error: $e');
       return false;
     }
   }
@@ -155,7 +156,7 @@ class SyncService {
       }
       return success;
     } catch (e) {
-      print('Single medication sync error: $e');
+      debugPrint('Single medication sync error: $e');
       return false;
     }
   }
@@ -168,7 +169,7 @@ class SyncService {
     try {
       return await _atProtocolService.deleteMedication(medication.remoteId!);
     } catch (e) {
-      print('Delete medication from sync error: $e');
+      debugPrint('Delete medication from sync error: $e');
       return false;
     }
   }

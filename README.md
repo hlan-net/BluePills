@@ -149,6 +149,7 @@ nano .env
 - **Pre-commit Hooks**: Automatic code formatting and security checks
 - **CI/CD Pipeline**: Automated testing and deployment
 - **Security Scanning**: Continuous vulnerability monitoring
+- **Mocking**: Uses `mockito` for robust testing.
 
 ## 🛡️ **Privacy & Security**
 

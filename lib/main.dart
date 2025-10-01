@@ -91,20 +91,20 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                 color: Colors.green,
               ),
               onPressed: () async {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
                 final syncService = SyncService();
                 await syncService.performFullSync();
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(syncService.syncStatus == SyncStatus.success 
-                          ? 'Sync completed successfully'
-                          : 'Sync failed: ${syncService.lastError ?? 'Unknown error'}'),
-                      backgroundColor: syncService.syncStatus == SyncStatus.success 
-                          ? Colors.green 
-                          : Colors.red,
-                    ),
-                  );
-                }
+                if (!mounted) return;
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(
+                    content: Text(syncService.syncStatus == SyncStatus.success
+                        ? 'Sync completed successfully'
+                        : 'Sync failed: ${syncService.lastError ?? 'Unknown error'}'),
+                    backgroundColor: syncService.syncStatus == SyncStatus.success
+                        ? Colors.green
+                        : Colors.red,
+                  ),
+                );
               },
             ),
           // Settings button
