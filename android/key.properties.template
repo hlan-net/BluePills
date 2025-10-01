@@ -1,0 +1,14 @@
+# Android signing key configuration
+# Copy this file to android/key.properties and fill in your details
+# DO NOT commit this file to version control!
+
+storePassword=YOUR_KEYSTORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD  
+keyAlias=bluepills-key
+storeFile=PATH_TO_YOUR_KEYSTORE_FILE
+
+# Example:
+# storePassword=mySecurePassword123
+# keyPassword=mySecurePassword123
+# keyAlias=bluepills-key
+# storeFile=/Users/yourusername/android-keys/bluepills-upload-key.keystore

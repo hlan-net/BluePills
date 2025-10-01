@@ -1,0 +1,248 @@
+name: Deploy to App Stores
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      deploy_android:
+        description: 'Deploy to Google Play'
+        required: true
+        type: boolean
+        default: true
+      deploy_web:
+        description: 'Deploy to Web'
+        required: true
+        type: boolean
+        default: true
+      track:
+        description: 'Google Play track (internal, alpha, beta, production)'
+        required: true
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+        default: internal
+
+env:
+  FLUTTER_VERSION: '3.32.7'
+
+jobs:
+  # Deploy to Google Play Store
+  deploy-android:
+    name: Deploy to Google Play
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.deploy_android == 'true' || github.event_name == 'release' }}
+    environment: production
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Setup Android signing
+      env:
+        ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      run: |
+        echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/keystore.jks
+        echo "storePassword=$ANDROID_KEYSTORE_PASSWORD" > android/key.properties
+        echo "keyPassword=$ANDROID_KEY_PASSWORD" >> android/key.properties
+        echo "keyAlias=$ANDROID_KEY_ALIAS" >> android/key.properties
+        echo "storeFile=keystore.jks" >> android/key.properties
+
+    - name: Build Android App Bundle
+      run: flutter build appbundle --release
+
+    - name: Deploy to Google Play
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        packageName: com.slorba.bluepills
+        releaseFiles: build/app/outputs/bundle/release/app-release.aab
+        track: ${{ github.event.inputs.track || 'internal' }}
+        status: completed
+        whatsNewDirectory: distribution/whatsnew
+        mappingFile: build/app/outputs/mapping/release/mapping.txt
+
+    - name: Upload mapping file
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-mapping
+        path: build/app/outputs/mapping/release/mapping.txt
+        retention-days: 90
+
+  # Deploy to Web (GitHub Pages, Firebase, etc.)
+  deploy-web:
+    name: Deploy Web App
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.deploy_web == 'true' || github.event_name == 'release' }}
+    environment: production
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Build Web
+      run: flutter build web --release --dart-define=FLUTTER_WEB_USE_SKIA=true
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: build/web
+        cname: bluepills.yourdomain.com  # Replace with your domain
+
+    - name: Deploy to Firebase Hosting (optional)
+      if: env.FIREBASE_PROJECT_ID != ''
+      env:
+        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      run: |
+        npm install -g firebase-tools
+        firebase deploy --only hosting --project $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN
+
+  # Deploy to Microsoft Store (for Windows)
+  deploy-windows:
+    name: Deploy to Microsoft Store
+    runs-on: windows-latest
+    if: github.event_name == 'release' && false  # Disabled by default
+    environment: production
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Build Windows
+      run: flutter build windows --release
+
+    - name: Package for Microsoft Store
+      run: |
+        # Package the Windows build for Microsoft Store submission
+        # This would require additional setup for MSIX packaging
+        echo "Windows packaging would go here"
+
+  # Deploy to Mac App Store (for macOS)
+  deploy-macos:
+    name: Deploy to Mac App Store
+    runs-on: macos-latest
+    if: github.event_name == 'release' && false  # Disabled by default
+    environment: production
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Generate code
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Build macOS
+      run: flutter build macos --release
+
+    - name: Package for Mac App Store
+      env:
+        APPLE_DEVELOPER_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}
+        APPLE_DEVELOPER_PASSWORD: ${{ secrets.APPLE_DEVELOPER_PASSWORD }}
+      run: |
+        # Package the macOS build for App Store submission
+        # This would require Apple Developer certificates and notarization
+        echo "macOS packaging would go here"
+
+  # Send deployment notifications
+  notify-deployment:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy-android, deploy-web]
+    if: always()
+    steps:
+    - name: Notify Slack (optional)
+      if: env.SLACK_WEBHOOK != ''
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"BluePills deployment completed! 🚀"}' \
+          $SLACK_WEBHOOK
+
+    - name: Create deployment summary
+      run: |
+        echo "## Deployment Summary" > deployment-summary.md
+        echo "" >> deployment-summary.md
+        echo "- **Android**: ${{ needs.deploy-android.result }}" >> deployment-summary.md
+        echo "- **Web**: ${{ needs.deploy-web.result }}" >> deployment-summary.md
+        echo "- **Release**: ${{ github.ref }}" >> deployment-summary.md
+        echo "- **Timestamp**: $(date)" >> deployment-summary.md
+
+    - name: Comment deployment summary
+      if: github.event_name == 'release'
+      uses: actions/github-script@v8
+      with:
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('deployment-summary.md', 'utf8');
+          
+          // Find the release and comment on it
+          const releases = await github.rest.repos.listReleases({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            per_page: 1
+          });
+          
+          if (releases.data.length > 0) {
+            await github.rest.repos.createReleaseComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: releases.data[0].id,
+              body: summary
+            });
+          }
