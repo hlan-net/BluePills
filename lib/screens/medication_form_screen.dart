@@ -1,3 +1,9 @@
+/// Medication form screen for adding or editing medications.
+///
+/// This library provides the UI for creating new medications or editing
+/// existing ones, including name, dosage, frequency, and reminder time.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
@@ -5,7 +11,13 @@ import 'package:bluepills/l10n/app_localizations.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
+/// A stateful widget that displays the medication form.
+///
+/// Can be used in two modes:
+/// - Add mode: Creates a new medication (when [medication] is null)
+/// - Edit mode: Updates an existing medication (when [medication] is provided)
 class MedicationFormScreen extends StatefulWidget {
+  /// The medication to edit, or null to create a new medication.
   final Medication? medication;
 
   const MedicationFormScreen({super.key, this.medication});
@@ -14,6 +26,10 @@ class MedicationFormScreen extends StatefulWidget {
   State<MedicationFormScreen> createState() => _MedicationFormScreenState();
 }
 
+/// State class for the medication form screen.
+///
+/// Manages form validation, user input, and saving medication data
+/// to the database. Also schedules notifications for medication reminders.
 class _MedicationFormScreenState extends State<MedicationFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;

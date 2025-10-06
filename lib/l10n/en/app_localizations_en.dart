@@ -1,5 +1,14 @@
+/// English localization strings for the BluePills application.
+///
+/// This library provides English translations for all user-facing text
+/// in the application.
+library;
+
 import '../app_localizations.dart';
 
+/// English implementation of [AppLocalizations].
+///
+/// Provides all localized strings in English for the BluePills application.
 class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appTitle => 'BluePills';
