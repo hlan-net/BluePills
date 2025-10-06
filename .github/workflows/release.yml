@@ -84,14 +84,8 @@ jobs:
     - name: Generate code
       run: dart run build_runner build --delete-conflicting-outputs
 
-    - name: Build Android APK
-      run: flutter build apk --release --split-per-abi
-
-    - name: Build Android App Bundle
-      run: flutter build appbundle --release
-
-    - name: Sign Android builds (if keystore available)
-      if: env.ANDROID_KEYSTORE_BASE64 != ''
+    - name: Setup Android signing (if keystore available)
+      if: secrets.ANDROID_KEYSTORE_BASE64 != ''
       env:
         ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -103,10 +97,12 @@ jobs:
         echo "keyPassword=$ANDROID_KEY_PASSWORD" >> android/key.properties
         echo "keyAlias=$ANDROID_KEY_ALIAS" >> android/key.properties
         echo "storeFile=keystore.jks" >> android/key.properties
-        
-        # Rebuild with signing
-        flutter build apk --release --split-per-abi
-        flutter build appbundle --release
+
+    - name: Build Android APK
+      run: flutter build apk --release --split-per-abi
+
+    - name: Build Android App Bundle
+      run: flutter build appbundle --release
 
     - name: Upload APK to release
       uses: actions/upload-release-asset@v1

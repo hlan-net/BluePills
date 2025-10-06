@@ -49,14 +49,18 @@ android {
                 storeFile = file(keyProperties.getProperty("storeFile"))
                 storePassword = keyProperties.getProperty("storePassword")
             } else {
-                throw GradleException("Could not find key.properties file in android directory.")
+                // Use debug signing if key.properties is not available
+                println("Warning: key.properties not found. Using debug signing for release build.")
+                storeFile = file("debug.keystore")
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
             }
         }
     }
 
     buildTypes {
         release {
-            // For now using debug keys - update with proper signing later
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
