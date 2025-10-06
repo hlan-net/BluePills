@@ -1,6 +1,6 @@
 # Privacy Policy for BluePills
 
-**Last updated:** December 2024
+**Last updated:** October 2025
 
 ## Overview
 BluePills is a privacy-focused medication management application designed to help you track your medications while maintaining full control over your personal health data.

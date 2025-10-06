@@ -196,7 +196,7 @@ BluePills stores your medication information locally on your device. When BlueSk
 ## Contact
 For questions about this privacy policy, contact: [your-email@example.com]
 
-Last updated: [Current Date]
+Last updated: October 2025
 ```
 
 ## Deployment Commands
