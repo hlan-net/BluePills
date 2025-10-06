@@ -1,18 +1,54 @@
+/// Service for interacting with the AT Protocol and BlueSky.
+///
+/// This library provides functionality for authenticating with BlueSky,
+/// syncing medication data using the AT Protocol, and managing remote
+/// medication records.
+library;
+
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/services/config_service.dart';
 
+/// Singleton service for AT Protocol and BlueSky integration.
+///
+/// This service handles authentication, fetching, syncing, and deleting
+/// medication records on a BlueSky Personal Data Server using the AT Protocol.
+///
+/// The service maintains JWT tokens for authenticated requests and provides
+/// methods for all medication CRUD operations on the remote server.
+///
+/// Example usage:
+/// ```dart
+/// final atService = ATProtocolService();
+/// await atService.authenticate('user.bsky.social', 'password');
+/// final medications = await atService.fetchMedications();
+/// ```
 class ATProtocolService {
   static final ATProtocolService _instance = ATProtocolService._internal();
+  
+  /// Returns the singleton instance of the ATProtocolService.
   factory ATProtocolService() => _instance;
+  
   ATProtocolService._internal();
 
   final ConfigService _configService = ConfigService();
+  
+  /// The JWT access token for authenticated requests.
   String? _accessJwt;
+  
+  /// The JWT refresh token for obtaining new access tokens.
   String? _refreshJwt;
 
+  /// Authenticates with the BlueSky server using handle and password.
+  ///
+  /// Returns true if authentication was successful, false otherwise.
+  /// Upon successful authentication, stores the access and refresh JWT tokens.
+  ///
+  /// Parameters:
+  /// - [handle]: The user's BlueSky handle
+  /// - [password]: The user's password
   Future<bool> authenticate(String handle, String password) async {
     try {
       final config = _configService.config;
@@ -40,6 +76,12 @@ class ATProtocolService {
     }
   }
 
+  /// Fetches all medication records from the BlueSky server.
+  ///
+  /// Returns a list of medications stored on the remote server.
+  /// Returns an empty list if there's an error or no medications are found.
+  ///
+  /// Throws an exception if not authenticated.
   Future<List<Medication>> fetchMedications() async {
     try {
       if (_accessJwt == null) {
@@ -77,6 +119,15 @@ class ATProtocolService {
     }
   }
 
+  /// Syncs a medication to the BlueSky server.
+  ///
+  /// Creates a new record if the medication doesn't have a remoteId,
+  /// or updates an existing record if it does.
+  ///
+  /// Returns true if the sync was successful, false otherwise.
+  ///
+  /// Parameters:
+  /// - [medication]: The medication to sync
   Future<bool> syncMedication(Medication medication) async {
     try {
       if (_accessJwt == null) {
@@ -114,6 +165,12 @@ class ATProtocolService {
     }
   }
 
+  /// Deletes a medication record from the BlueSky server.
+  ///
+  /// Returns true if the deletion was successful, false otherwise.
+  ///
+  /// Parameters:
+  /// - [remoteId]: The remote ID (rkey) of the medication to delete
   Future<bool> deleteMedication(String remoteId) async {
     try {
       if (_accessJwt == null) {
@@ -172,6 +229,10 @@ class ATProtocolService {
     return DateTime.now().millisecondsSinceEpoch.toString();
   }
 
+  /// Refreshes the authentication tokens using the refresh token.
+  ///
+  /// Should be called when the access token expires. Updates both
+  /// the access and refresh tokens if successful.
   Future<void> refreshToken() async {
     if (_refreshJwt == null) return;
 
@@ -195,5 +256,6 @@ class ATProtocolService {
     }
   }
 
+  /// Returns true if the service has a valid access token.
   bool get isAuthenticated => _accessJwt != null;
 }

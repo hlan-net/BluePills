@@ -1,7 +1,18 @@
+/// Settings screen for configuring BlueSky synchronization.
+///
+/// This library provides the UI for enabling/disabling BlueSky sync,
+/// configuring PDS settings, and viewing application information.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/models/app_config.dart';
 
+/// A stateful widget that displays the settings screen.
+///
+/// Allows users to configure BlueSky synchronization settings including
+/// their BlueSky handle, Personal Data Server URL, and sync mode.
+/// Also displays license and medical disclaimer information.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -9,6 +20,10 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
+/// State class for the settings screen.
+///
+/// Manages form validation, configuration updates, and UI state
+/// for enabling/disabling BlueSky synchronization.
 class _SettingsScreenState extends State<SettingsScreen> {
   final ConfigService _configService = ConfigService();
   final _formKey = GlobalKey<FormState>();

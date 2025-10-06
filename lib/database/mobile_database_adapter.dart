@@ -1,9 +1,23 @@
+/// Mobile/Desktop database adapter using SQLite.
+///
+/// This library provides a database adapter for mobile and desktop platforms
+/// that uses SQLite for persistent storage through the sqflite package.
+library;
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bluepills/models/medication.dart';
 import 'database_adapter.dart';
 
+/// Database adapter implementation for mobile and desktop platforms.
+///
+/// Uses SQLite through the sqflite package to provide robust, relational
+/// database storage for medications. This adapter is automatically selected
+/// when running on mobile or desktop platforms.
+///
+/// The database file is stored in the application's documents directory
+/// and includes full support for sync metadata fields.
 class MobileDatabaseAdapter extends DatabaseAdapter {
   static Database? _database;
 

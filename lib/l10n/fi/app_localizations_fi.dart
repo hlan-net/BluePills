@@ -1,5 +1,14 @@
+/// Finnish localization strings for the BluePills application.
+///
+/// This library provides Finnish translations for all user-facing text
+/// in the application.
+library;
+
 import '../app_localizations.dart';
 
+/// Finnish implementation of [AppLocalizations].
+///
+/// Provides all localized strings in Finnish (Suomi) for the BluePills application.
 class AppLocalizationsFi extends AppLocalizations {
   @override
   String get appTitle => 'SinisetPillerit';

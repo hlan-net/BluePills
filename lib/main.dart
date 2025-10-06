@@ -1,3 +1,15 @@
+/// BluePills - Privacy-focused medication management application.
+///
+/// This is the main entry point for the BluePills application, which provides
+/// medication tracking and reminder functionality with optional BlueSky sync.
+///
+/// The application supports:
+/// - Local medication storage
+/// - Medication reminders
+/// - Optional BlueSky synchronization via AT Protocol
+/// - Multi-language support (English and Finnish)
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -12,6 +24,14 @@ import 'package:bluepills/services/sync_service.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
+/// The main entry point for the BluePills application.
+///
+/// Initializes all required services before starting the app:
+/// - Flutter binding
+/// - SQLite database (using FFI for desktop support)
+/// - Configuration service
+/// - Database helper
+/// - Notification system
 void main() async {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +46,12 @@ void main() async {
   runApp(const MyApp());
 }
 
+/// The root widget of the BluePills application.
+///
+/// Configures the MaterialApp with:
+/// - Material Design 3 theming
+/// - Localization support for English and Finnish
+/// - The medication list as the home screen
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -51,6 +77,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// The main screen displaying the list of medications.
+///
+/// This stateful widget shows all saved medications and provides
+/// functionality to add, edit, delete medications, and trigger sync
+/// with BlueSky if enabled.
 class MedicationListScreen extends StatefulWidget {
   const MedicationListScreen({super.key});
 
@@ -58,6 +89,10 @@ class MedicationListScreen extends StatefulWidget {
   State<MedicationListScreen> createState() => _MedicationListScreenState();
 }
 
+/// State class for the medication list screen.
+///
+/// Manages the list of medications, handles user interactions for
+/// adding, editing, and deleting medications, and manages sync operations.
 class _MedicationListScreenState extends State<MedicationListScreen> {
   late Future<List<Medication>> _medications;
 

@@ -1,17 +1,44 @@
+/// Represents a medication entry in the BluePills application.
+///
+/// This model stores all information about a medication including its name,
+/// dosage, frequency, and reminder time. It also includes sync metadata for
+/// optional BlueSky synchronization.
 class Medication {
+  /// The local database ID of the medication.
   int? id;
+  
+  /// The name of the medication.
   String name;
+  
+  /// The dosage information (e.g., "100mg", "2 tablets").
   String dosage;
+  
+  /// The frequency of medication (e.g., "twice daily", "every 8 hours").
   String frequency;
+  
+  /// The time when the medication reminder should be triggered.
   DateTime reminderTime;
 
-  // Sync metadata
+  /// The remote ID from the BlueSky server (used when sync is enabled).
   String? remoteId;
+  
+  /// The timestamp of the last successful sync with BlueSky.
   DateTime? lastSynced;
+  
+  /// Flag indicating whether this medication needs to be synced with BlueSky.
   bool needsSync;
+  
+  /// The timestamp when this medication was first created.
   DateTime createdAt;
+  
+  /// The timestamp when this medication was last updated.
   DateTime updatedAt;
 
+  /// Creates a new [Medication] instance.
+  ///
+  /// All fields except [id], [remoteId], [lastSynced], [createdAt], and [updatedAt]
+  /// are required. The [createdAt] and [updatedAt] timestamps are automatically
+  /// set to the current time if not provided.
   Medication({
     this.id,
     required this.name,
@@ -26,6 +53,7 @@ class Medication {
   }) : createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
+  /// Converts this medication to a Map suitable for database storage.
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -41,6 +69,7 @@ class Medication {
     };
   }
 
+  /// Creates a [Medication] instance from a database Map.
   factory Medication.fromMap(Map<String, dynamic> map) {
     return Medication(
       id: map['id'],
@@ -64,6 +93,10 @@ class Medication {
     );
   }
 
+  /// Creates a copy of this medication with optional field updates.
+  ///
+  /// Any field that is provided will replace the existing value.
+  /// Fields that are not provided will retain their current values.
   Medication copyWith({
     int? id,
     String? name,
@@ -90,6 +123,10 @@ class Medication {
     );
   }
 
+  /// Marks this medication as updated and needing synchronization.
+  ///
+  /// Updates the [updatedAt] timestamp to the current time and sets
+  /// [needsSync] to true.
   void markAsUpdated() {
     updatedAt = DateTime.now();
     needsSync = true;
