@@ -25,10 +25,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 /// ```
 class NotificationHelper {
   static final NotificationHelper _instance = NotificationHelper._internal();
-  
+
   /// Returns the singleton instance of the NotificationHelper.
   factory NotificationHelper() => _instance;
-  
+
   NotificationHelper._internal();
 
   final FlutterLocalNotificationsPlugin _notificationsPlugin =

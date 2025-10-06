@@ -18,7 +18,7 @@ import 'package:bluepills/models/app_config.dart';
 /// ```dart
 /// final configService = ConfigService();
 /// await configService.init();
-/// 
+///
 /// // Enable sync
 /// await configService.enableSync(
 ///   blueskyHandle: 'user.bsky.social',
@@ -28,11 +28,12 @@ import 'package:bluepills/models/app_config.dart';
 class ConfigService {
   /// The key used to store configuration in SharedPreferences.
   static const String _configKey = 'app_config';
-  
+
   static final ConfigService _instance = ConfigService._internal();
+
   /// Returns the singleton instance of the ConfigService.
   factory ConfigService() => _instance;
-  
+
   ConfigService._internal();
 
   SharedPreferences? _prefs;
@@ -112,7 +113,7 @@ class ConfigService {
 
   /// Returns true if synchronization is currently enabled.
   bool get isSyncEnabled => _config.syncEnabled;
-  
+
   /// Returns true if the sync configuration has valid handle and PDS URL.
   bool get hasValidSyncConfig =>
       _config.blueskyHandle?.isNotEmpty == true &&

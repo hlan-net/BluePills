@@ -27,17 +27,17 @@ import 'package:bluepills/services/config_service.dart';
 /// ```
 class ATProtocolService {
   static final ATProtocolService _instance = ATProtocolService._internal();
-  
+
   /// Returns the singleton instance of the ATProtocolService.
   factory ATProtocolService() => _instance;
-  
+
   ATProtocolService._internal();
 
   final ConfigService _configService = ConfigService();
-  
+
   /// The JWT access token for authenticated requests.
   String? _accessJwt;
-  
+
   /// The JWT refresh token for obtaining new access tokens.
   String? _refreshJwt;
 

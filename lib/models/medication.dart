@@ -6,31 +6,31 @@
 class Medication {
   /// The local database ID of the medication.
   int? id;
-  
+
   /// The name of the medication.
   String name;
-  
+
   /// The dosage information (e.g., "100mg", "2 tablets").
   String dosage;
-  
+
   /// The frequency of medication (e.g., "twice daily", "every 8 hours").
   String frequency;
-  
+
   /// The time when the medication reminder should be triggered.
   DateTime reminderTime;
 
   /// The remote ID from the BlueSky server (used when sync is enabled).
   String? remoteId;
-  
+
   /// The timestamp of the last successful sync with BlueSky.
   DateTime? lastSynced;
-  
+
   /// Flag indicating whether this medication needs to be synced with BlueSky.
   bool needsSync;
-  
+
   /// The timestamp when this medication was first created.
   DateTime createdAt;
-  
+
   /// The timestamp when this medication was last updated.
   DateTime updatedAt;
 

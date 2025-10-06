@@ -20,22 +20,22 @@ abstract class DatabaseAdapter {
   ///
   /// Must be called before any other operations.
   Future<void> init();
-  
+
   /// Inserts a new medication into the database.
   ///
   /// Returns the ID of the inserted medication.
   Future<int> insertMedication(Medication medication);
-  
+
   /// Retrieves all medications from the database.
   ///
   /// Returns a list of all stored medications.
   Future<List<Medication>> getMedications();
-  
+
   /// Updates an existing medication in the database.
   ///
   /// Returns the number of rows affected (typically 1).
   Future<int> updateMedication(Medication medication);
-  
+
   /// Deletes a medication from the database by its ID.
   ///
   /// Returns the number of rows deleted (typically 1).

@@ -17,16 +17,16 @@ part 'app_config.g.dart';
 class AppConfig {
   /// Whether synchronization with BlueSky is enabled.
   final bool syncEnabled;
-  
+
   /// The user's BlueSky handle (e.g., "user.bsky.social").
   final String? blueskyHandle;
-  
+
   /// The URL of the Personal Data Server (PDS) for AT Protocol.
   final String? pdsUrl;
-  
+
   /// The timestamp of the last successful sync operation.
   final DateTime? lastSyncTime;
-  
+
   /// The current synchronization mode.
   final SyncMode syncMode;
 
@@ -44,7 +44,7 @@ class AppConfig {
   /// Creates an [AppConfig] instance from JSON data.
   factory AppConfig.fromJson(Map<String, dynamic> json) =>
       _$AppConfigFromJson(json);
-      
+
   /// Converts this configuration to JSON data.
   Map<String, dynamic> toJson() => _$AppConfigToJson(this);
 
