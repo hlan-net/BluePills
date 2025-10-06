@@ -1,194 +1,90 @@
-# Google Play Store Deployment - Quick Start Guide
+# Deploying Your Fork of BluePills to the Google Play Store
 
-## ✅ Your App is Ready for Testing!
+This guide will walk you through the process of taking your forked version of the BluePills project and preparing it for release on the Google Play Store.
 
-The BluePills Android app has been successfully configured and builds without errors. Here's what you need to do to get it on Google Play Store for testing:
+## 1. Changing the Package Name
 
-## 🎯 Next Steps
+Before you can publish your app, you need to give it a unique package name. The default is `net.hlan.bluepills`. You must change this to your own unique identifier (e.g., `com.yourname.bluepills`).
 
-### 1. **Build Release APK/AAB** (5 minutes)
-```bash
-cd /path/to/BluePills
+You need to update the package name in the following files:
 
-# For testing (APK)
-flutter build apk --release
+1.  **`android/app/build.gradle.kts`**:
+    -   Change the `namespace` and `applicationId` to your new package name.
 
-# For Play Store (recommended - AAB)
-flutter build appbundle --release
-```
+2.  **`android/app/proguard-rules.pro`**:
+    -   Update the keep rule to use your new package name:
+        ```
+        -keep class com.yourname.bluepills.models.** { *; }
+        ```
 
-**Output files:**
-- APK: `build/app/outputs/flutter-apk/app-release.apk`
-- AAB: `build/app/outputs/bundle/release/app-release.aab`
+## 2. Creating a Signing Key
 
-### 2. **Set Up Google Play Console** (15 minutes)
-1. **Create Account**: Go to [Google Play Console](https://play.google.com/console)
-2. **Pay Fee**: One-time $25 registration fee
-3. **Create App**: Click "Create app" and fill details:
-   - **Name**: BluePills
-   - **Language**: English (US)
-   - **Type**: App
-   - **Free/Paid**: Free
+To upload your app to the Play Store, it must be signed with a release key.
 
-### 3. **Upload for Internal Testing** (10 minutes)
-1. Go to **Testing → Internal testing**
-2. **Create release** → Upload AAB file
-3. **Add testers**: Add your email address
-4. **Publish** the internal test release
-5. **Join testing** via the provided link
+1.  **Generate a keystore:**
+    Run the following command to generate a new keystore file. You will be prompted to create a password. Remember this password.
 
-### 4. **Required Information for Play Store**
+    ```bash
+    keytool -genkey -v -keystore upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+    ```
+    This will create a file named `upload-keystore.jks` in your project's root directory. You should move this file to the `android/app` directory.
 
-#### App Description (Ready to Copy-Paste):
-```
-BluePills - Privacy-Focused Medication Management
+2.  **Create `key.properties` file:**
+    In the `android` directory, create a file named `key.properties` with the following content. Replace the placeholder values with your own.
 
-Take control of your medication schedule with BluePills, a privacy-first app that lets you manage your medications locally or sync across devices using BlueSky's decentralized network.
+    ```
+    storePassword=<your-keystore-password>
+    keyPassword=<your-key-password>
+    keyAlias=upload
+    storeFile=upload-keystore.jks
+    ```
 
-🔒 PRIVACY FIRST
-• Start with local storage - no account required
-• Choose when and how to sync your data
-• You control where your data lives
+    **Important:** Do not commit the `upload-keystore.jks` or `key.properties` files to your repository. The `.gitignore` file is already configured to ignore them.
 
-💊 MEDICATION MANAGEMENT
-• Add medications with custom dosages and frequencies
-• Set personalized reminder notifications
-• Easy medication tracking and editing
+## 3. Setting up GitHub Actions for Automated Releases
 
-🌐 OPTIONAL BLUESKY SYNC
-• Sync across devices using AT Protocol
-• Use your own Personal Data Server (PDS)
-• Decentralized - no vendor lock-in
+This project comes with a pre-configured GitHub Actions workflow to automate the build and release process. To use it, you need to set up the following secrets in your forked repository's settings under "Secrets and variables" > "Actions":
 
-✨ KEY FEATURES
-• Works offline by default
-• Local SQLite storage
-• Cross-platform synchronization
-• No tracking or analytics
-• Open source architecture
+-   **`ANDROID_KEYSTORE_PASSWORD`**: The `storePassword` from your `key.properties` file.
+-   **`ANDROID_KEY_PASSWORD`**: The `keyPassword` from your `key.properties` file.
+-   **`ANDROID_KEY_ALIAS`**: The `keyAlias` from your `key.properties` file (e.g., `upload`).
+-   **`ANDROID_KEYSTORE_BASE64`**: The base64 encoded content of your `upload-keystore.jks` file.
 
-Perfect for anyone who wants reliable medication reminders while maintaining complete control over their health data.
-
-Note: BlueSky sync feature requires additional setup and is currently in early development.
-```
-
-#### Graphics Needed:
-- **App Icon**: Already included (512x512px version for Play Store)
-- **Feature Graphic**: 1024x500px (you'll need to create this)
-- **Screenshots**: 2-8 phone screenshots (take from the running app)
-
-#### Privacy Policy:
-Use the included `PRIVACY_POLICY.md` file - host it on a website or GitHub Pages.
-
-## 🔒 Production Signing (When Ready)
-
-For production releases, create a proper signing key:
+To generate the base64 string for your keystore, run the following command:
 
 ```bash
-# Create signing key
-keytool -genkey -v -keystore ~/bluepills-release-key.keystore \
-  -keyalg RSA -keysize 2048 -validity 10000 -alias bluepills
-
-# Create android/key.properties
-storePassword=YOUR_PASSWORD
-keyPassword=YOUR_PASSWORD
-keyAlias=bluepills
-storeFile=/path/to/bluepills-release-key.keystore
+base64 android/app/upload-keystore.jks
 ```
 
-Then update `android/app/build.gradle.kts` with proper signing configuration.
+Copy the entire output of this command and paste it as the value for the `ANDROID_KEYSTORE_BASE64` secret.
 
-## 📱 Current App Features
+## 4. Building and Releasing
 
-### ✅ Implemented and Working:
-- ✅ Medication list with add/edit/delete
-- ✅ Local SQLite storage
-- ✅ Basic notification framework
-- ✅ Settings screen for BlueSky configuration
-- ✅ Material Design 3 UI
-- ✅ Android build configuration
-- ✅ Privacy policy and Play Store assets
+Once you have set up the secrets, you can trigger the release workflow in two ways:
 
-### 🚧 Planned/In Development:
-- 🚧 BlueSky AT Protocol authentication
-- 🚧 Real-time medication sync
-- 🚧 Enhanced notification scheduling
-- 🚧 Cross-device medication sharing
-- 🚧 Data export/import features
+1.  **Manually**: Go to the "Actions" tab in your GitHub repository, select the "Release Build & Deploy" workflow, and click the "Run workflow" button.
+2.  **By pushing a tag**: Create and push a new tag that starts with `v`.
+    ```bash
+    git tag v1.0.0 -m "My first release"
+    git push origin v1.0.0
+    ```
 
-## 🎉 Testing Your App
+The workflow will build your app, sign it, and create a new release in your GitHub repository with the signed `.aab` file.
 
-Once uploaded to Play Store internal testing:
+## 5. Google Play Console Setup
 
-1. **Download** from Play Store on your Android device
-2. **Test** core functionality:
-   - Add/edit/delete medications
-   - Navigate to settings
-   - Verify local storage works
-   - Test UI responsiveness
+1.  **Create a Google Play Console account:** Go to [Google Play Console](https://play.google.com/console) and create a developer account. There is a one-time registration fee.
+2.  **Create a new app:** Click "Create app" and fill in the details for your app.
+3.  **Create an internal test release:** Go to **Testing → Internal testing** and create a new release. Upload the `.aab` file generated by the GitHub Actions workflow.
+4.  **Add testers:** Add your email address to the list of testers to get access to the app.
 
-3. **Verify** Play Store listing:
-   - Description appears correctly
-   - Screenshots display properly
-   - App installs and launches
+## 6. Preparing Your Store Listing
 
-## 🔧 Troubleshooting
+You will need to provide the following information for your app's store listing:
 
-### Common Issues:
-- **Build failures**: Run `flutter clean && flutter pub get`
-- **Signing issues**: Use debug signing for testing
-- **Upload issues**: Ensure unique version code
-- **Permissions**: Check AndroidManifest.xml
-
-### Debug Commands:
-```bash
-# Clean and rebuild
-flutter clean
-flutter pub get
-dart run build_runner build
-
-# Check for issues
-flutter analyze
-flutter doctor -v
-
-# Test on device
-flutter run --release
-```
-
-## 📊 Play Store Metrics
-
-Once live, you can track:
-- Download counts
-- User ratings and reviews
-- Crash reports
-- Performance metrics
-
-## 🚀 What's Next?
-
-1. **Get it working**: Upload to internal testing
-2. **Gather feedback**: Test with friends/family
-3. **Iterate**: Fix bugs and add features
-4. **Expand testing**: Move to closed testing
-5. **Go public**: Release to production when ready
-
-## 📋 Checklist for Play Store Submission
-
-- [ ] App builds successfully (✅ Done)
-- [ ] App icon is 512x512px
-- [ ] Feature graphic created (1024x500px)
-- [ ] Screenshots taken (2-8 images)
-- [ ] Privacy policy hosted online
-- [ ] App description written (✅ Provided above)
-- [ ] Content rating completed
-- [ ] Target audience defined
-- [ ] Google Play Console account set up
-- [ ] AAB file built and ready
-
-**You're about 90% ready for Play Store testing!** Just need to create the graphics and set up your Play Console account.
-
-## 🎯 Time Estimate
-- **Today**: Build AAB, set up Play Console, upload for testing (30-45 minutes)
-- **This week**: Create graphics, refine description, gather initial feedback
-- **Next week**: Iterate based on testing feedback
-
-Good luck with your BluePills app deployment! 🚀
+-   **App name and description:** Write a name and description for your app.
+-   **Graphics:**
+    -   **App Icon (512x512px)**
+    -   **Feature Graphic (1024x500px)**
+    -   **Screenshots (2-8 phone screenshots)**
+-   **Privacy Policy:** You need to provide a URL for your app's privacy policy. You can use the included `PRIVACY_POLICY.md` as a template and host it on GitHub Pages or another website.

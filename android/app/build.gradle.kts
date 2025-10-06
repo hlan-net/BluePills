@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -6,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.slorba.bluepills"
+    namespace = "net.hlan.bluepills"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -21,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.slorba.bluepills"
+        applicationId = "net.hlan.bluepills"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 21  // Required for modern features and Play Store
@@ -36,10 +38,26 @@ android {
         proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
 
+    signingConfigs {
+        create("release") {
+            val keyPropertiesFile = file("../key.properties")
+            if (keyPropertiesFile.exists()) {
+                val keyProperties = Properties()
+                keyProperties.load(keyPropertiesFile.inputStream())
+                keyAlias = keyProperties.getProperty("keyAlias")
+                keyPassword = keyProperties.getProperty("keyPassword")
+                storeFile = file(keyProperties.getProperty("storeFile"))
+                storePassword = keyProperties.getProperty("storePassword")
+            } else {
+                throw GradleException("Could not find key.properties file in android directory.")
+            }
+        }
+    }
+
     buildTypes {
         release {
             // For now using debug keys - update with proper signing later
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
         }

@@ -40,7 +40,7 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 # BluePills app models
--keep class com.slorba.bluepills.models.** { *; }
+-keep class net.hlan.bluepills.models.** { *; }
 
 # HTTP client
 -keep class okhttp3.** { *; }

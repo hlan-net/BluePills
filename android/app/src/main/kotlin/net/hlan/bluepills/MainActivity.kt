@@ -1,4 +1,4 @@
-package com.example.bluepills
+package net.hlan.bluepills
 
 import io.flutter.embedding.android.FlutterActivity
 
