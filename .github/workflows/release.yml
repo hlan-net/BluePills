@@ -1,5 +1,6 @@
 name: Release Build & Deploy
 
+# Triggered on version tags or manual workflow dispatch
 on:
   push:
     tags:
