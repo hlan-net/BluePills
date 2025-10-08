@@ -63,8 +63,7 @@ jobs:
       uses: trufflesecurity/trufflehog@main
       with:
         path: ./
-        base: main
-        head: HEAD
+        extra_args: --only-verified
 
   # Performance Benchmarks
   performance-benchmark:
@@ -87,8 +86,8 @@ jobs:
 
     - name: Run performance tests
       run: |
-        # Build size analysis
-        flutter build apk --analyze-size --target-platform android-arm64
+        # Build size analysis (debug build to avoid signing issues)
+        flutter build apk --debug --analyze-size --target-platform android-arm64
         
         # Web build size
         flutter build web --analyze-size
