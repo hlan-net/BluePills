@@ -91,15 +91,20 @@ jobs:
         echo "" >> build-report.md
         
         # Web build size
-        flutter build web --analyze-size
+        flutter build web
         
         # Generate simple size report
         if [ -d "build/web" ]; then
           echo "### Web Build Size" >> build-report.md
           du -sh build/web >> build-report.md
+          echo "" >> build-report.md
+          echo "#### Detailed breakdown:" >> build-report.md
+          du -h build/web/* | sort -rh | head -10 >> build-report.md
         fi
         
+        echo "" >> build-report.md
         echo "Note: APK size analysis skipped in maintenance runs (requires release signing)" >> build-report.md
+        cat build-report.md
 
     - name: Comment on performance changes
       if: github.event_name == 'pull_request'
