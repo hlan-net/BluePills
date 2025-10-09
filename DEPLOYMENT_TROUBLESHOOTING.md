@@ -57,7 +57,7 @@ cat your-service-account.json | jq '.client_email'
 
 ---
 
-### Error: "Package not found: com.slorba.bluepills"
+### Error: "Package not found: net.hlan.bluepills"
 
 **Cause**: The app hasn't been created in Google Play Console, or the package name doesn't match.
 
@@ -66,7 +66,7 @@ cat your-service-account.json | jq '.client_email'
 2. Verify the package name in `android/app/build.gradle.kts` matches the one in Play Console
 3. If you changed the package name, update the workflow file:
    ```yaml
-   packageName: com.yourname.bluepills  # Update this
+   packageName: net.hlan.bluepills  # Update this to match your app
    ```
 
 ---

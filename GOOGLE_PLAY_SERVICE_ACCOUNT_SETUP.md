@@ -103,7 +103,7 @@ The most important field is `client_email` - this must be present!
 **Solution**: Make sure you granted the correct permissions in Step 3 (Release manager role).
 
 ### Issue: "Package not found"
-**Solution**: Make sure you've created the app in Google Play Console and the package name matches (`com.slorba.bluepills`).
+**Solution**: Make sure you've created the app in Google Play Console and the package name matches (`net.hlan.bluepills`).
 
 ## Security Best Practices
 
