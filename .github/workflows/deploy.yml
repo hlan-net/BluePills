@@ -88,7 +88,7 @@ jobs:
         packageName: net.hlan.bluepills
         releaseFiles: build/app/outputs/bundle/release/app-release.aab
         track: ${{ github.event.inputs.track || 'internal' }}
-        status: completed
+        status: draft
         whatsNewDirectory: distribution/whatsnew
         mappingFile: build/app/outputs/mapping/release/mapping.txt
 
