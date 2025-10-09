@@ -74,6 +74,13 @@ jobs:
     - name: Build Android App Bundle
       run: flutter build appbundle --release
 
+    - name: Prepare whatsnew directory
+      run: |
+        mkdir -p distribution/whatsnew
+        if [ ! -f distribution/whatsnew/whatsnew-en-US ]; then
+          echo "Bug fixes and performance improvements" > distribution/whatsnew/whatsnew-en-US
+        fi
+
     - name: Deploy to Google Play
       uses: r0adkll/upload-google-play@v1
       with:

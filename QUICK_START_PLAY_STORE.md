@@ -49,6 +49,7 @@ This project comes with a pre-configured GitHub Actions workflow to automate the
 -   **`ANDROID_KEY_PASSWORD`**: The `keyPassword` from your `key.properties` file.
 -   **`ANDROID_KEY_ALIAS`**: The `keyAlias` from your `key.properties` file (e.g., `upload`).
 -   **`ANDROID_KEYSTORE_BASE64`**: The base64 encoded content of your `upload-keystore.jks` file.
+-   **`GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`**: Google Play service account JSON for automated uploads.
 
 To generate the base64 string for your keystore, run the following command:
 
@@ -57,6 +58,15 @@ base64 android/app/upload-keystore.jks
 ```
 
 Copy the entire output of this command and paste it as the value for the `ANDROID_KEYSTORE_BASE64` secret.
+
+### Setting up Google Play Service Account
+
+For automated deployment to Google Play Store, you need to create a service account. Follow the detailed guide in [GOOGLE_PLAY_SERVICE_ACCOUNT_SETUP.md](GOOGLE_PLAY_SERVICE_ACCOUNT_SETUP.md) to:
+
+1. Create a service account in Google Cloud Console
+2. Generate a JSON key
+3. Link the service account to Google Play Console
+4. Set up the `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` secret
 
 ## 4. Building and Releasing
 
