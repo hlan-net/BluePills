@@ -47,18 +47,22 @@ void main() async {
   // Initialize services with error handling
   try {
     await ConfigService().init();
+    debugPrint('ConfigService initialized successfully');
   } catch (e) {
     debugPrint('Error initializing ConfigService: $e');
   }
 
   try {
     await DatabaseHelper().init();
+    debugPrint('DatabaseHelper initialized successfully');
   } catch (e) {
     debugPrint('Error initializing DatabaseHelper: $e');
+    // Show error to user that database failed
   }
 
   try {
     await NotificationHelper().init();
+    debugPrint('NotificationHelper initialized successfully');
   } catch (e) {
     debugPrint('Error initializing NotificationHelper: $e');
     // Notifications are optional, continue even if they fail

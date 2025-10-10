@@ -80,30 +80,48 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
   void _saveMedication() async {
     if (_formKey.currentState!.validate()) {
-      final newMedication = Medication(
-        id: widget.medication?.id,
-        name: _nameController.text,
-        dosage: _dosageController.text,
-        frequency: _frequencyController.text,
-        reminderTime: _selectedReminderTime,
-      );
+      try {
+        final newMedication = Medication(
+          id: widget.medication?.id,
+          name: _nameController.text,
+          dosage: _dosageController.text,
+          frequency: _frequencyController.text,
+          reminderTime: _selectedReminderTime,
+        );
 
-      if (widget.medication == null) {
-        final newId = await DatabaseHelper().insertMedication(newMedication);
-        newMedication.id = newId;
-      } else {
-        await DatabaseHelper().updateMedication(newMedication);
-      }
+        if (widget.medication == null) {
+          final newId = await DatabaseHelper().insertMedication(newMedication);
+          newMedication.id = newId;
+        } else {
+          await DatabaseHelper().updateMedication(newMedication);
+        }
 
-      await NotificationHelper().scheduleNotification(
-        newMedication.id!,
-        'Medication Reminder',
-        'Time to take your ${newMedication.name}!',
-        newMedication.reminderTime,
-      );
+        // Try to schedule notification, but don't fail if it doesn't work
+        try {
+          await NotificationHelper().scheduleNotification(
+            newMedication.id!,
+            'Medication Reminder',
+            'Time to take your ${newMedication.name}!',
+            newMedication.reminderTime,
+          );
+        } catch (e) {
+          debugPrint('Failed to schedule notification: $e');
+        }
 
-      if (mounted) {
-        Navigator.pop(context, true); // Pass true to indicate a change
+        if (mounted) {
+          Navigator.pop(context, true); // Pass true to indicate a change
+        }
+      } catch (e) {
+        debugPrint('Error saving medication: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to save medication: $e'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
       }
     }
   }
