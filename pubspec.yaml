@@ -63,6 +63,9 @@ dev_dependencies:
   json_serializable: ^6.7.1
   build_runner: ^2.9.0
   mockito: ^5.4.4
+  # App icon and splash screen generation
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -105,3 +108,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# App icon configuration
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/bluepills.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/bluepills.png"
+
+# Splash screen configuration
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/bluepills.png
+  android: true
+  ios: false
+  web: false
