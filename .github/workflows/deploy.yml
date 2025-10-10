@@ -73,7 +73,14 @@ jobs:
 
     - name: Build Android App Bundle
       run: |
-        flutter build appbundle --release
+        # Calculate version code: base version from pubspec.yaml + run number offset
+        # This ensures each workflow run gets a unique, incrementing version code
+        PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | cut -d'+' -f2)
+        BASE_VERSION=${PUBSPEC_VERSION:-5}
+        VERSION_CODE=$((BASE_VERSION + ${{ github.run_number }}))
+        
+        echo "Building with version code: $VERSION_CODE"
+        flutter build appbundle --release --build-number=$VERSION_CODE
         
         # Extract and prepare native debug symbols
         if [ -d "build/app/intermediates/merged_native_libs/release/out/lib" ]; then
