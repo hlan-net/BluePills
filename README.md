@@ -196,7 +196,7 @@ nano .env
 
 ## 🤝 **Contributing**
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 ### **Quick Contribution Setup**
 ```bash
@@ -234,12 +234,12 @@ git checkout -b feature/amazing-feature
 ### **Developer Documentation**
 - 🏗️ [Implementation Status](IMPLEMENTATION_STATUS.md) - Technical overview
 - 🔧 [Development Setup](docs/development.md) - Local development guide
-- 🔒 [Security Guide](SECURITY.md) - Security best practices
+- 🔒 [Security Guide](docs/SECURITY.md) - Security best practices
 - 🤖 [Automation Guide](.github/AUTOMATION_GUIDE.md) - CI/CD documentation
 
 ### **Deployment Documentation**
-- 📱 [Google Play Store](PLAY_STORE_DEPLOYMENT.md) - App store deployment
-- 🚀 [Quick Start Guide](QUICK_START_PLAY_STORE.md) - Fast deployment
+- 📱 [Google Play Store](docs/PLAY_STORE_DEPLOYMENT.md) - App store deployment
+- 🚀 [Quick Start Guide](docs/QUICK_START_PLAY_STORE.md) - Fast deployment
 - 🔐 [Security Status](SECURITY_STATUS.md) - Security implementation
 
 ## 🎯 **Roadmap**
@@ -311,6 +311,6 @@ BluePills is open source software licensed under the [MIT License](LICENSE).
 
 **Made with ❤️ for privacy-conscious healthcare**
 
-[🌟 Star](https://github.com/your-username/BluePills/stargazers) • [🍴 Fork](https://github.com/your-username/BluePills/fork) • [📝 Contribute](CONTRIBUTING.md) • [🔒 Security](SECURITY.md)
+[🌟 Star](https://github.com/your-username/BluePills/stargazers) • [🍴 Fork](https://github.com/your-username/BluePills/fork) • [📝 Contribute](docs/CONTRIBUTING.md) • [🔒 Security](docs/SECURITY.md)
 
 </div>
