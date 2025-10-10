@@ -72,7 +72,14 @@ jobs:
         echo "storeFile=keystore.jks" >> android/key.properties
 
     - name: Build Android App Bundle
-      run: flutter build appbundle --release
+      run: |
+        flutter build appbundle --release
+        
+        # Extract and prepare native debug symbols
+        if [ -d "build/app/intermediates/merged_native_libs/release/out/lib" ]; then
+          mkdir -p build/app/outputs/symbols/release
+          cp -r build/app/intermediates/merged_native_libs/release/out/lib/* build/app/outputs/symbols/release/ || true
+        fi
 
     - name: Prepare whatsnew directory
       run: |
@@ -97,6 +104,14 @@ jobs:
       with:
         name: android-mapping
         path: build/app/outputs/mapping/release/mapping.txt
+        retention-days: 90
+
+    - name: Upload native debug symbols
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: native-debug-symbols
+        path: build/app/outputs/symbols/release/
         retention-days: 90
 
   # Deploy to Web (GitHub Pages, Firebase, etc.)
