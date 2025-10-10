@@ -116,10 +116,12 @@ jobs:
     - name: Upload native debug symbols
       uses: actions/upload-artifact@v4
       if: always()
+      continue-on-error: true
       with:
         name: native-debug-symbols
         path: build/app/outputs/symbols/release/
         retention-days: 90
+        if-no-files-found: ignore
 
   # Deploy to Web (GitHub Pages, Firebase, etc.)
   deploy-web:
