@@ -78,7 +78,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     }
   }
 
-  void _saveMedication() async {
+  void _saveMedication({bool addAnother = false}) async {
     if (_formKey.currentState!.validate()) {
       try {
         final newMedication = Medication(
@@ -109,7 +109,26 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         }
 
         if (mounted) {
-          Navigator.pop(context, true); // Pass true to indicate a change
+          if (addAnother) {
+            // Clear the form for next entry
+            _nameController.clear();
+            _dosageController.clear();
+            _frequencyController.clear();
+            _selectedReminderTime = DateTime.now();
+            setState(() {});
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Medication saved! Add another.'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+              ),
+            );
+          } else {
+            // Go back to list
+            Navigator.pop(context, true);
+          }
         }
       } catch (e) {
         debugPrint('Error saving medication: $e');
@@ -192,9 +211,30 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 onTap: () => _selectTime(context),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveMedication,
-                child: Text(localizations?.saveMedication ?? 'Save Medication'),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _saveMedication(addAnother: false),
+                      icon: const Icon(Icons.check),
+                      label: Text(localizations?.saveMedication ?? 'Save'),
+                    ),
+                  ),
+                  if (widget.medication == null) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _saveMedication(addAnother: true),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Save & Add More'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),
