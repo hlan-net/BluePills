@@ -37,7 +37,7 @@ import 'package:bluepills/notifications/notification_helper.dart';
 void main() async {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize sqflite FFI for desktop platforms only
   // Android and iOS use native SQLite implementation
   if (!kIsWeb && (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
