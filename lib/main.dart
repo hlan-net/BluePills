@@ -44,10 +44,25 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  // Initialize services
-  await ConfigService().init();
-  await DatabaseHelper().init();
-  await NotificationHelper().init();
+  // Initialize services with error handling
+  try {
+    await ConfigService().init();
+  } catch (e) {
+    debugPrint('Error initializing ConfigService: $e');
+  }
+
+  try {
+    await DatabaseHelper().init();
+  } catch (e) {
+    debugPrint('Error initializing DatabaseHelper: $e');
+  }
+
+  try {
+    await NotificationHelper().init();
+  } catch (e) {
+    debugPrint('Error initializing NotificationHelper: $e');
+    // Notifications are optional, continue even if they fail
+  }
 
   runApp(const MyApp());
 }
