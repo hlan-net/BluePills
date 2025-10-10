@@ -10,6 +10,8 @@
 /// - Multi-language support (English and Finnish)
 library;
 
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -35,8 +37,12 @@ import 'package:bluepills/notifications/notification_helper.dart';
 void main() async {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize sqflite for desktop
-  databaseFactory = databaseFactoryFfi;
+  
+  // Initialize sqflite FFI for desktop platforms only
+  // Android and iOS use native SQLite implementation
+  if (!kIsWeb && (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
+    databaseFactory = databaseFactoryFfi;
+  }
 
   // Initialize services
   await ConfigService().init();
