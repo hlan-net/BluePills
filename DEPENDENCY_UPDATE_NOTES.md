@@ -1,5 +1,59 @@
 # Dependency Update Notes - October 2025
 
+## Weekly Review - October 10, 2025
+
+### Summary
+Updated resolvable dependencies by running `flutter pub upgrade`. Successfully updated 8 packages to their latest compatible versions. Packages constrained by the Flutter SDK remain at their current versions.
+
+### Packages Successfully Updated
+
+#### Transitive Dependencies
+- **_fe_analyzer_shared**: 88.0.0 → 89.0.0 ✅
+- **analyzer**: 8.1.1 → 8.2.0 ✅
+- **build**: 4.0.1 → 4.0.2 ✅
+- **path_provider_android**: 2.2.18 → 2.2.19 ✅
+- **shared_preferences_android**: 2.4.13 → 2.4.15 ✅
+- **source_gen**: 4.0.1 → 4.0.2 ✅
+- **sqflite_android**: 2.4.1 → 2.4.2+2 ✅
+- **sqlite3**: 2.9.1 → 2.9.2 ✅
+
+### Packages Not Updated (SDK Constraints)
+
+Some packages cannot be updated due to Flutter SDK version constraints:
+
+#### Direct Dependencies
+- **meta**: 1.16.0 (latest: 1.17.0)
+  - Constrained by Flutter SDK (flutter_test dependency)
+
+#### Dev Dependencies
+- **flutter_launcher_icons**: 0.13.1 (latest: 0.14.4)
+  - Requires major version update (use `flutter pub upgrade --major-versions`)
+
+#### Transitive Dependencies
+- **characters**: 1.4.0 (latest: 1.4.1)
+- **material_color_utilities**: 0.11.1 (latest: 0.13.0)
+- **test_api**: 0.7.6 (latest: 0.7.7)
+
+These packages are constrained by the Flutter SDK version and will be automatically updated when the Flutter SDK is upgraded.
+
+### Verification
+
+The following verification steps were performed:
+1. ✅ `flutter pub upgrade` - Successfully updated 8 dependencies
+2. ✅ `flutter pub get` - Successfully resolved dependencies
+3. ✅ `dart run build_runner build` - Successfully generated code (3 outputs)
+4. ⚠️ Tests have pre-existing failures unrelated to dependency updates
+
+### Action Taken
+Successfully updated all resolvable dependencies. The build runner completed successfully, generating all required code files.
+
+### Recommendation
+- Consider updating `flutter_launcher_icons` to 0.14.4 using `flutter pub upgrade --major-versions flutter_launcher_icons` if the new features are needed
+- To update SDK-constrained packages (meta, characters, material_color_utilities, test_api), upgrade the Flutter SDK version in CI/CD workflows
+- Address pre-existing test failures in a separate PR
+
+---
+
 ## Weekly Review - October 7, 2025
 
 ### Summary
