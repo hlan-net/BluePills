@@ -13,7 +13,8 @@ This guide explains how to run the Android emulator for BluePills development on
 Since WSL2 doesn't have direct access to the GPU for hardware acceleration, we have two main approaches:
 
 1. **Use Windows-side Android Emulator (Recommended)**
-2. **Connect to a Physical Device via ADB**
+2. **Use WSL2-native Android Emulator (Advanced)** - Requires KVM setup
+3. **Connect to a Physical Device via ADB**
 
 ## Option 1: Use Windows Android Emulator (Recommended)
 
@@ -167,7 +168,392 @@ cd C:\Users\<YourUsername>\AppData\Local\Android\Sdk\platform-tools
 .\adb.exe -a -P 5037 start-server
 ```
 
-## Option 2: Physical Android Device
+## Option 2: WSL2-native Android Emulator (Advanced)
+
+This option runs the Android emulator directly in WSL2 using KVM for hardware acceleration. This is more complex but can be useful if you prefer to keep everything in Linux.
+
+### Prerequisites for WSL2 Emulator
+
+1. **Windows 11 build 22000 or higher** (or Windows 10 with WSL2 kernel 5.10.60.1+)
+2. **Nested virtualization enabled**
+
+### Step 1: Enable Nested Virtualization
+
+In PowerShell (as Administrator):
+
+```powershell
+# Check Windows version
+winver
+
+# Enable nested virtualization for WSL2
+Set-VMProcessor -VMName <WSL2VMName> -ExposeVirtualizationExtensions $true
+
+# If you get an error finding the VM name, try:
+Get-VM | Where-Object {$_.Name -like "*WSL*"}
+```
+
+Alternatively, edit `.wslconfig`:
+
+```ini
+# C:\Users\<YourUsername>\.wslconfig
+[wsl2]
+nestedVirtualization=true
+memory=8GB
+processors=4
+```
+
+Then restart WSL2:
+```powershell
+wsl --shutdown
+```
+
+### Step 2: Install and Configure KVM in WSL2
+
+```bash
+# Check if KVM is available
+ls -la /dev/kvm
+# If it doesn't exist, continue with installation
+
+# Install KVM and QEMU
+sudo apt update
+sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager
+
+# Load KVM modules
+sudo modprobe kvm
+sudo modprobe kvm_intel  # For Intel CPUs
+# OR
+sudo modprobe kvm_amd    # For AMD CPUs
+
+# Verify KVM is loaded
+lsmod | grep kvm
+
+# Check if /dev/kvm exists now
+ls -la /dev/kvm
+```
+
+### Step 3: Add User to KVM Group
+
+This is crucial for running the emulator without sudo:
+
+```bash
+# Add your user to the kvm group
+sudo usermod -aG kvm $USER
+
+# Also add to libvirt group for better permissions
+sudo usermod -aG libvirt $USER
+
+# Verify group membership (won't show immediately)
+groups $USER
+
+# Change the permissions on /dev/kvm
+sudo chmod 666 /dev/kvm
+# Or more securely:
+sudo chown root:kvm /dev/kvm
+sudo chmod 660 /dev/kvm
+```
+
+### Step 4: Apply Group Changes
+
+The group membership won't take effect until you log out and back in. You have several options:
+
+**Option A: Restart WSL2 (Recommended)**
+```powershell
+# In PowerShell
+wsl --shutdown
+# Then reopen your WSL2 terminal
+```
+
+**Option B: Start a new login shell**
+```bash
+# In WSL2 terminal
+su - $USER
+# Enter your password when prompted
+
+# Verify KVM access
+groups
+# Should now show 'kvm' in the list
+```
+
+**Option C: Use newgrp (Temporary)**
+```bash
+# Switch to kvm group in current session
+newgrp kvm
+
+# Verify
+groups
+```
+
+**Option D: Full logout**
+```bash
+# Exit all WSL2 terminals, then shutdown
+exit
+# Then in PowerShell:
+wsl --shutdown
+```
+
+### Step 5: Verify KVM Access
+
+```bash
+# Check if you have KVM access
+ls -la /dev/kvm
+# Should show: crw-rw---- 1 root kvm
+
+# Test KVM access
+kvm-ok
+# If not found, install:
+sudo apt install cpu-checker
+kvm-ok
+
+# Verify you can access KVM without sudo
+[ -r /dev/kvm ] && [ -w /dev/kvm ] && echo "KVM access OK" || echo "KVM access denied"
+
+# Alternative check
+test -r /dev/kvm && test -w /dev/kvm && echo "Success" || echo "Failed"
+```
+
+### Step 6: Install Android SDK and Emulator in WSL2
+
+```bash
+# Install required dependencies
+sudo apt update
+sudo apt install -y \
+    libc6:amd64 libc6:i386 \
+    libstdc++6:amd64 libstdc++6:i386 \
+    lib32z1 \
+    libgl1-mesa-glx \
+    libpulse0 \
+    libx11-6:amd64
+
+# Install Android command line tools
+cd ~
+mkdir -p android-sdk/cmdline-tools
+cd android-sdk/cmdline-tools
+
+# Download command line tools (check for latest version at developer.android.com)
+wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+unzip commandlinetools-linux-11076708_latest.zip
+mv cmdline-tools latest
+
+# Add to PATH
+echo 'export ANDROID_HOME=$HOME/android-sdk' >> ~/.bashrc
+echo 'export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH' >> ~/.bashrc
+echo 'export PATH=$ANDROID_HOME/platform-tools:$PATH' >> ~/.bashrc
+echo 'export PATH=$ANDROID_HOME/emulator:$PATH' >> ~/.bashrc
+source ~/.bashrc
+
+# Accept licenses
+sdkmanager --licenses
+
+# Install necessary SDK packages
+sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+sdkmanager "emulator" "system-images;android-34;google_apis;x86_64"
+
+# Create an AVD
+avdmanager create avd -n Pixel8_API34 -k "system-images;android-34;google_apis;x86_64" -d pixel_8
+
+# Verify AVD was created
+avdmanager list avd
+```
+
+### Step 7: Run Emulator in WSL2
+
+```bash
+# Start the emulator with KVM acceleration
+emulator -avd Pixel8_API34 -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect
+
+# If you get permission errors on /dev/kvm:
+# 1. Check group membership
+groups
+
+# 2. If kvm not shown, you need to restart WSL2
+# In PowerShell:
+wsl --shutdown
+
+# Then restart WSL2 and try again
+```
+
+### Step 8: Verify Emulator is Running
+
+```bash
+# In another terminal
+adb devices
+# Should show:
+# List of devices attached
+# emulator-5554    device
+
+# Run Flutter app
+cd /home/larry/slorba/bluepills
+flutter devices
+flutter run
+```
+
+### Troubleshooting WSL2 Native Emulator
+
+#### Issue: "/dev/kvm not found" or "Permission denied"
+
+**Check if KVM exists:**
+```bash
+ls -la /dev/kvm
+```
+
+**If it doesn't exist:**
+```bash
+# Load KVM module
+sudo modprobe kvm
+sudo modprobe kvm_intel  # or kvm_amd
+
+# Make it persistent
+echo "kvm" | sudo tee -a /etc/modules
+echo "kvm_intel" | sudo tee -a /etc/modules  # or kvm_amd
+```
+
+**If permission denied:**
+```bash
+# Check group membership
+groups
+# If 'kvm' not shown, add yourself and restart:
+sudo usermod -aG kvm $USER
+
+# Then MUST restart WSL2
+# In PowerShell:
+wsl --shutdown
+```
+
+**Temporary fix (until you restart):**
+```bash
+sudo chmod 666 /dev/kvm
+```
+
+#### Issue: "KVM not available" error
+
+**Verify nested virtualization:**
+```bash
+# Check if virtualization is available
+egrep -c '(vmx|svm)' /proc/cpuinfo
+# Should return a number > 0
+
+# Check KVM
+cat /sys/module/kvm_intel/parameters/nested
+# Should show: Y or 1
+```
+
+**Enable in Windows:**
+```powershell
+# PowerShell as Administrator
+Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All
+# Should show: State : Enabled
+
+# If not enabled:
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
+```
+
+#### Issue: Emulator starts but is very slow
+
+**Solution:** Use headless mode and software rendering:
+```bash
+emulator -avd Pixel8_API34 \
+    -no-window \
+    -no-audio \
+    -no-boot-anim \
+    -gpu swiftshader_indirect \
+    -qemu -enable-kvm
+```
+
+#### Issue: "Cannot add user to kvm group"
+
+```bash
+# Create kvm group if it doesn't exist
+sudo groupadd kvm
+
+# Add user
+sudo usermod -aG kvm $USER
+
+# Change /dev/kvm ownership
+sudo chown root:kvm /dev/kvm
+sudo chmod 660 /dev/kvm
+
+# Verify
+ls -la /dev/kvm
+# Should show: crw-rw---- 1 root kvm
+```
+
+### Automated KVM Setup Script
+
+Create `setup-wsl2-kvm.sh`:
+
+```bash
+#!/bin/bash
+
+echo "🔧 Setting up KVM for Android Emulator in WSL2"
+echo "==============================================="
+echo ""
+
+# Check if running in WSL2
+if ! grep -q Microsoft /proc/version; then
+    echo "❌ This script must be run in WSL2"
+    exit 1
+fi
+
+echo "📦 Installing KVM packages..."
+sudo apt update
+sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils cpu-checker
+
+echo "🔌 Loading KVM modules..."
+sudo modprobe kvm 2>/dev/null || echo "⚠️  KVM module not available"
+
+# Detect CPU vendor
+if grep -q "Intel" /proc/cpuinfo; then
+    echo "🔵 Intel CPU detected"
+    sudo modprobe kvm_intel 2>/dev/null || echo "⚠️  Intel KVM module not available"
+elif grep -q "AMD" /proc/cpuinfo; then
+    echo "🔴 AMD CPU detected"
+    sudo modprobe kvm_amd 2>/dev/null || echo "⚠️  AMD KVM module not available"
+fi
+
+echo "👥 Creating kvm group (if not exists)..."
+sudo groupadd -f kvm
+
+echo "👤 Adding $USER to kvm group..."
+sudo usermod -aG kvm $USER
+sudo usermod -aG libvirt $USER
+
+echo "🔐 Setting /dev/kvm permissions..."
+if [ -e /dev/kvm ]; then
+    sudo chown root:kvm /dev/kvm
+    sudo chmod 660 /dev/kvm
+    echo "✅ /dev/kvm permissions set"
+else
+    echo "⚠️  /dev/kvm not found - may need to enable nested virtualization in Windows"
+fi
+
+echo ""
+echo "✅ KVM setup complete!"
+echo ""
+echo "⚠️  IMPORTANT: You must restart WSL2 for group changes to take effect:"
+echo "   1. Exit all WSL2 terminals"
+echo "   2. In PowerShell run: wsl --shutdown"
+echo "   3. Restart your WSL2 terminal"
+echo ""
+echo "📋 After restart, verify with:"
+echo "   groups           # Should show 'kvm'"
+echo "   ls -la /dev/kvm  # Should show: crw-rw---- 1 root kvm"
+echo "   kvm-ok           # Should show KVM is available"
+echo ""
+```
+
+Make it executable and run:
+```bash
+chmod +x setup-wsl2-kvm.sh
+./setup-wsl2-kvm.sh
+```
+
+Then **MUST restart WSL2**:
+```powershell
+# In PowerShell
+wsl --shutdown
+```
+
+## Option 3: Physical Android Device
 
 Using a physical device is often simpler and provides better performance.
 
@@ -232,7 +618,7 @@ flutter devices
 flutter run -d <device-id>
 ```
 
-## Option 3: Web Development
+## Option 4: Web Development
 
 For quick testing, you can also run BluePills as a web app:
 
