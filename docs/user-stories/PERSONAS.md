@@ -63,7 +63,83 @@ Matti has been diagnosed with chronic conditions requiring daily medication mana
 
 ---
 
-## Persona 2: Liisa - The Health-Conscious Tracker
+## Persona 2: Jukka - The Infrequent Medication User
+
+### Demographics
+- **Age:** 25-55
+- **Occupation:** Any (active lifestyle)
+- **Tech Savvy:** Moderate to High
+- **Location:** Finland
+
+### Background
+Jukka doesn't take any regular medications but keeps a medicine cabinet for occasional needs - pain relievers, allergy medication, cold medicine, etc. His main concern is making sure these "as-needed" medications are available and haven't expired when he actually needs them.
+
+### Health Situation
+- Generally healthy, no chronic conditions
+- Keeps 5-10 over-the-counter and prescription medications for occasional use
+- Uses medications irregularly (headaches, allergies, occasional pain)
+- May have emergency medications (EpiPen, rescue inhaler)
+- Gets new prescriptions only when needed (antibiotics, stronger pain relief)
+
+### Goals
+1. **Know what's in the medicine cabinet** - Quick inventory of available medications
+2. **Check expiration dates** - Ensure medications are still safe to use
+3. **Find medications quickly** - Know where each medication is stored
+4. **Replace expired items** - Get reminders before medications expire
+5. **Track usage** - Know when last used and how much is left
+
+### Pain Points
+- 😟 Opening medicine cabinet to find expired medications
+- 😟 Discovering needed medication has expired when actually needed
+- 😟 Not knowing if they still have that prescription from last year
+- 😟 Wasting money on expired medications
+- 😟 Keeping track of expiration dates on multiple items
+- 😟 Forgetting to check medicine cabinet regularly
+
+### Behaviors
+- Checks medicine cabinet only when needed (reactive)
+- Keeps medications in multiple locations (home, car, work)
+- Often discovers expired items during spring cleaning
+- Buys new medications only when old ones run out
+- May not finish antibiotic courses properly
+- Forgets about medications until needing them
+
+### Technology Profile
+- Comfortable with smartphones and apps
+- Wants minimal maintenance and setup
+- Prefers notifications/reminders over manual checking
+- Values apps that work in the background
+- Willing to scan/photograph items for easy entry
+
+### Medication Examples
+- Pain relievers (Ibuprofen, Paracetamol)
+- Allergy medications (Cetirizine, nasal spray)
+- Cold/flu medications
+- Stomach medications (antacids)
+- Emergency medications (EpiPen, rescue inhaler)
+- Occasional prescriptions (antibiotics, stronger pain meds)
+- First aid supplies with expiration dates
+
+### Quote
+> "I don't take medications regularly, but when I need them, I need them NOW. I don't want to find out my migraine medication expired six months ago when I have a splitting headache."
+
+### User Story Examples
+- As Jukka, I want to be notified when medications are expiring soon, so I can replace them before I need them
+- As Jukka, I want to quickly see what medications I have and where they are, so I can find them when needed
+- As Jukka, I want to track expiration dates without manual checking, so my medicine cabinet stays current
+- As Jukka, I want to log when I use as-needed medications, so I know how much is left
+
+### Unique Needs
+1. **Expiration Date Tracking** - Primary concern
+2. **Location Management** - Medications stored in different places
+3. **Minimal Daily Interaction** - Doesn't want daily reminders
+4. **Quick Access** - Fast lookup when actually needed
+5. **Batch Management** - Check all medications at once
+6. **Photo/Barcode** - Easy entry of new medications
+
+---
+
+## Persona 3: Liisa - The Health-Conscious Tracker
 
 ### Demographics
 - **Age:** 30-50
@@ -106,7 +182,7 @@ Liisa is proactive about health and wants detailed tracking of her medication ad
 
 ---
 
-## Persona 3: Aino - The Caregiver
+## Persona 4: Aino - The Caregiver
 
 ### Demographics
 - **Age:** 40-70
@@ -151,7 +227,7 @@ Aino manages medications for an elderly parent or family member who has difficul
 
 ## Primary Persona for Development
 
-**Matti - The Regular Medication Taker** is our primary persona.
+**Matti - The Regular Medication Taker** is our primary persona for core medication management features.
 
 ### Why Matti?
 1. ✅ Represents the core user base (chronic condition management)
@@ -160,7 +236,7 @@ Aino manages medications for an elderly parent or family member who has difficul
 4. ✅ Values privacy (aligns with app philosophy)
 5. ✅ Moderate tech comfort (accessible to wider audience)
 
-### Development Priorities
+### Development Priorities for Matti
 When making decisions, ask:
 - "Would this help Matti take medications correctly?"
 - "Is this simple enough for Matti to use daily?"
@@ -171,17 +247,56 @@ When making decisions, ask:
 
 ## Secondary Personas
 
-**Liisa** represents power users who want advanced features:
+### Jukka - The Infrequent Medication User
+Represents users who need medication inventory and expiration management:
+- Expiration date tracking and notifications
+- Quick medication lookup
+- Location tracking (multiple storage locations)
+- Minimal daily interaction
+- As-needed (PRN) medication logging
+
+**Key Features for Jukka:**
+- 📅 Expiration date warnings (30 days, 7 days, expired)
+- 📍 Storage location field
+- 🔍 Quick search/filter
+- 📸 Photo/barcode entry
+- 🔕 Less frequent notifications
+
+### Liisa - The Health-Conscious Tracker
+Represents power users who want advanced features:
 - Detailed tracking and statistics
 - Data export capabilities
 - Advanced customization
 - Pattern analysis
 
-**Aino** represents caregivers who manage medications for others:
+### Aino - The Caregiver
+Represents caregivers who manage medications for others:
 - Multi-person management
 - Verification and confirmation features
 - Communication with healthcare providers
 - Simplified interfaces for care recipients
+
+---
+
+## Persona Priority for Features
+
+| Feature | Matti | Jukka | Liisa | Aino |
+|---------|-------|-------|-------|------|
+| Daily medication tracking | ★★★ | - | ★★ | ★★★ |
+| Complex schedules | ★★★ | - | ★ | ★★ |
+| Reminders | ★★★ | ★ | ★★ | ★★★ |
+| Inventory tracking | ★★ | ★★★ | ★ | ★★ |
+| Expiration dates | ★ | ★★★ | - | ★★ |
+| As-needed logging | ★ | ★★★ | ★ | ★ |
+| Storage locations | - | ★★★ | - | ★ |
+| Adherence stats | ★ | - | ★★★ | ★★ |
+| Data export | - | - | ★★★ | ★★ |
+| Multi-person | - | - | - | ★★★ |
+
+★★★ = Critical for persona  
+★★ = Important for persona  
+★ = Nice to have  
+\- = Not relevant
 
 ---
 
@@ -197,6 +312,10 @@ When making decisions, ask:
 **Primary (Matti):**
 - As Matti (regular medication taker), I want to see today's medications in a simple list, so I know exactly what to take
 - As Matti (regular medication taker), I want one-tap logging, so I can quickly mark medications as taken
+
+**Secondary (Jukka):**
+- As Jukka (infrequent medication user), I want to be notified when medications are about to expire, so I can replace them before I need them
+- As Jukka (infrequent medication user), I want to quickly find where I stored my allergy medication, so I can take it when symptoms start
 
 **Secondary (Liisa):**
 - As Liisa (health-conscious tracker), I want to see my adherence percentage over time, so I can track my consistency

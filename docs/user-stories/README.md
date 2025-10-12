@@ -16,13 +16,14 @@ Each user story follows this structure:
 
 ### Epic: Medication Management
 
-| ID | Story | Priority | Status | Points |
-|----|-------|----------|--------|--------|
-| US-001 | Take medication as prescribed | High | In Progress | 13 |
-| US-002 | Receive medication reminders | High | Planned | 8 |
-| US-003 | Track medication adherence | Medium | Planned | 5 |
-| US-004 | Manage multiple medications | High | Partial | 5 |
-| US-005 | Refill medications easily | Medium | Planned | 3 |
+| ID | Story | Persona | Priority | Status | Points |
+|----|-------|---------|----------|--------|--------|
+| US-001 | Take medication as prescribed | Matti | High | In Progress | 13 |
+| US-002 | Keep as-needed medications current | Jukka | Medium | Planned | 8 |
+| US-003 | Receive medication reminders | Matti | High | Planned | 8 |
+| US-004 | Track medication adherence | Matti/Liisa | Medium | Planned | 5 |
+| US-005 | Manage multiple medications | Matti | High | Partial | 5 |
+| US-006 | Refill medications easily | Matti | Medium | Planned | 3 |
 
 ### Epic: Data & Privacy
 
