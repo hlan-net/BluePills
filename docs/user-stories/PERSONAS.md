@@ -182,7 +182,10 @@ Liisa is proactive about health and wants detailed tracking of her medication ad
 
 ---
 
-## Persona 4: Aino - The Caregiver
+## Out of Scope: Aino - The Caregiver
+
+### Why Out of Scope
+Aino represents caregivers who manage medications for others. This persona is **not currently in scope** for BluePills as the app focuses on personal medication management.
 
 ### Demographics
 - **Age:** 40-70
@@ -193,35 +196,25 @@ Liisa is proactive about health and wants detailed tracking of her medication ad
 ### Background
 Aino manages medications for an elderly parent or family member who has difficulty remembering or managing their own medications.
 
-### Health Situation
-- Manages medications for another person
-- Needs to ensure medications are taken correctly
-- May manage multiple family members' medications
-- Coordinates with healthcare providers and pharmacies
+### Future Consideration
+If BluePills expands to support:
+- Multi-user accounts
+- Shared medication management
+- Family/caregiver features
+- Healthcare provider integration
 
-### Goals
-1. **Ensure medications are taken** - Verify doses given correctly
-2. **Coordinate care** - Track for multiple people
-3. **Communicate with healthcare** - Share adherence with doctors
-4. **Simplify management** - Easy system for complex schedules
-5. **Peace of mind** - Know medications are handled correctly
+Then Aino could become a relevant persona. For now, the app is designed for **individual personal use only**.
 
-### Pain Points
-- 👵 Difficulty remembering multiple people's schedules
-- 👵 Ensuring medications are actually taken
-- 👵 Managing refills for multiple people
-- 👵 Communicating adherence to doctors
-- 👵 Dealing with complex medication schedules
+---
 
-### Behaviors
-- Checks in regularly to ensure medications taken
-- Uses lists and written schedules
-- Coordinates with pharmacies for refills
-- Attends medical appointments with care recipient
-- Prefers clear, foolproof systems
+## Active Personas Summary
 
-### Quote
-> "I need to make sure my mother takes all her medications correctly. It's a lot to keep track of."
+| Persona | Priority | Focus |
+|---------|----------|-------|
+| **Matti** - Regular Medication Taker | PRIMARY | Daily medication adherence, complex schedules |
+| **Jukka** - Infrequent Medication User | SECONDARY | Expiration tracking, as-needed medications |
+| **Liisa** - Health-Conscious Tracker | SECONDARY | Statistics, data export, advanced features |
+| ~~**Aino** - Caregiver~~ | OUT OF SCOPE | Multi-person management (future) |
 
 ---
 
@@ -269,34 +262,28 @@ Represents power users who want advanced features:
 - Advanced customization
 - Pattern analysis
 
-### Aino - The Caregiver
-Represents caregivers who manage medications for others:
-- Multi-person management
-- Verification and confirmation features
-- Communication with healthcare providers
-- Simplified interfaces for care recipients
-
 ---
 
 ## Persona Priority for Features
 
-| Feature | Matti | Jukka | Liisa | Aino |
-|---------|-------|-------|-------|------|
-| Daily medication tracking | ★★★ | - | ★★ | ★★★ |
-| Complex schedules | ★★★ | - | ★ | ★★ |
-| Reminders | ★★★ | ★ | ★★ | ★★★ |
-| Inventory tracking | ★★ | ★★★ | ★ | ★★ |
-| Expiration dates | ★ | ★★★ | - | ★★ |
-| As-needed logging | ★ | ★★★ | ★ | ★ |
-| Storage locations | - | ★★★ | - | ★ |
-| Adherence stats | ★ | - | ★★★ | ★★ |
-| Data export | - | - | ★★★ | ★★ |
-| Multi-person | - | - | - | ★★★ |
+| Feature | Matti | Jukka | Liisa |
+|---------|-------|-------|-------|
+| Daily medication tracking | ★★★ | - | ★★ |
+| Complex schedules | ★★★ | - | ★ |
+| Reminders | ★★★ | ★ | ★★ |
+| Inventory tracking | ★★ | ★★★ | ★ |
+| Expiration dates | ★ | ★★★ | - |
+| As-needed logging | ★ | ★★★ | ★ |
+| Storage locations | - | ★★★ | - |
+| Adherence stats | ★ | - | ★★★ |
+| Data export | - | - | ★★★ |
 
 ★★★ = Critical for persona  
 ★★ = Important for persona  
 ★ = Nice to have  
 \- = Not relevant
+
+**Note:** Multi-person management (Aino's need) is out of scope.
 
 ---
 
@@ -320,10 +307,6 @@ Represents caregivers who manage medications for others:
 **Secondary (Liisa):**
 - As Liisa (health-conscious tracker), I want to see my adherence percentage over time, so I can track my consistency
 - As Liisa (health-conscious tracker), I want to export my medication history, so I can share it with my doctor
-
-**Secondary (Aino):**
-- As Aino (caregiver), I want to manage medications for multiple people, so I can help my family members
-- As Aino (caregiver), I want to verify which medications were taken, so I have peace of mind
 
 ---
 
