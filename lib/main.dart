@@ -120,19 +120,149 @@ class MedicationListScreen extends StatefulWidget {
 ///
 /// Manages the list of medications, handles user interactions for
 /// adding, editing, and deleting medications, and manages sync operations.
-class _MedicationListScreenState extends State<MedicationListScreen> {
+class _MedicationListScreenState extends State<MedicationListScreen>
+    with SingleTickerProviderStateMixin {
   late Future<List<Medication>> _medications;
+  bool _isSpeedDialOpen = false;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _refreshMedicationList();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   void _refreshMedicationList() {
     setState(() {
       _medications = DatabaseHelper().getMedications();
     });
+  }
+
+  void _toggleSpeedDial() {
+    setState(() {
+      _isSpeedDialOpen = !_isSpeedDialOpen;
+      if (_isSpeedDialOpen) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+  }
+
+  void _closeSpeedDial() {
+    setState(() {
+      _isSpeedDialOpen = false;
+      _animationController.reverse();
+    });
+  }
+
+  Future<void> _addNewMedication() async {
+    _closeSpeedDial();
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MedicationFormScreen()),
+    );
+    if (result == true) {
+      _refreshMedicationList();
+    }
+  }
+
+  Future<void> _addDose() async {
+    _closeSpeedDial();
+    // Show dialog to select medication and add dose
+    final medications = await DatabaseHelper().getMedications();
+    if (!mounted) return;
+    
+    if (medications.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No medications available. Please add a medication first.'),
+        ),
+      );
+      return;
+    }
+
+    final selectedMed = await showDialog<Medication>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Medication'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: medications.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: const Icon(Icons.medical_services),
+                title: Text(medications[index].name),
+                subtitle: Text(medications[index].dosage),
+                onTap: () => Navigator.pop(context, medications[index]),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+
+    if (selectedMed != null && mounted) {
+      if (selectedMed.quantity > 0) {
+        final updatedMedication = selectedMed.copyWith(
+          quantity: selectedMed.quantity - 1,
+        );
+        await DatabaseHelper().updateMedication(updatedMedication);
+        await DatabaseHelper().insertMedicationLog(
+          MedicationLog(
+            medicationId: selectedMed.id!,
+            timestamp: DateTime.now(),
+          ),
+        );
+        _refreshMedicationList();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Logged dose for ${selectedMed.name}'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('No ${selectedMed.name} left in stock'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _setReminder() async {
+    _closeSpeedDial();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Set reminder feature - coming soon!'),
+      ),
+    );
   }
 
   @override
@@ -325,18 +455,171 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MedicationFormScreen()),
-          );
-          if (result == true) {
-            _refreshMedicationList();
-          }
-        },
-        tooltip: 'Add Medication',
-        child: const Icon(Icons.add),
+      floatingActionButton: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          // Backdrop overlay when speed dial is open
+          if (_isSpeedDialOpen)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: _closeSpeedDial,
+                child: Container(
+                  color: Colors.black38,
+                ),
+              ),
+            ),
+          // Speed dial options
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Set Reminder option
+              ScaleTransition(
+                scale: _animation,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Set Reminder',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      FloatingActionButton(
+                        heroTag: 'reminder',
+                        mini: true,
+                        onPressed: _setReminder,
+                        backgroundColor: Colors.orange,
+                        child: const Icon(Icons.alarm),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Add Dose option
+              ScaleTransition(
+                scale: _animation,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'Log Dose',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      FloatingActionButton(
+                        heroTag: 'dose',
+                        mini: true,
+                        onPressed: _addDose,
+                        backgroundColor: Colors.green,
+                        child: const Icon(Icons.check_circle),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Add Medication option
+              ScaleTransition(
+                scale: _animation,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Text(
+                          'New Medication',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      FloatingActionButton(
+                        heroTag: 'medication',
+                        mini: true,
+                        onPressed: _addNewMedication,
+                        backgroundColor: Colors.blue,
+                        child: const Icon(Icons.medical_services),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              // Main FAB
+              FloatingActionButton(
+                heroTag: 'main',
+                onPressed: _toggleSpeedDial,
+                tooltip: 'Add',
+                child: AnimatedRotation(
+                  turns: _isSpeedDialOpen ? 0.125 : 0, // 45 degree rotation
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(_isSpeedDialOpen ? Icons.close : Icons.add),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
