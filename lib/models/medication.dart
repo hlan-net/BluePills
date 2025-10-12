@@ -1,3 +1,5 @@
+import 'frequency_pattern.dart';
+
 /// Represents a medication entry in the BluePills application.
 ///
 /// This model stores all information about a medication including its name,
@@ -14,7 +16,11 @@ class Medication {
   String dosage;
 
   /// The frequency of medication (e.g., "twice daily", "every 8 hours").
+  /// Kept for backward compatibility, but use frequencyPattern for new features.
   String frequency;
+
+  /// The structured frequency pattern for the medication.
+  FrequencyPattern? frequencyPattern;
 
   /// The time when the medication reminder should be triggered.
   DateTime reminderTime;
@@ -44,6 +50,7 @@ class Medication {
     required this.name,
     required this.dosage,
     required this.frequency,
+    this.frequencyPattern,
     required this.reminderTime,
     this.remoteId,
     this.lastSynced,
@@ -60,6 +67,12 @@ class Medication {
       'name': name,
       'dosage': dosage,
       'frequency': frequency,
+      'frequencyPatternType': frequencyPattern?.type.index,
+      'frequencyPatternDaysOfWeek': frequencyPattern?.daysOfWeek.join(','),
+      'frequencyPatternIntervalDays': frequencyPattern?.intervalDays,
+      'frequencyPatternTimesPerDay': frequencyPattern?.timesPerDay,
+      'frequencyPatternSpecificTimes': frequencyPattern?.specificTimes
+          .map((t) => t.toIso8601String()).join(','),
       'reminderTime': reminderTime.toIso8601String(),
       'remoteId': remoteId,
       'lastSynced': lastSynced?.toIso8601String(),
@@ -71,11 +84,31 @@ class Medication {
 
   /// Creates a [Medication] instance from a database Map.
   factory Medication.fromMap(Map<String, dynamic> map) {
+    FrequencyPattern? pattern;
+    if (map['frequencyPatternType'] != null) {
+      pattern = FrequencyPattern(
+        type: FrequencyType.values[map['frequencyPatternType']],
+        daysOfWeek: map['frequencyPatternDaysOfWeek'] != null && 
+                    map['frequencyPatternDaysOfWeek'].toString().isNotEmpty
+            ? map['frequencyPatternDaysOfWeek'].toString().split(',')
+                .map((e) => int.parse(e)).toList()
+            : [],
+        intervalDays: map['frequencyPatternIntervalDays'],
+        timesPerDay: map['frequencyPatternTimesPerDay'] ?? 1,
+        specificTimes: map['frequencyPatternSpecificTimes'] != null && 
+                       map['frequencyPatternSpecificTimes'].toString().isNotEmpty
+            ? map['frequencyPatternSpecificTimes'].toString().split(',')
+                .map((e) => DateTime.parse(e)).toList()
+            : [],
+      );
+    }
+    
     return Medication(
       id: map['id'],
       name: map['name'],
       dosage: map['dosage'],
       frequency: map['frequency'],
+      frequencyPattern: pattern,
       reminderTime: map['reminderTime'] != null
           ? DateTime.parse(map['reminderTime'])
           : DateTime.now(),
@@ -102,6 +135,7 @@ class Medication {
     String? name,
     String? dosage,
     String? frequency,
+    FrequencyPattern? frequencyPattern,
     DateTime? reminderTime,
     String? remoteId,
     DateTime? lastSynced,
@@ -114,6 +148,7 @@ class Medication {
       name: name ?? this.name,
       dosage: dosage ?? this.dosage,
       frequency: frequency ?? this.frequency,
+      frequencyPattern: frequencyPattern ?? this.frequencyPattern,
       reminderTime: reminderTime ?? this.reminderTime,
       remoteId: remoteId ?? this.remoteId,
       lastSynced: lastSynced ?? this.lastSynced,

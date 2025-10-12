@@ -7,7 +7,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/frequency_pattern.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
+import 'package:bluepills/widgets/frequency_selector.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
@@ -36,6 +38,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   late TextEditingController _dosageController;
   late TextEditingController _frequencyController;
   late DateTime _selectedReminderTime;
+  FrequencyPattern? _selectedFrequencyPattern;
+  bool _useAdvancedFrequency = false;
 
   @override
   void initState() {
@@ -50,6 +54,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
       text: widget.medication?.frequency ?? '',
     );
     _selectedReminderTime = widget.medication?.reminderTime ?? DateTime.now();
+    _selectedFrequencyPattern = widget.medication?.frequencyPattern;
+    _useAdvancedFrequency = widget.medication?.frequencyPattern != null;
   }
 
   @override
@@ -80,12 +86,38 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
   void _saveMedication({bool addAnother = false}) async {
     if (_formKey.currentState!.validate()) {
+      // Validate frequency pattern if using advanced mode
+      if (_useAdvancedFrequency) {
+        if (_selectedFrequencyPattern == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select a frequency pattern'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          return;
+        }
+        if (_selectedFrequencyPattern!.type == FrequencyType.specificDays &&
+            _selectedFrequencyPattern!.daysOfWeek.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select at least one day'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          return;
+        }
+      }
+      
       try {
         final newMedication = Medication(
           id: widget.medication?.id,
           name: _nameController.text,
           dosage: _dosageController.text,
-          frequency: _frequencyController.text,
+          frequency: _useAdvancedFrequency 
+              ? (_selectedFrequencyPattern?.toReadableString() ?? _frequencyController.text)
+              : _frequencyController.text,
+          frequencyPattern: _useAdvancedFrequency ? _selectedFrequencyPattern : null,
           reminderTime: _selectedReminderTime,
         );
 
@@ -190,19 +222,72 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _frequencyController,
-                decoration: InputDecoration(
-                  labelText: localizations?.frequency ?? 'Frequency',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return localizations?.pleaseEnterFrequency ??
-                        'Please enter the frequency';
-                  }
-                  return null;
+              const SizedBox(height: 16),
+              
+              // Frequency mode toggle
+              SwitchListTile(
+                title: const Text('Use Advanced Frequency'),
+                subtitle: Text(_useAdvancedFrequency 
+                    ? 'Select specific days and patterns'
+                    : 'Use simple text frequency'),
+                value: _useAdvancedFrequency,
+                onChanged: (value) {
+                  setState(() {
+                    _useAdvancedFrequency = value;
+                  });
                 },
               ),
+              const SizedBox(height: 8),
+              
+              // Frequency input - either simple text or advanced selector
+              if (!_useAdvancedFrequency)
+                TextFormField(
+                  controller: _frequencyController,
+                  decoration: InputDecoration(
+                    labelText: localizations?.frequency ?? 'Frequency',
+                    hintText: 'e.g., Once daily, Twice daily',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return localizations?.pleaseEnterFrequency ??
+                          'Please enter the frequency';
+                    }
+                    return null;
+                  },
+                )
+              else
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Frequency Pattern',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        if (_selectedFrequencyPattern != null)
+                          Text(
+                            _selectedFrequencyPattern!.toReadableString(),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        const SizedBox(height: 16),
+                        FrequencySelector(
+                          initialPattern: _selectedFrequencyPattern,
+                          onPatternChanged: (pattern) {
+                            setState(() {
+                              _selectedFrequencyPattern = pattern;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ListTile(
                 title: Text(
                   '${localizations?.reminderTime ?? 'Reminder Time'}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
