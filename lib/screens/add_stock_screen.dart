@@ -14,13 +14,11 @@ class AddStockScreen extends StatefulWidget {
 class _AddStockScreenState extends State<AddStockScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _quantityController;
-  late DateTime _dateAcquired;
 
   @override
   void initState() {
     super.initState();
     _quantityController = TextEditingController();
-    _dateAcquired = DateTime.now();
   }
 
   @override
