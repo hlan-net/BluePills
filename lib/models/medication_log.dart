@@ -10,11 +10,7 @@ class MedicationLog {
   DateTime timestamp;
 
   /// Creates a new [MedicationLog] instance.
-  MedicationLog({
-    this.id,
-    required this.medicationId,
-    required this.timestamp,
-  });
+  MedicationLog({this.id, required this.medicationId, required this.timestamp});
 
   /// Converts this log entry to a Map suitable for database storage.
   Map<String, dynamic> toMap() {

@@ -236,7 +236,9 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                               final updatedMedication = medication.copyWith(
                                 quantity: medication.quantity - 1,
                               );
-                              await DatabaseHelper().updateMedication(updatedMedication);
+                              await DatabaseHelper().updateMedication(
+                                updatedMedication,
+                              );
                               await DatabaseHelper().insertMedicationLog(
                                 MedicationLog(
                                   medicationId: medication.id!,

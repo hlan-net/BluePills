@@ -227,9 +227,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
               ),
               TextFormField(
                 controller: _quantityController,
-                decoration: InputDecoration(
-                  labelText: 'Quantity',
-                ),
+                decoration: InputDecoration(labelText: 'Quantity'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

@@ -44,9 +44,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Stock for ${widget.medication.name}'),
-      ),
+      appBar: AppBar(title: Text('Add Stock for ${widget.medication.name}')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -55,9 +53,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
             children: [
               TextFormField(
                 controller: _quantityController,
-                decoration: const InputDecoration(
-                  labelText: 'Quantity',
-                ),
+                decoration: const InputDecoration(labelText: 'Quantity'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {

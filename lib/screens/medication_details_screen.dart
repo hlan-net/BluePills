@@ -9,7 +9,8 @@ class MedicationDetailsScreen extends StatefulWidget {
   const MedicationDetailsScreen({super.key, required this.medication});
 
   @override
-  State<MedicationDetailsScreen> createState() => _MedicationDetailsScreenState();
+  State<MedicationDetailsScreen> createState() =>
+      _MedicationDetailsScreenState();
 }
 
 class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
@@ -24,9 +25,7 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_medication.name),
-      ),
+      appBar: AppBar(title: Text(_medication.name)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -49,7 +48,8 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
                 );
                 if (result == true) {
                   // Reload the medication from the database to get the updated quantity
-                  final updatedMedication = await DatabaseHelper().getMedication(_medication.id!);
+                  final updatedMedication = await DatabaseHelper()
+                      .getMedication(_medication.id!);
                   if (updatedMedication != null) {
                     setState(() {
                       _medication = updatedMedication;
