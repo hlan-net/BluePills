@@ -3,6 +3,9 @@ name: Code Quality & Auto-fixes
 on:
   pull_request:
     types: [opened, synchronize]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
   workflow_dispatch:
 
 jobs:

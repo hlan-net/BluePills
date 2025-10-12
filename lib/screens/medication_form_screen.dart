@@ -7,7 +7,9 @@ library;
 import 'package:flutter/material.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/frequency_pattern.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
+import 'package:bluepills/widgets/frequency_selector.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
@@ -36,6 +38,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   late TextEditingController _dosageController;
   late TextEditingController _frequencyController;
   late DateTime _selectedReminderTime;
+  FrequencyPattern? _selectedFrequencyPattern;
+  bool _useAdvancedFrequency = false;
 
   @override
   void initState() {
@@ -50,6 +54,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
       text: widget.medication?.frequency ?? '',
     );
     _selectedReminderTime = widget.medication?.reminderTime ?? DateTime.now();
+    _selectedFrequencyPattern = widget.medication?.frequencyPattern;
+    _useAdvancedFrequency = widget.medication?.frequencyPattern != null;
   }
 
   @override
@@ -78,32 +84,95 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     }
   }
 
-  void _saveMedication() async {
+  void _saveMedication({bool addAnother = false}) async {
     if (_formKey.currentState!.validate()) {
-      final newMedication = Medication(
-        id: widget.medication?.id,
-        name: _nameController.text,
-        dosage: _dosageController.text,
-        frequency: _frequencyController.text,
-        reminderTime: _selectedReminderTime,
-      );
-
-      if (widget.medication == null) {
-        final newId = await DatabaseHelper().insertMedication(newMedication);
-        newMedication.id = newId;
-      } else {
-        await DatabaseHelper().updateMedication(newMedication);
+      // Validate frequency pattern if using advanced mode
+      if (_useAdvancedFrequency) {
+        if (_selectedFrequencyPattern == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select a frequency pattern'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          return;
+        }
+        if (_selectedFrequencyPattern!.type == FrequencyType.specificDays &&
+            _selectedFrequencyPattern!.daysOfWeek.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select at least one day'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          return;
+        }
       }
+      
+      try {
+        final newMedication = Medication(
+          id: widget.medication?.id,
+          name: _nameController.text,
+          dosage: _dosageController.text,
+          frequency: _useAdvancedFrequency 
+              ? (_selectedFrequencyPattern?.toReadableString() ?? _frequencyController.text)
+              : _frequencyController.text,
+          frequencyPattern: _useAdvancedFrequency ? _selectedFrequencyPattern : null,
+          reminderTime: _selectedReminderTime,
+        );
 
-      await NotificationHelper().scheduleNotification(
-        newMedication.id!,
-        'Medication Reminder',
-        'Time to take your ${newMedication.name}!',
-        newMedication.reminderTime,
-      );
+        if (widget.medication == null) {
+          final newId = await DatabaseHelper().insertMedication(newMedication);
+          newMedication.id = newId;
+        } else {
+          await DatabaseHelper().updateMedication(newMedication);
+        }
 
-      if (mounted) {
-        Navigator.pop(context, true); // Pass true to indicate a change
+        // Try to schedule notification, but don't fail if it doesn't work
+        try {
+          await NotificationHelper().scheduleNotification(
+            newMedication.id!,
+            'Medication Reminder',
+            'Time to take your ${newMedication.name}!',
+            newMedication.reminderTime,
+          );
+        } catch (e) {
+          debugPrint('Failed to schedule notification: $e');
+        }
+
+        if (mounted) {
+          if (addAnother) {
+            // Clear the form for next entry
+            _nameController.clear();
+            _dosageController.clear();
+            _frequencyController.clear();
+            _selectedReminderTime = DateTime.now();
+            setState(() {});
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Medication saved! Add another.'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+              ),
+            );
+          } else {
+            // Go back to list
+            Navigator.pop(context, true);
+          }
+        }
+      } catch (e) {
+        debugPrint('Error saving medication: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to save medication: $e'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
       }
     }
   }
@@ -121,7 +190,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -153,19 +222,72 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _frequencyController,
-                decoration: InputDecoration(
-                  labelText: localizations?.frequency ?? 'Frequency',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return localizations?.pleaseEnterFrequency ??
-                        'Please enter the frequency';
-                  }
-                  return null;
+              const SizedBox(height: 16),
+              
+              // Frequency mode toggle
+              SwitchListTile(
+                title: const Text('Use Advanced Frequency'),
+                subtitle: Text(_useAdvancedFrequency 
+                    ? 'Select specific days and patterns'
+                    : 'Use simple text frequency'),
+                value: _useAdvancedFrequency,
+                onChanged: (value) {
+                  setState(() {
+                    _useAdvancedFrequency = value;
+                  });
                 },
               ),
+              const SizedBox(height: 8),
+              
+              // Frequency input - either simple text or advanced selector
+              if (!_useAdvancedFrequency)
+                TextFormField(
+                  controller: _frequencyController,
+                  decoration: InputDecoration(
+                    labelText: localizations?.frequency ?? 'Frequency',
+                    hintText: 'e.g., Once daily, Twice daily',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return localizations?.pleaseEnterFrequency ??
+                          'Please enter the frequency';
+                    }
+                    return null;
+                  },
+                )
+              else
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Frequency Pattern',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        if (_selectedFrequencyPattern != null)
+                          Text(
+                            _selectedFrequencyPattern!.toReadableString(),
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        const SizedBox(height: 16),
+                        FrequencySelector(
+                          initialPattern: _selectedFrequencyPattern,
+                          onPatternChanged: (pattern) {
+                            setState(() {
+                              _selectedFrequencyPattern = pattern;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ListTile(
                 title: Text(
                   '${localizations?.reminderTime ?? 'Reminder Time'}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
@@ -174,9 +296,30 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 onTap: () => _selectTime(context),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveMedication,
-                child: Text(localizations?.saveMedication ?? 'Save Medication'),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _saveMedication(addAnother: false),
+                      icon: const Icon(Icons.check),
+                      label: Text(localizations?.saveMedication ?? 'Save'),
+                    ),
+                  ),
+                  if (widget.medication == null) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _saveMedication(addAnother: true),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Save & Add More'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),
