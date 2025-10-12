@@ -1,9 +1,7 @@
-/// Settings screen for configuring BlueSky synchronization.
-///
-/// This library provides the UI for enabling/disabling BlueSky sync,
-/// configuring PDS settings, and viewing application information.
 library;
 
+import 'package:bluepills/services/export_service.dart';
+import 'package:bluepills/services/import_service.dart';
 import 'package:flutter/material.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/models/app_config.dart';
@@ -14,7 +12,18 @@ import 'package:bluepills/models/app_config.dart';
 /// their BlueSky handle, Personal Data Server URL, and sync mode.
 /// Also displays license and medical disclaimer information.
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  final ConfigService configService;
+  final ExportService exportService;
+  final ImportService importService;
+
+  SettingsScreen({
+    super.key,
+    ConfigService? configService,
+    ExportService? exportService,
+    ImportService? importService,
+  })  : configService = configService ?? ConfigService(),
+        exportService = exportService ?? ExportService(),
+        importService = importService ?? ImportService();
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -25,7 +34,6 @@ class SettingsScreen extends StatefulWidget {
 /// Manages form validation, configuration updates, and UI state
 /// for enabling/disabling BlueSky synchronization.
 class _SettingsScreenState extends State<SettingsScreen> {
-  final ConfigService _configService = ConfigService();
   final _formKey = GlobalKey<FormState>();
   final _handleController = TextEditingController();
   final _pdsUrlController = TextEditingController();
@@ -45,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _loadCurrentConfig() {
-    final config = _configService.config;
+    final config = widget.configService.config;
     _handleController.text = config.blueskyHandle ?? '';
     _pdsUrlController.text = config.pdsUrl ?? '';
   }
@@ -56,7 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await _configService.enableSync(
+      await widget.configService.enableSync(
         blueskyHandle: _handleController.text.trim(),
         pdsUrl: _pdsUrlController.text.trim(),
       );
@@ -110,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (confirm == true) {
       setState(() => _isLoading = true);
       try {
-        await _configService.disableSync();
+        await widget.configService.disableSync();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -135,9 +143,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Future<void> _importData() async {
+    setState(() => _isLoading = true);
+    try {
+      await widget.importService.importMedications();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Data imported successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to import data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _exportData() async {
+    setState(() => _isLoading = true);
+    try {
+      await widget.exportService.exportMedications();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Data exported successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to export data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final config = _configService.config;
+    final config = widget.configService.config;
 
     return Scaffold(
       appBar: AppBar(
@@ -253,6 +313,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ),
                       ],
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Data Management',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: _isLoading ? null : _importData,
+                            icon: const Icon(Icons.file_upload),
+                            label: const Text('Import Data'),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: _isLoading ? null : _exportData,
+                            icon: const Icon(Icons.file_download),
+                            label: const Text('Export Data'),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

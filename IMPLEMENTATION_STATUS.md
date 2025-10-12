@@ -152,14 +152,10 @@ class AppConfig {
 ### User Experience
 - [ ] First-time setup wizard
 - [ ] Sync status dashboard
-- [ ] Data export/import functionality
+- [x] Data export/import functionality
 - [ ] Multiple PDS support
 
-### Advanced Features
-- [ ] Medication sharing between users
-- [ ] Healthcare provider integration
-- [ ] Medication interaction warnings
-- [ ] Adherence tracking and analytics
+
 
 ## 🛠 Development Notes
 

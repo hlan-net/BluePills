@@ -173,7 +173,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                MaterialPageRoute(builder: (context) => SettingsScreen()),
               ).then(
                 (_) => setState(() {}),
               ); // Refresh when returning from settings
