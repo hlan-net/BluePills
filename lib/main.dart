@@ -196,8 +196,31 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-              child: Text(
-                localizations?.noMedicationsYet ?? 'No medications added yet.',
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.medical_services_outlined,
+                    size: 80,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    localizations?.noMedicationsYet ?? 'No medications added yet.',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tap the + button to add your first medication',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ],
               ),
             );
           } else {
@@ -312,6 +335,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
             _refreshMedicationList();
           }
         },
+        tooltip: 'Add Medication',
         child: const Icon(Icons.add),
       ),
     );
