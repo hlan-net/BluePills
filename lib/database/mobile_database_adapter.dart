@@ -48,7 +48,7 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
         name TEXT,
         dosage TEXT,
         quantity INTEGER,
-        frequency TEXT,
+        frequency INTEGER,
         frequencyPatternType INTEGER,
         frequencyPatternDaysOfWeek TEXT,
         frequencyPatternIntervalDays INTEGER,
@@ -151,6 +151,36 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
     return List.generate(maps.length, (i) {
       return MedicationLog.fromMap(maps[i]);
     });
+  }
+
+  @override
+  Future<Medication?> getMedication(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'medications',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return Medication.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  @override
+  Future<DateTime?> getLastTakenTime(int medicationId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'medication_logs',
+      where: 'medicationId = ?',
+      whereArgs: [medicationId],
+      orderBy: 'timestamp DESC',
+      limit: 1,
+    );
+    if (maps.isNotEmpty) {
+      return DateTime.parse(maps.first['timestamp']);
+    }
+    return null;
   }
 
   Future<Database> get database async {

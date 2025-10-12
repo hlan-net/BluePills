@@ -98,4 +98,16 @@ class WebDatabaseAdapter extends DatabaseAdapter {
     // Not implemented for web
     return [];
   }
+
+  @override
+  Future<Medication?> getMedication(int id) async {
+    // Not implemented for web
+    return null;
+  }
+
+  @override
+  Future<DateTime?> getLastTakenTime(int medicationId) async {
+    // Not implemented for web
+    return null;
+  }
 }

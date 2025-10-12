@@ -17,8 +17,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/medication_log.dart';
 import 'package:bluepills/screens/medication_form_screen.dart';
 import 'package:bluepills/screens/settings_screen.dart';
+import 'package:bluepills/screens/medication_details_screen.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/l10n/app_localizations_delegate.dart';
 import 'package:bluepills/services/config_service.dart';
@@ -222,46 +224,69 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      '${medication.dosage} - ${medication.frequency}',
+                      '${medication.dosage} - ${medication.frequency} - Quantity: ${medication.quantity}',
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        final confirm = await showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Delete Medication?'),
-                            content: const Text(
-                              'Are you sure you want to delete this medication?',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: const Text('Cancel'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.check),
+                          onPressed: () async {
+                            if (medication.quantity > 0) {
+                              final updatedMedication = medication.copyWith(
+                                quantity: medication.quantity - 1,
+                              );
+                              await DatabaseHelper().updateMedication(updatedMedication);
+                              await DatabaseHelper().insertMedicationLog(
+                                MedicationLog(
+                                  medicationId: medication.id!,
+                                  timestamp: DateTime.now(),
+                                ),
+                              );
+                              _refreshMedicationList();
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () async {
+                            final confirm = await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Delete Medication?'),
+                                content: const Text(
+                                  'Are you sure you want to delete this medication?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text('Delete'),
+                                  ),
+                                ],
                               ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(true),
-                                child: const Text('Delete'),
-                              ),
-                            ],
-                          ),
-                        );
-                        if (confirm == true) {
-                          await DatabaseHelper().deleteMedication(
-                            medication.id!,
-                          );
-                          _refreshMedicationList();
-                        }
-                      },
+                            );
+                            if (confirm == true) {
+                              await DatabaseHelper().deleteMedication(
+                                medication.id!,
+                              );
+                              _refreshMedicationList();
+                            }
+                          },
+                        ),
+                      ],
                     ),
                     onTap: () async {
                       final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              MedicationFormScreen(medication: medication),
+                              MedicationDetailsScreen(medication: medication),
                         ),
                       );
                       if (result == true) {

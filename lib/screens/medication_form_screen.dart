@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/models/frequency_pattern.dart';
+import 'package:bluepills/models/frequency.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/widgets/frequency_selector.dart';
 
@@ -37,7 +38,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   late TextEditingController _nameController;
   late TextEditingController _dosageController;
   late TextEditingController _quantityController;
-  late TextEditingController _frequencyController;
+  late Frequency _selectedFrequency;
   late DateTime _selectedReminderTime;
   FrequencyPattern? _selectedFrequencyPattern;
   bool _useAdvancedFrequency = false;
@@ -54,9 +55,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     _quantityController = TextEditingController(
       text: widget.medication?.quantity.toString() ?? '0',
     );
-    _frequencyController = TextEditingController(
-      text: widget.medication?.frequency ?? '',
-    );
+    _selectedFrequency = widget.medication?.frequency ?? Frequency.onceDaily;
     _selectedReminderTime = widget.medication?.reminderTime ?? DateTime.now();
     _selectedFrequencyPattern = widget.medication?.frequencyPattern;
     _useAdvancedFrequency = widget.medication?.frequencyPattern != null;
@@ -67,7 +66,6 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     _nameController.dispose();
     _dosageController.dispose();
     _quantityController.dispose();
-    _frequencyController.dispose();
     super.dispose();
   }
 
@@ -120,10 +118,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           name: _nameController.text,
           dosage: _dosageController.text,
           quantity: int.tryParse(_quantityController.text) ?? 0,
-          frequency: _useAdvancedFrequency
-              ? (_selectedFrequencyPattern?.toReadableString() ??
-                    _frequencyController.text)
-              : _frequencyController.text,
+          frequency: _selectedFrequency,
           frequencyPattern: _useAdvancedFrequency
               ? _selectedFrequencyPattern
               : null,
@@ -268,19 +263,22 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
               // Frequency input - either simple text or advanced selector
               if (!_useAdvancedFrequency)
-                TextFormField(
-                  controller: _frequencyController,
+                DropdownButtonFormField<Frequency>(
+                  value: _selectedFrequency,
+                  items: Frequency.values.map((Frequency frequency) {
+                    return DropdownMenuItem<Frequency>(
+                      value: frequency,
+                      child: Text(frequency.toString().split('.').last),
+                    );
+                  }).toList(),
+                  onChanged: (Frequency? newValue) {
+                    setState(() {
+                      _selectedFrequency = newValue!;
+                    });
+                  },
                   decoration: InputDecoration(
                     labelText: localizations?.frequency ?? 'Frequency',
-                    hintText: 'e.g., Once daily, Twice daily',
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations?.pleaseEnterFrequency ??
-                          'Please enter the frequency';
-                    }
-                    return null;
-                  },
                 )
               else
                 Card(

@@ -1,3 +1,4 @@
+import 'package:bluepills/models/frequency.dart';
 import 'frequency_pattern.dart';
 
 /// Represents a medication entry in the BluePills application.
@@ -18,9 +19,8 @@ class Medication {
   /// The current stock of the medication.
   int quantity;
 
-  /// The frequency of medication (e.g., "twice daily", "every 8 hours").
-  /// Kept for backward compatibility, but use frequencyPattern for new features.
-  String frequency;
+  /// The frequency of medication.
+  Frequency frequency;
 
   /// The structured frequency pattern for the medication.
   FrequencyPattern? frequencyPattern;
@@ -71,7 +71,7 @@ class Medication {
       'name': name,
       'dosage': dosage,
       'quantity': quantity,
-      'frequency': frequency,
+      'frequency': frequency.index,
       'frequencyPatternType': frequencyPattern?.type.index,
       'frequencyPatternDaysOfWeek': frequencyPattern?.daysOfWeek.join(','),
       'frequencyPatternIntervalDays': frequencyPattern?.intervalDays,
@@ -122,7 +122,7 @@ class Medication {
       name: map['name'],
       dosage: map['dosage'],
       quantity: map['quantity'] ?? 0,
-      frequency: map['frequency'],
+      frequency: Frequency.values[map['frequency']],
       frequencyPattern: pattern,
       reminderTime: map['reminderTime'] != null
           ? DateTime.parse(map['reminderTime'])
@@ -150,7 +150,7 @@ class Medication {
     String? name,
     String? dosage,
     int? quantity,
-    String? frequency,
+    Frequency? frequency,
     FrequencyPattern? frequencyPattern,
     DateTime? reminderTime,
     String? remoteId,
