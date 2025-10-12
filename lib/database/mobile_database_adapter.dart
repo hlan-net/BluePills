@@ -33,6 +33,9 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   Future<Database> _initDatabase() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'medications.db');
+
+    // Delete the database file to force recreation with the new schema
+    await deleteDatabase(path);
     return await openDatabase(
       path,
       version: 3,

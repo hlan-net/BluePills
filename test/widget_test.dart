@@ -13,6 +13,7 @@ import 'package:bluepills/database/database_adapter.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/main.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/frequency.dart';
 
 import 'widget_test.mocks.dart';
 
@@ -62,7 +63,7 @@ void main() {
           name: 'Test Medication',
           dosage: '10mg',
           quantity: 10,
-          frequency: 'Daily',
+          frequency: Frequency.onceDaily,
           reminderTime: DateTime.now(),
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),

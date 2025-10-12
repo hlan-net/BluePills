@@ -36,6 +36,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
         quantity: widget.medication.quantity + quantity,
       );
       await DatabaseHelper().updateMedication(updatedMedication);
+      if (!mounted) return;
       Navigator.pop(context, true);
     }
   }

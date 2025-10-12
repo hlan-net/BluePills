@@ -149,7 +149,6 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             // Clear the form for next entry
             _nameController.clear();
             _dosageController.clear();
-            _frequencyController.clear();
             _selectedReminderTime = DateTime.now();
             setState(() {});
 
