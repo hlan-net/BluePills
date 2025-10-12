@@ -32,7 +32,12 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   Future<Database> _initDatabase() async {
     final documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'medications.db');
-    return await openDatabase(path, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -60,11 +65,21 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       // Add new frequency pattern columns
-      await db.execute('ALTER TABLE medications ADD COLUMN frequencyPatternType INTEGER');
-      await db.execute('ALTER TABLE medications ADD COLUMN frequencyPatternDaysOfWeek TEXT');
-      await db.execute('ALTER TABLE medications ADD COLUMN frequencyPatternIntervalDays INTEGER');
-      await db.execute('ALTER TABLE medications ADD COLUMN frequencyPatternTimesPerDay INTEGER');
-      await db.execute('ALTER TABLE medications ADD COLUMN frequencyPatternSpecificTimes TEXT');
+      await db.execute(
+        'ALTER TABLE medications ADD COLUMN frequencyPatternType INTEGER',
+      );
+      await db.execute(
+        'ALTER TABLE medications ADD COLUMN frequencyPatternDaysOfWeek TEXT',
+      );
+      await db.execute(
+        'ALTER TABLE medications ADD COLUMN frequencyPatternIntervalDays INTEGER',
+      );
+      await db.execute(
+        'ALTER TABLE medications ADD COLUMN frequencyPatternTimesPerDay INTEGER',
+      );
+      await db.execute(
+        'ALTER TABLE medications ADD COLUMN frequencyPatternSpecificTimes TEXT',
+      );
     }
   }
 

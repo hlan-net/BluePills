@@ -8,17 +8,17 @@
 class FrequencyPattern {
   /// Type of frequency pattern
   final FrequencyType type;
-  
+
   /// Days of the week when medication should be taken (1=Monday, 7=Sunday)
   /// Used when type is SPECIFIC_DAYS
   final List<int> daysOfWeek;
-  
+
   /// Interval in days for EVERY_N_DAYS pattern
   final int? intervalDays;
-  
+
   /// Number of times per day to take the medication
   final int timesPerDay;
-  
+
   /// Specific times during the day when medication should be taken
   final List<DateTime> specificTimes;
 
@@ -85,13 +85,24 @@ class FrequencyPattern {
   factory FrequencyPattern.fromMap(Map<String, dynamic> map) {
     return FrequencyPattern(
       type: FrequencyType.values[map['type'] ?? 0],
-      daysOfWeek: map['daysOfWeek'] != null && map['daysOfWeek'].toString().isNotEmpty
-          ? map['daysOfWeek'].toString().split(',').map((e) => int.parse(e)).toList()
+      daysOfWeek:
+          map['daysOfWeek'] != null && map['daysOfWeek'].toString().isNotEmpty
+          ? map['daysOfWeek']
+                .toString()
+                .split(',')
+                .map((e) => int.parse(e))
+                .toList()
           : [],
       intervalDays: map['intervalDays'],
       timesPerDay: map['timesPerDay'] ?? 1,
-      specificTimes: map['specificTimes'] != null && map['specificTimes'].toString().isNotEmpty
-          ? map['specificTimes'].toString().split(',').map((e) => DateTime.parse(e)).toList()
+      specificTimes:
+          map['specificTimes'] != null &&
+              map['specificTimes'].toString().isNotEmpty
+          ? map['specificTimes']
+                .toString()
+                .split(',')
+                .map((e) => DateTime.parse(e))
+                .toList()
           : [],
     );
   }
@@ -148,13 +159,13 @@ class FrequencyPattern {
 enum FrequencyType {
   /// Every day
   daily,
-  
+
   /// Specific days of the week (e.g., Monday, Wednesday, Friday)
   specificDays,
-  
+
   /// Every N days (e.g., every 2 days, every 3 days)
   everyNDays,
-  
+
   /// As needed (no schedule)
   asNeeded,
 }

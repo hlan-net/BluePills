@@ -11,7 +11,7 @@ class ExportService {
     try {
       final medications = await _databaseHelper.getMedications();
       final jsonString = jsonEncode(medications.map((m) => m.toMap()).toList());
-      
+
       // Use file_saver to save the file
       await FileSaver.instance.saveFile(
         name: 'bluepills_export.json',

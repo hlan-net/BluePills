@@ -11,10 +11,10 @@ import 'package:bluepills/models/frequency_pattern.dart';
 class FrequencySelector extends StatefulWidget {
   /// The initial frequency pattern to display
   final FrequencyPattern? initialPattern;
-  
+
   /// Callback when frequency pattern changes
   final ValueChanged<FrequencyPattern> onPatternChanged;
-  
+
   const FrequencySelector({
     super.key,
     this.initialPattern,
@@ -128,7 +128,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
           ],
         ),
         const SizedBox(height: 16),
-        
+
         // Day selector for specificDays
         if (_selectedType == FrequencyType.specificDays) ...[
           const Text(
@@ -248,7 +248,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
           ),
           const SizedBox(height: 16),
         ],
-        
+
         // Interval selector for everyNDays
         if (_selectedType == FrequencyType.everyNDays) ...[
           Row(
@@ -261,10 +261,10 @@ class _FrequencySelectorState extends State<FrequencySelector> {
                   value: _intervalDays,
                   isExpanded: true,
                   items: List.generate(14, (index) => index + 1)
-                      .map((days) => DropdownMenuItem(
-                            value: days,
-                            child: Text('$days'),
-                          ))
+                      .map(
+                        (days) =>
+                            DropdownMenuItem(value: days, child: Text('$days')),
+                      )
                       .toList(),
                   onChanged: (value) {
                     if (value != null) {
@@ -282,7 +282,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
           ),
           const SizedBox(height: 16),
         ],
-        
+
         // Times per day selector (not for asNeeded)
         if (_selectedType != FrequencyType.asNeeded) ...[
           Row(
@@ -295,10 +295,12 @@ class _FrequencySelectorState extends State<FrequencySelector> {
                   value: _timesPerDay,
                   isExpanded: true,
                   items: List.generate(6, (index) => index + 1)
-                      .map((times) => DropdownMenuItem(
-                            value: times,
-                            child: Text('$times'),
-                          ))
+                      .map(
+                        (times) => DropdownMenuItem(
+                          value: times,
+                          child: Text('$times'),
+                        ),
+                      )
                       .toList(),
                   onChanged: (value) {
                     if (value != null) {

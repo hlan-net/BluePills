@@ -108,16 +108,19 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           return;
         }
       }
-      
+
       try {
         final newMedication = Medication(
           id: widget.medication?.id,
           name: _nameController.text,
           dosage: _dosageController.text,
-          frequency: _useAdvancedFrequency 
-              ? (_selectedFrequencyPattern?.toReadableString() ?? _frequencyController.text)
+          frequency: _useAdvancedFrequency
+              ? (_selectedFrequencyPattern?.toReadableString() ??
+                    _frequencyController.text)
               : _frequencyController.text,
-          frequencyPattern: _useAdvancedFrequency ? _selectedFrequencyPattern : null,
+          frequencyPattern: _useAdvancedFrequency
+              ? _selectedFrequencyPattern
+              : null,
           reminderTime: _selectedReminderTime,
         );
 
@@ -223,13 +226,15 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Frequency mode toggle
               SwitchListTile(
                 title: const Text('Use Advanced Frequency'),
-                subtitle: Text(_useAdvancedFrequency 
-                    ? 'Select specific days and patterns'
-                    : 'Use simple text frequency'),
+                subtitle: Text(
+                  _useAdvancedFrequency
+                      ? 'Select specific days and patterns'
+                      : 'Use simple text frequency',
+                ),
                 value: _useAdvancedFrequency,
                 onChanged: (value) {
                   setState(() {
@@ -238,7 +243,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 },
               ),
               const SizedBox(height: 8),
-              
+
               // Frequency input - either simple text or advanced selector
               if (!_useAdvancedFrequency)
                 TextFormField(
@@ -270,10 +275,11 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                         if (_selectedFrequencyPattern != null)
                           Text(
                             _selectedFrequencyPattern!.toReadableString(),
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         const SizedBox(height: 16),
                         FrequencySelector(

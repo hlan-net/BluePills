@@ -72,7 +72,8 @@ class Medication {
       'frequencyPatternIntervalDays': frequencyPattern?.intervalDays,
       'frequencyPatternTimesPerDay': frequencyPattern?.timesPerDay,
       'frequencyPatternSpecificTimes': frequencyPattern?.specificTimes
-          .map((t) => t.toIso8601String()).join(','),
+          .map((t) => t.toIso8601String())
+          .join(','),
       'reminderTime': reminderTime.toIso8601String(),
       'remoteId': remoteId,
       'lastSynced': lastSynced?.toIso8601String(),
@@ -88,21 +89,29 @@ class Medication {
     if (map['frequencyPatternType'] != null) {
       pattern = FrequencyPattern(
         type: FrequencyType.values[map['frequencyPatternType']],
-        daysOfWeek: map['frequencyPatternDaysOfWeek'] != null && 
-                    map['frequencyPatternDaysOfWeek'].toString().isNotEmpty
-            ? map['frequencyPatternDaysOfWeek'].toString().split(',')
-                .map((e) => int.parse(e)).toList()
+        daysOfWeek:
+            map['frequencyPatternDaysOfWeek'] != null &&
+                map['frequencyPatternDaysOfWeek'].toString().isNotEmpty
+            ? map['frequencyPatternDaysOfWeek']
+                  .toString()
+                  .split(',')
+                  .map((e) => int.parse(e))
+                  .toList()
             : [],
         intervalDays: map['frequencyPatternIntervalDays'],
         timesPerDay: map['frequencyPatternTimesPerDay'] ?? 1,
-        specificTimes: map['frequencyPatternSpecificTimes'] != null && 
-                       map['frequencyPatternSpecificTimes'].toString().isNotEmpty
-            ? map['frequencyPatternSpecificTimes'].toString().split(',')
-                .map((e) => DateTime.parse(e)).toList()
+        specificTimes:
+            map['frequencyPatternSpecificTimes'] != null &&
+                map['frequencyPatternSpecificTimes'].toString().isNotEmpty
+            ? map['frequencyPatternSpecificTimes']
+                  .toString()
+                  .split(',')
+                  .map((e) => DateTime.parse(e))
+                  .toList()
             : [],
       );
     }
-    
+
     return Medication(
       id: map['id'],
       name: map['name'],

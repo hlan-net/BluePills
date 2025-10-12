@@ -21,9 +21,9 @@ class SettingsScreen extends StatefulWidget {
     ConfigService? configService,
     ExportService? exportService,
     ImportService? importService,
-  })  : configService = configService ?? ConfigService(),
-        exportService = exportService ?? ExportService(),
-        importService = importService ?? ImportService();
+  }) : configService = configService ?? ConfigService(),
+       exportService = exportService ?? ExportService(),
+       importService = importService ?? ImportService();
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();

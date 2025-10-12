@@ -21,44 +21,44 @@ void main() {
     mockExportService = MockExportService();
     mockImportService = MockImportService();
 
-    when(mockConfigService.config).thenReturn(
-      AppConfig(
-        syncEnabled: false,
-        syncMode: SyncMode.localOnly,
-      ),
-    );
+    when(
+      mockConfigService.config,
+    ).thenReturn(AppConfig(syncEnabled: false, syncMode: SyncMode.localOnly));
   });
 
-  testWidgets('Settings screen shows import and export buttons and they can be tapped', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(
-      MaterialApp(
-        home: SettingsScreen(
-          configService: mockConfigService,
-          exportService: mockExportService,
-          importService: mockImportService,
+  testWidgets(
+    'Settings screen shows import and export buttons and they can be tapped',
+    (WidgetTester tester) async {
+      // Build our app and trigger a frame.
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SettingsScreen(
+            configService: mockConfigService,
+            exportService: mockExportService,
+            importService: mockImportService,
+          ),
         ),
-      ),
-    );
+      );
 
-    // Verify that the import and export buttons are displayed.
-    expect(find.text('Import Data'), findsOneWidget);
-    expect(find.text('Export Data'), findsOneWidget);
+      // Verify that the import and export buttons are displayed.
+      expect(find.text('Import Data'), findsOneWidget);
+      expect(find.text('Export Data'), findsOneWidget);
 
-    // Tap the export button.
-    when(mockExportService.exportMedications()).thenAnswer((_) async {});
-    await tester.tap(find.text('Export Data'));
-    await tester.pump();
+      // Tap the export button.
+      when(mockExportService.exportMedications()).thenAnswer((_) async {});
+      await tester.tap(find.text('Export Data'));
+      await tester.pump();
 
-    // Verify that the export service is called.
-    verify(mockExportService.exportMedications()).called(1);
+      // Verify that the export service is called.
+      verify(mockExportService.exportMedications()).called(1);
 
-    // Tap the import button.
-    when(mockImportService.importMedications()).thenAnswer((_) async {});
-    await tester.tap(find.text('Import Data'));
-    await tester.pump();
+      // Tap the import button.
+      when(mockImportService.importMedications()).thenAnswer((_) async {});
+      await tester.tap(find.text('Import Data'));
+      await tester.pump();
 
-    // Verify that the import service is called.
-    verify(mockImportService.importMedications()).called(1);
-  });
+      // Verify that the import service is called.
+      verify(mockImportService.importMedications()).called(1);
+    },
+  );
 }
