@@ -7,6 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:bluepills/database/database_adapter.dart' as _i2;
 import 'package:bluepills/models/medication.dart' as _i4;
+import 'package:bluepills/models/medication_log.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -74,4 +75,38 @@ class MockDatabaseAdapter extends _i1.Mock implements _i2.DatabaseAdapter {
             returnValue: _i3.Future<int>.value(0),
           )
           as _i3.Future<int>);
+
+  @override
+  _i3.Future<int> insertMedicationLog(_i5.MedicationLog? log) =>
+      (super.noSuchMethod(
+            Invocation.method(#insertMedicationLog, [log]),
+            returnValue: _i3.Future<int>.value(0),
+          )
+          as _i3.Future<int>);
+
+  @override
+  _i3.Future<List<_i5.MedicationLog>> getMedicationLogs(int? medicationId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getMedicationLogs, [medicationId]),
+            returnValue: _i3.Future<List<_i5.MedicationLog>>.value(
+              <_i5.MedicationLog>[],
+            ),
+          )
+          as _i3.Future<List<_i5.MedicationLog>>);
+
+  @override
+  _i3.Future<_i4.Medication?> getMedication(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#getMedication, [id]),
+            returnValue: _i3.Future<_i4.Medication?>.value(),
+          )
+          as _i3.Future<_i4.Medication?>);
+
+  @override
+  _i3.Future<DateTime?> getLastTakenTime(int? medicationId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLastTakenTime, [medicationId]),
+            returnValue: _i3.Future<DateTime?>.value(),
+          )
+          as _i3.Future<DateTime?>);
 }
