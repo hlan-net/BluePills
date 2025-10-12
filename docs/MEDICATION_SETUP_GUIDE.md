@@ -2,78 +2,127 @@
 
 This guide walks you through setting up complex medication schedules in BluePills.
 
-## Example 1: Thyroxine - Daily with Extra Doses Twice Weekly
+## Understanding Inventory Tracking
+
+**Important:** The current app tracks inventory in whole units (pills). When you log a dose, it decrements by 1 pill. This works perfectly for most medications, but requires a workaround for split pills.
+
+## Example 1: Thyroxine - Daily with Extra Half Pills
 
 **Your Schedule:**
-- 100mg pill every day
-- Additional 50mg (half pill) on two days per week
-- Goal: Maintain steady medication levels
+- Take 100mg pill every day (1 whole pill)
+- Take additional 50mg (half pill) on Monday and Thursday
+- All pills come from the same package of 100mg pills
 
-### Setup Approach: Two Separate Entries
+**Actual Consumption:**
+- 7 whole pills per week (daily dose)
+- 1 additional pill per week (split for 2 half doses)
+- **Total: 8 pills consumed per week**
 
-#### Entry 1: Thyroxine - Daily Base Dose
+### Setup Option A: Single Entry with Manual Adjustment (Recommended)
 
-1. **Tap the + button** in the bottom-right corner
-2. **Select "New Medication"** (blue button)
-3. Fill in the form:
+This approach keeps it simple and you manually track the split pills.
+
+1. **Tap the + button** → **New Medication** (blue)
+2. Fill in the form:
    - **Name:** Thyroxine
-   - **Dosage:** 100mg
-   - **Quantity:** (your current stock, e.g., 90)
-   
-4. **For Frequency, choose one of these options:**
+   - **Dosage:** 100mg (1 whole pill daily, + 0.5 pill Mon/Thu)
+   - **Frequency:** Select "Once Daily" 
+   - **Quantity:** Your current stock (e.g., 90 pills)
 
-   **Option A: Simple Frequency (If available)**
-   - **Frequency:** Select "Once Daily" from dropdown
-   
-   **Option B: Advanced Frequency (If available)**
-   - Toggle **"Use Advanced Frequency"**: ON
-   - **Pattern:** Daily
-   - **Times per day:** 1
-   - **Reminder Time:** (e.g., 8:00 AM)
+3. **Daily Usage:**
+   - **Mon-Sun:** Tap "Log Dose" when you take your daily pill
+   - **Monday & Thursday:** 
+     - Take your regular whole pill (logged above)
+     - Take the half pill (from a pill you split)
+     - Manually adjust: Every other Mon/Thu, log an extra dose to account for the split pill you consumed
 
-5. **Tap "Save"**
+4. **Inventory Management:**
+   - The app shows pills consumed
+   - Every 2 weeks, you'll need to log 1 extra "dose" to account for the split pill consumed
+   - This keeps your inventory accurate
 
-#### Entry 2: Thyroxine - Extra Half Dose (Twice Weekly)
+**Pros:**
+- ✅ Simple - only one medication entry
+- ✅ Accurate weekly tracking with small manual adjustment
+- ✅ Reflects your actual pill bottle
 
-1. **Tap the + button** again
-2. **Select "New Medication"**
-3. Fill in the form:
-   - **Name:** Thyroxine Extra
-   - **Dosage:** 50mg (half pill)
-   - **Quantity:** (your current stock)
-   
-4. **For Frequency:**
+**Cons:**
+- ⚠️ Requires remembering to log the extra dose periodically
 
-   **If Advanced Frequency is available:**
-   - Toggle **"Use Advanced Frequency"**: ON
-   - **Pattern:** Specific Days
-   - **Select Days:** Choose 2 days (e.g., Monday and Thursday for even spacing)
-   - **Times per day:** 1
-   - **Reminder Time:** Same as base dose (e.g., 8:00 AM)
-   
-   **If only Simple Frequency:**
-   - **Frequency:** Type "Twice weekly - Mon, Thu"
+### Setup Option B: Two Entries (Track Each Dose Separately)
 
-5. **Tap "Save"**
+This is the approach from the original guide - creates separate entries for easier reminder tracking.
 
-**Result:** You'll see both entries in your medication list:
-- Thyroxine 100mg - Once Daily
-- Thyroxine Extra 50mg - Mon, Thu
+1. **Entry 1: Thyroxine Daily Base**
+   - Name: Thyroxine
+   - Dosage: 100mg
+   - Frequency: Once Daily
+   - Quantity: 90
 
-### Why Two Entries?
+2. **Entry 2: Thyroxine Half Pill**
+   - Name: Thyroxine (half)
+   - Dosage: 50mg  
+   - Frequency: Twice weekly (Mon, Thu)
+   - Quantity: 90 (same bottle, but tracking separately)
 
-This approach:
-- ✅ Clearly tracks your daily vs. supplementary doses
-- ✅ Maintains accurate inventory for each dosage
-- ✅ Provides separate reminders for each schedule
-- ✅ Helps prevent missing the extra doses
+3. **Daily Usage:**
+   - Every day: Log "Thyroxine 100mg"
+   - Monday & Thursday: Also log "Thyroxine (half) 50mg"
 
-### Recommended Days for Extra Dose
+4. **Inventory Sync:**
+   - When you add stock to one, add the same amount to the other
+   - Both track from the same physical bottle
+   - The totals won't perfectly match your physical count
 
-For steady levels, space the extra doses evenly:
-- **Option 1:** Monday and Thursday (3-day gap)
-- **Option 2:** Monday and Friday (4-day gap)
-- **Option 3:** Tuesday and Friday (3-day gap)
+**Pros:**
+- ✅ Clear reminder separation
+- ✅ Easy to see which doses to take each day
+
+**Cons:**
+- ⚠️ Two entries for the same physical medication
+- ⚠️ Must manually keep quantities in sync when adding stock
+
+### Setup Option C: Single Entry with Notes (Simplest)
+
+1. **Tap + button** → **New Medication**
+2. Fill in:
+   - **Name:** Thyroxine  
+   - **Dosage:** 100mg (+ half pill Mon/Thu)
+   - **Frequency:** Once Daily
+   - **Quantity:** 90
+
+3. **Daily Usage:**
+   - Take your pill(s) as scheduled
+   - Log "Thyroxine" dose once daily
+   - Keep note that Mon/Thu you take extra half
+   - Every 2-3 weeks, manually adjust quantity down by 1-2 pills to account for splits
+
+**Pros:**
+- ✅ Simplest setup
+- ✅ One entry, matches physical bottle
+
+**Cons:**
+- ⚠️ Must remember the Monday/Thursday schedule yourself
+- ⚠️ Inventory will slowly drift (but easy to correct when refilling)
+
+## Recommended Approach for Your Case
+
+**Use Option A (Single Entry with Manual Adjustment):**
+
+1. Create one "Thyroxine 100mg" entry
+2. Set frequency to "Once Daily"  
+3. Every day, log when you take your dose
+4. On Monday and Thursday:
+   - Log the daily dose as usual
+   - Take your extra half pill (you've already split or split now)
+5. **Every 2 weeks (every other Monday):** Log an extra dose to account for the full pill you consumed via splits
+   - This keeps your inventory tracking accurate
+
+**Monthly tracking:**
+- 30 days = ~30 logged doses
+- Plus 2 extra logged doses = 32 total logged
+- Actual consumption: ~34-35 pills (30 daily + 4-5 from splits)
+- Adjust when refilling to match actual count
 
 ## Example 2: Adenuric - Daily with Skip Days
 
@@ -229,18 +278,21 @@ When quantity reaches 0:
 
 **Morning (8:00 AM):**
 - ☑️ Thyroxine 100mg (Daily)
-- ☑️ Thyroxine Extra 50mg (Mon & Thu only)
+  - Monday & Thursday: Take 1.5 pills total (1 whole + 0.5 from split pill)
+  - Other days: Take 1 pill
 - ☑️ Adenuric 80mg (Mon-Fri only)
 
-**Total pills per week:**
-- Thyroxine 100mg: 7 pills
-- Thyroxine 50mg: 2 pills (or 1 pill split in half)
+**Actual Weekly Consumption:**
+- Thyroxine 100mg: 8 pills (7 whole + 1 split for extras)
 - Adenuric 80mg: 5 pills
 
 **Monthly consumption (30 days):**
-- Thyroxine 100mg: ~30 pills
-- Thyroxine 50mg: ~8-9 pills
+- Thyroxine 100mg: ~34 pills (includes splits)
 - Adenuric 80mg: ~21-22 pills
+
+**Notes:**
+- Keep split Thyroxine half pills in a separate container or marked in the bottle
+- When one half is used, split another pill for the next week
 
 ### App Quick Actions
 
