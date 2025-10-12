@@ -1,12 +1,15 @@
 # User Story: Take Medication as Prescribed
 
+## Persona
+**Matti - The Regular Medication Taker**
+
 ## Epic
 Medication Management
 
 ## Story
-**As a** patient  
+**As Matti** (a regular medication taker with chronic conditions)  
 **I want to** take my medications exactly as instructed by my doctor  
-**So that** I maintain proper medication adherence and achieve the intended health outcomes
+**So that** I maintain proper medication adherence and achieve the intended health outcomes without worrying about complex tracking
 
 ## Business Value
 - Improves patient health outcomes through accurate medication compliance
@@ -63,34 +66,41 @@ Medication Management
 
 ## User Scenarios
 
-### Scenario 1: Simple Daily Medication
-**Given** I have Adenuric 80mg prescribed once daily on weekdays  
-**When** I enter the prescription details  
-**Then** the app shows me to take it Mon-Fri at my chosen time  
-**And** reminds me each weekday morning  
-**And** doesn't bother me on weekends
+### Scenario 1: Matti's Simple Daily Medication (Adenuric)
+**Given** Matti has Adenuric 80mg prescribed once daily on weekdays  
+**When** he enters the prescription details  
+**Then** the app shows him to take it Mon-Fri at his chosen time  
+**And** reminds him each weekday morning  
+**And** doesn't bother him on weekends
 
-### Scenario 2: Complex Varying Schedule
-**Given** I have Thyroxine 100mg prescribed as: 1 pill daily + extra 0.5 pill on Mon/Thu  
-**When** I set up the medication  
-**Then** the app shows me:
+### Scenario 2: Matti's Complex Varying Schedule (Thyroxine)
+**Given** Matti has Thyroxine 100mg prescribed as: 1 pill daily + extra 0.5 pill on Mon/Thu  
+**When** he sets up the medication  
+**Then** the app shows him:
 - Every day: Take 1 pill (100mg)
-- Monday & Thursday: Take 1.5 pills (100mg + 50mg)
-**And** reminds me of the extra half pill on Mon/Thu
+- Monday & Thursday: Take 1.5 pills (100mg + 50mg from split pill)
+**And** reminds him of the extra half pill on Mon/Thu
 
-### Scenario 3: Running Low on Medication
-**Given** I have 5 pills left of Thyroxine  
-**When** I open the app  
-**Then** I see a warning that I'm running low  
-**And** I'm prompted to refill my prescription
+### Scenario 3: Matti is Running Low on Medication
+**Given** Matti has 5 pills left of Thyroxine  
+**When** he opens the app  
+**Then** he sees a clear warning that he's running low  
+**And** he's prompted to refill his prescription before running out
 
-### Scenario 4: Logging Daily Medication
-**Given** it's Monday morning and I need to take Thyroxine and Adenuric  
-**When** I open the app  
-**Then** I see both medications listed as "due today"  
-**When** I take them and tap "Log Dose"  
-**Then** both are marked as taken  
-**And** my inventory decrements by 1 for each
+### Scenario 4: Matti's Morning Routine - Logging Daily Medication
+**Given** it's Monday morning and Matti needs to take Thyroxine and Adenuric  
+**When** he opens the app  
+**Then** he sees both medications listed clearly as "due today"  
+**When** he takes them and taps "Log Dose"  
+**Then** both are marked as taken with one action  
+**And** his inventory decrements automatically  
+**And** he gets visual confirmation
+
+### Scenario 5: Matti Checks if He Took His Medication
+**Given** it's afternoon and Matti can't remember if he took his morning medications  
+**When** he opens the app  
+**Then** he immediately sees which medications he took today  
+**And** which ones (if any) he still needs to take
 
 ## Technical Considerations
 
