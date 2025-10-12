@@ -6,6 +6,7 @@
 library;
 
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/medication_log.dart';
 
 /// Abstract interface for database operations on medications.
 ///
@@ -40,4 +41,10 @@ abstract class DatabaseAdapter {
   ///
   /// Returns the number of rows deleted (typically 1).
   Future<int> deleteMedication(int id);
+
+  /// Inserts a new medication log entry into the database.
+  Future<int> insertMedicationLog(MedicationLog log);
+
+  /// Retrieves all medication log entries for a given medication ID.
+  Future<List<MedicationLog>> getMedicationLogs(int medicationId);
 }

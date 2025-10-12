@@ -8,6 +8,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/medication_log.dart';
 import 'database_adapter.dart';
 
 /// Database adapter implementation for mobile and desktop platforms.
@@ -34,7 +35,7 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
     String path = join(documentsDirectory.path, 'medications.db');
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -46,6 +47,7 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         dosage TEXT,
+        quantity INTEGER,
         frequency TEXT,
         frequencyPatternType INTEGER,
         frequencyPatternDaysOfWeek TEXT,
@@ -58,6 +60,13 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
         needsSync INTEGER DEFAULT 1,
         createdAt TEXT,
         updatedAt TEXT
+      )
+      ''');
+    await db.execute('''
+      CREATE TABLE medication_logs(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        medicationId INTEGER,
+        timestamp TEXT
       )
       ''');
   }
@@ -80,6 +89,16 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
       await db.execute(
         'ALTER TABLE medications ADD COLUMN frequencyPatternSpecificTimes TEXT',
       );
+    }
+    if (oldVersion < 3) {
+      await db.execute('ALTER TABLE medications ADD COLUMN quantity INTEGER');
+      await db.execute('''
+        CREATE TABLE medication_logs(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          medicationId INTEGER,
+          timestamp TEXT
+        )
+        ''');
     }
   }
 
@@ -113,6 +132,25 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   Future<int> deleteMedication(int id) async {
     final db = await database;
     return await db.delete('medications', where: 'id = ?', whereArgs: [id]);
+  }
+
+  @override
+  Future<int> insertMedicationLog(MedicationLog log) async {
+    final db = await database;
+    return await db.insert('medication_logs', log.toMap());
+  }
+
+  @override
+  Future<List<MedicationLog>> getMedicationLogs(int medicationId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'medication_logs',
+      where: 'medicationId = ?',
+      whereArgs: [medicationId],
+    );
+    return List.generate(maps.length, (i) {
+      return MedicationLog.fromMap(maps[i]);
+    });
   }
 
   Future<Database> get database async {

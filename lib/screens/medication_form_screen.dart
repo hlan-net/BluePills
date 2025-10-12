@@ -36,6 +36,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _dosageController;
+  late TextEditingController _quantityController;
   late TextEditingController _frequencyController;
   late DateTime _selectedReminderTime;
   FrequencyPattern? _selectedFrequencyPattern;
@@ -50,6 +51,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     _dosageController = TextEditingController(
       text: widget.medication?.dosage ?? '',
     );
+    _quantityController = TextEditingController(
+      text: widget.medication?.quantity.toString() ?? '0',
+    );
     _frequencyController = TextEditingController(
       text: widget.medication?.frequency ?? '',
     );
@@ -62,6 +66,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   void dispose() {
     _nameController.dispose();
     _dosageController.dispose();
+    _quantityController.dispose();
     _frequencyController.dispose();
     super.dispose();
   }
@@ -114,6 +119,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           id: widget.medication?.id,
           name: _nameController.text,
           dosage: _dosageController.text,
+          quantity: int.tryParse(_quantityController.text) ?? 0,
           frequency: _useAdvancedFrequency
               ? (_selectedFrequencyPattern?.toReadableString() ??
                     _frequencyController.text)
@@ -221,6 +227,22 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                   if (value == null || value.isEmpty) {
                     return localizations?.pleaseEnterDosage ??
                         'Please enter the dosage';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _quantityController,
+                decoration: InputDecoration(
+                  labelText: 'Quantity',
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the quantity';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Please enter a valid number';
                   }
                   return null;
                 },

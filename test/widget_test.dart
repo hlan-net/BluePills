@@ -61,6 +61,7 @@ void main() {
           id: 1,
           name: 'Test Medication',
           dosage: '10mg',
+          quantity: 10,
           frequency: 'Daily',
           reminderTime: DateTime.now(),
           createdAt: DateTime.now(),

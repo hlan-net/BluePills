@@ -15,6 +15,9 @@ class Medication {
   /// The dosage information (e.g., "100mg", "2 tablets").
   String dosage;
 
+  /// The current stock of the medication.
+  int quantity;
+
   /// The frequency of medication (e.g., "twice daily", "every 8 hours").
   /// Kept for backward compatibility, but use frequencyPattern for new features.
   String frequency;
@@ -49,6 +52,7 @@ class Medication {
     this.id,
     required this.name,
     required this.dosage,
+    required this.quantity,
     required this.frequency,
     this.frequencyPattern,
     required this.reminderTime,
@@ -66,6 +70,7 @@ class Medication {
       'id': id,
       'name': name,
       'dosage': dosage,
+      'quantity': quantity,
       'frequency': frequency,
       'frequencyPatternType': frequencyPattern?.type.index,
       'frequencyPatternDaysOfWeek': frequencyPattern?.daysOfWeek.join(','),
@@ -116,6 +121,7 @@ class Medication {
       id: map['id'],
       name: map['name'],
       dosage: map['dosage'],
+      quantity: map['quantity'] ?? 0,
       frequency: map['frequency'],
       frequencyPattern: pattern,
       reminderTime: map['reminderTime'] != null
@@ -143,6 +149,7 @@ class Medication {
     int? id,
     String? name,
     String? dosage,
+    int? quantity,
     String? frequency,
     FrequencyPattern? frequencyPattern,
     DateTime? reminderTime,
@@ -156,6 +163,7 @@ class Medication {
       id: id ?? this.id,
       name: name ?? this.name,
       dosage: dosage ?? this.dosage,
+      quantity: quantity ?? this.quantity,
       frequency: frequency ?? this.frequency,
       frequencyPattern: frequencyPattern ?? this.frequencyPattern,
       reminderTime: reminderTime ?? this.reminderTime,

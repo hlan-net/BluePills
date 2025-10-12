@@ -8,6 +8,7 @@ library;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/medication_log.dart';
 import 'database_adapter.dart';
 
 /// Database adapter implementation for web platforms.
@@ -83,6 +84,18 @@ class WebDatabaseAdapter extends DatabaseAdapter {
       final List<dynamic> decoded = jsonDecode(data);
       return decoded.map((item) => Map<String, dynamic>.from(item)).toList();
     }
+    return [];
+  }
+
+  @override
+  Future<int> insertMedicationLog(MedicationLog log) async {
+    // Not implemented for web
+    return 0;
+  }
+
+  @override
+  Future<List<MedicationLog>> getMedicationLogs(int medicationId) async {
+    // Not implemented for web
     return [];
   }
 }
