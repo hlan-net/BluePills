@@ -67,7 +67,7 @@ dev_dependencies:
   mockito: ^5.4.4
   # App icon and splash screen generation
   flutter_launcher_icons: ^0.14.4
-  flutter_native_splash: ^2.4.1
+  flutter_native_splash: ^2.4.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
