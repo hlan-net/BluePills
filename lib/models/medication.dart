@@ -48,8 +48,6 @@ class Medication {
   /// All fields except [id], [remoteId], [lastSynced], [createdAt], and [updatedAt]
   /// are required. The [createdAt] and [updatedAt] timestamps are automatically
   /// set to the current time if not provided.
-  DateTime? lastTaken;
-
   Medication({
     this.id,
     required this.name,
@@ -63,7 +61,6 @@ class Medication {
     this.needsSync = true,
     DateTime? createdAt,
     DateTime? updatedAt,
-    this.lastTaken,
   }) : createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -87,8 +84,7 @@ class Medication {
       'lastSynced': lastSynced?.toIso8601String(),
       'needsSync': needsSync ? 1 : 0,
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
-      'lastTaken': lastTaken?.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
@@ -141,10 +137,7 @@ class Medication {
           : DateTime.now(),
       updatedAt: map['updatedAt'] != null
           ? DateTime.parse(map['updatedAt'])
-          : null,
-      lastTaken: map['lastTaken'] != null
-          ? DateTime.parse(map['lastTaken'])
-          : null,
+          : DateTime.now(),
     );
   }
 
@@ -165,7 +158,6 @@ class Medication {
     bool? needsSync,
     DateTime? createdAt,
     DateTime? updatedAt,
-    DateTime? lastTaken,
   }) {
     return Medication(
       id: id ?? this.id,
@@ -180,7 +172,6 @@ class Medication {
       needsSync: needsSync ?? this.needsSync,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      lastTaken: lastTaken ?? this.lastTaken,
     );
   }
 

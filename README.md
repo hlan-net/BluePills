@@ -194,14 +194,6 @@ nano .env
 | Security Audits | 45 min | 0 min | 45 min |
 | **Weekly Total** | ~7 hours | ~15 min | **6h 45min** |
 
-## Database Location
-
-On Linux, the application data is stored in the `~/.bluepills` directory. On other platforms, the default application documents directory is used.
-
-## Notifications
-
-This application uses the `flutter_local_notifications` package to provide local notifications for medication reminders.
-
 ## 🤝 **Contributing**
 
 We welcome contributions! See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.

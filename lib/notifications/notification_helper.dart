@@ -34,6 +34,23 @@ class NotificationHelper {
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  /// Initializes the notification system with platform-specific settings.
+  ///
+  /// This method must be called before scheduling any notifications.
+  /// Sets up notification icons and action names for Android and Linux.
+  Future<void> init() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    const LinuxInitializationSettings initializationSettingsLinux =
+        LinuxInitializationSettings(defaultActionName: 'Open');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          linux: initializationSettingsLinux,
+        );
+    await _notificationsPlugin.initialize(initializationSettings);
+  }
+
   /// Schedules a notification to be displayed.
   ///
   /// Note: Currently displays the notification immediately rather than
@@ -44,22 +61,6 @@ class NotificationHelper {
   /// - [title]: The notification title
   /// - [body]: The notification message body
   /// - [scheduledTime]: The intended time for the notification (currently unused)
-  Future<void> init() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-    final DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
-    await _notificationsPlugin.initialize(initializationSettings);
-  }
-
   Future<void> scheduleNotification(
     int id,
     String title,
