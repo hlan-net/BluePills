@@ -34,7 +34,7 @@ jobs:
         flutter pub outdated --mode=outdated >> dependency-report.md
 
     - name: Create issue for outdated dependencies
-      uses: peter-evans/create-issue-from-file@v5
+      uses: peter-evans/create-issue-from-file@v6
       with:
         title: 'Weekly Dependency Update Report'
         content-filepath: dependency-report.md
@@ -141,7 +141,7 @@ jobs:
         fi
 
     - name: Create documentation issue
-      uses: peter-evans/create-issue-from-file@v5
+      uses: peter-evans/create-issue-from-file@v6
       with:
         title: 'Weekly Documentation & TODO Report'
         content-filepath: todo-report.md
