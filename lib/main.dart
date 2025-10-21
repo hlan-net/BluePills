@@ -187,11 +187,13 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     // Show dialog to select medication and add dose
     final medications = await DatabaseHelper().getMedications();
     if (!mounted) return;
-    
+
     if (medications.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('No medications available. Please add a medication first.'),
+          content: Text(
+            'No medications available. Please add a medication first.',
+          ),
         ),
       );
       return;
@@ -259,9 +261,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   Future<void> _setReminder() async {
     _closeSpeedDial();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Set reminder feature - coming soon!'),
-      ),
+      const SnackBar(content: Text('Set reminder feature - coming soon!')),
     );
   }
 
@@ -336,19 +336,14 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    localizations?.noMedicationsYet ?? 'No medications added yet.',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[600],
-                    ),
+                    localizations?.noMedicationsYet ??
+                        'No medications added yet.',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Tap the + button to add your first medication',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[500],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                   ),
                 ],
               ),
@@ -463,9 +458,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
             Positioned.fill(
               child: GestureDetector(
                 onTap: _closeSpeedDial,
-                child: Container(
-                  color: Colors.black38,
-                ),
+                child: Container(color: Colors.black38),
               ),
             ),
           // Speed dial options
