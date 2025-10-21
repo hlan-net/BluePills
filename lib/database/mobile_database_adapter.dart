@@ -4,6 +4,8 @@
 /// that uses SQLite for persistent storage through the sqflite package.
 library;
 
+import 'dart:io';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,11 +33,25 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   }
 
   Future<Database> _initDatabase() async {
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, 'medications.db');
+    String path;
+    if (Platform.isLinux) {
+      final home = Platform.environment['HOME'];
+      if (home != null) {
+        final bluePillsDir = Directory(join(home, '.bluepills'));
+        if (!await bluePillsDir.exists()) {
+          await bluePillsDir.create(recursive: true);
+        }
+        path = join(bluePillsDir.path, 'medications.db');
+      } else {
+        // Fallback if HOME is not set
+        final documentsDirectory = await getApplicationDocumentsDirectory();
+        path = join(documentsDirectory.path, 'medications.db');
+      }
+    } else {
+      final documentsDirectory = await getApplicationDocumentsDirectory();
+      path = join(documentsDirectory.path, 'medications.db');
+    }
 
-    // Delete the database file to force recreation with the new schema
-    await deleteDatabase(path);
     return await openDatabase(
       path,
       version: 3,
