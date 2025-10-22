@@ -3,9 +3,19 @@ import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/screens/add_stock_screen.dart';
 import 'package:bluepills/database/database_helper.dart';
 
+/// Screen displaying detailed information about a specific medication.
+///
+/// This screen shows all the details of a medication including its name, dosage,
+/// frequency, and current stock quantity. It provides a button to navigate to
+/// the [AddStockScreen] where users can add more stock to the medication.
+///
+/// The screen automatically refreshes the medication data when returning from
+/// the add stock screen to display the updated quantity.
 class MedicationDetailsScreen extends StatefulWidget {
+  /// The medication to display details for.
   final Medication medication;
 
+  /// Creates a [MedicationDetailsScreen] for the given [medication].
   const MedicationDetailsScreen({super.key, required this.medication});
 
   @override

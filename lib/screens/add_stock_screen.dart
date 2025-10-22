@@ -2,9 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/database/database_helper.dart';
 
+/// Screen for adding stock to an existing medication.
+///
+/// This screen provides a form where users can enter a quantity to add to their
+/// existing medication stock. The quantity is validated to ensure it's a positive
+/// integer, and the medication's total quantity is updated in the database.
+///
+/// When the stock is successfully added, the screen returns `true` to the previous
+/// screen, allowing it to refresh and display the updated quantity.
 class AddStockScreen extends StatefulWidget {
+  /// The medication to add stock for.
   final Medication medication;
 
+  /// Creates an [AddStockScreen] for the given [medication].
   const AddStockScreen({super.key, required this.medication});
 
   @override
