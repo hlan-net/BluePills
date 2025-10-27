@@ -147,7 +147,7 @@ jobs:
         flutter build web --analyze-size | tee -a performance-report.md
 
     - name: Upload performance report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: performance-report
         path: performance-report.md
