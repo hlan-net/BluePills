@@ -16,7 +16,7 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         ref: ${{ github.head_ref }}
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -159,7 +159,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
