@@ -53,4 +53,8 @@ abstract class DatabaseAdapter {
 
   /// Retrieves the last time a dose was taken for a given medication ID.
   Future<DateTime?> getLastTakenTime(int medicationId);
+
+  /// Retrieves all medication logs for today (since midnight).
+  /// Returns a list of medication logs that were created today.
+  Future<List<MedicationLog>> getMedicationLogsForToday();
 }

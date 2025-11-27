@@ -89,25 +89,78 @@ class WebDatabaseAdapter extends DatabaseAdapter {
 
   @override
   Future<int> insertMedicationLog(MedicationLog log) async {
-    // Not implemented for web
-    return 0;
+    final List<Map<String, dynamic>> logs = _getLogsFromLocalStorage();
+    int newId = 1;
+    if (logs.isNotEmpty) {
+      newId = logs.map<int>((m) => m['id'] as int).reduce((a, b) => a > b ? a : b) + 1;
+    }
+    final Map<String, dynamic> logMap = log.toMap();
+    logMap['id'] = newId;
+    logs.add(logMap);
+    _saveLogsToLocalStorage(logs);
+    return newId;
   }
 
   @override
   Future<List<MedicationLog>> getMedicationLogs(int medicationId) async {
-    // Not implemented for web
-    return [];
+    final List<Map<String, dynamic>> logs = _getLogsFromLocalStorage();
+    return logs
+        .where((log) => log['medicationId'] == medicationId)
+        .map((map) => MedicationLog.fromMap(map))
+        .toList();
   }
 
   @override
   Future<Medication?> getMedication(int id) async {
-    // Not implemented for web
+    final List<Map<String, dynamic>> medications = _getFromLocalStorage();
+    final match = medications.where((m) => m['id'] == id);
+    if (match.isNotEmpty) {
+      return Medication.fromMap(match.first);
+    }
     return null;
   }
 
   @override
   Future<DateTime?> getLastTakenTime(int medicationId) async {
-    // Not implemented for web
+    final List<Map<String, dynamic>> logs = _getLogsFromLocalStorage();
+    final medicationLogs = logs
+        .where((log) => log['medicationId'] == medicationId)
+        .toList()
+      ..sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
+    
+    if (medicationLogs.isNotEmpty) {
+      return DateTime.parse(medicationLogs.first['timestamp']);
+    }
     return null;
+  }
+
+  @override
+  Future<List<MedicationLog>> getMedicationLogsForToday() async {
+    final List<Map<String, dynamic>> logs = _getLogsFromLocalStorage();
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayEnd = todayStart.add(const Duration(days: 1));
+    
+    return logs
+        .where((log) {
+          final timestamp = DateTime.parse(log['timestamp']);
+          return timestamp.isAfter(todayStart) && timestamp.isBefore(todayEnd);
+        })
+        .map((map) => MedicationLog.fromMap(map))
+        .toList();
+  }
+
+  void _saveLogsToLocalStorage(List<Map<String, dynamic>> logs) {
+    final String data = jsonEncode(logs);
+    _prefs.setString('medication_logs', data);
+  }
+
+  List<Map<String, dynamic>> _getLogsFromLocalStorage() {
+    final String? data = _prefs.getString('medication_logs');
+    if (data != null && data.isNotEmpty) {
+      final List<dynamic> decoded = jsonDecode(data);
+      return decoded.map((item) => Map<String, dynamic>.from(item)).toList();
+    }
+    return [];
   }
 }

@@ -42,6 +42,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   late DateTime _selectedReminderTime;
   FrequencyPattern? _selectedFrequencyPattern;
   bool _useAdvancedFrequency = false;
+  bool _wasSaved = false;
 
   @override
   void initState() {
@@ -162,6 +163,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             );
           } else {
             // Go back to list
+            _wasSaved = true;
             Navigator.pop(context, true);
           }
         }
@@ -184,7 +186,12 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, _wasSaved);
+        return false;
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: Text(
           widget.medication == null
@@ -347,6 +354,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

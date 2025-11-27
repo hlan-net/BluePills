@@ -25,6 +25,7 @@ class MedicationDetailsScreen extends StatefulWidget {
 
 class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
   late Medication _medication;
+  bool _wasUpdated = false;
 
   @override
   void initState() {
@@ -34,8 +35,13 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(_medication.name)),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, _wasUpdated);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text(_medication.name)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -63,6 +69,7 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
                   if (updatedMedication != null) {
                     setState(() {
                       _medication = updatedMedication;
+                      _wasUpdated = true;
                     });
                   }
                 }
@@ -71,6 +78,7 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

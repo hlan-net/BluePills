@@ -202,6 +202,24 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
     return null;
   }
 
+  @override
+  Future<List<MedicationLog>> getMedicationLogsForToday() async {
+    final db = await database;
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayEnd = todayStart.add(const Duration(days: 1));
+    
+    final List<Map<String, dynamic>> maps = await db.query(
+      'medication_logs',
+      where: 'timestamp >= ? AND timestamp < ?',
+      whereArgs: [todayStart.toIso8601String(), todayEnd.toIso8601String()],
+    );
+    
+    return List.generate(maps.length, (i) {
+      return MedicationLog.fromMap(maps[i]);
+    });
+  }
+
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();

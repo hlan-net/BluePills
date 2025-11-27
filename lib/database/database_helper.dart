@@ -95,4 +95,9 @@ class DatabaseHelper {
   Future<Medication?> getMedication(int id) async {
     return await _adapter.getMedication(id);
   }
+
+  /// Retrieves all medication logs for today.
+  Future<List<MedicationLog>> getMedicationLogsForToday() async {
+    return await _adapter.getMedicationLogsForToday();
+  }
 }

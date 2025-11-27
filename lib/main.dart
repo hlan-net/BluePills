@@ -153,6 +153,12 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     });
   }
 
+  /// Checks if a medication was taken today by querying medication logs
+  Future<bool> _isTakenToday(int medicationId) async {
+    final logsToday = await DatabaseHelper().getMedicationLogsForToday();
+    return logsToday.any((log) => log.medicationId == medicationId);
+  }
+
   void _toggleSpeedDial() {
     setState(() {
       _isSpeedDialOpen = !_isSpeedDialOpen;
@@ -349,10 +355,141 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               ),
             );
           } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                Medication medication = snapshot.data![index];
+            final medications = snapshot.data!;
+            return ListView(
+              children: [
+                // Today's Medications Section
+                if (medications.isNotEmpty)
+                  FutureBuilder<List<MedicationLog>>(
+                    future: DatabaseHelper().getMedicationLogsForToday(),
+                    builder: (context, logsSnapshot) {
+                      if (!logsSnapshot.hasData) {
+                        return const SizedBox.shrink();
+                      }
+                      
+                      final logsToday = logsSnapshot.data!;
+                      final takenCount = logsToday.length;
+                      final totalCount = medications.length;
+                      
+                      return Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.all(16),
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Today's Medications",
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: takenCount == totalCount
+                                          ? Colors.green
+                                          : Colors.orange,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      '$takenCount of $totalCount taken',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              ...medications.map((med) {
+                                final isTaken = logsToday.any(
+                                  (log) => log.medicationId == med.id,
+                                );
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        isTaken ? Icons.check_circle : Icons.schedule,
+                                        color: isTaken ? Colors.green : Colors.orange,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          med.name,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            decoration: isTaken
+                                                ? TextDecoration.lineThrough
+                                                : null,
+                                          ),
+                                        ),
+                                      ),
+                                      if (!isTaken)
+                                        IconButton(
+                                          icon: const Icon(Icons.check, color: Colors.green),
+                                          onPressed: () async {
+                                            if (med.quantity > 0) {
+                                              final updatedMedication = med.copyWith(
+                                                quantity: med.quantity - 1,
+                                              );
+                                              await DatabaseHelper().updateMedication(
+                                                updatedMedication,
+                                              );
+                                              await DatabaseHelper().insertMedicationLog(
+                                                MedicationLog(
+                                                  medicationId: med.id!,
+                                                  timestamp: DateTime.now(),
+                                                ),
+                                              );
+                                              _refreshMedicationList();
+                                              if (!mounted) return;
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('✓ ${med.name} marked as taken'),
+                                                  backgroundColor: Colors.green,
+                                                  duration: const Duration(seconds: 2),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                // All Medications List
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                  child: Text(
+                    'All Medications',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                ...List.generate(
+                  medications.length,
+                  (index) {
+                    final medication = medications[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(
@@ -444,8 +581,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                       }
                     },
                   ),
-                );
-              },
+                    );
+                  },
+                ),
+              ],
             );
           }
         },
