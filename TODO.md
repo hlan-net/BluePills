@@ -262,6 +262,7 @@
 - [ ] Integration with health apps (Apple Health, Google Fit)
 - [ ] Prescription refill reminders based on usage patterns
 - [ ] Medication price tracking
+- [ ] Kanta Integration for Prescription Import
 
 ### Analytics & Insights (Privacy-Focused)
 - [ ] Medication adherence insights

@@ -155,52 +155,9 @@ class AppConfig {
 - [x] Data export/import functionality
 - [ ] Multiple PDS support
 
-
-
-## 🛠 Development Notes
-
-### Dependencies Added
-```yaml
-dependencies:
-  http: ^1.1.0                 # HTTP client for AT Protocol
-  json_annotation: ^4.9.0     # JSON serialization annotations
-
-dev_dependencies:
-  json_serializable: ^6.7.1   # JSON code generation
-  build_runner: ^2.4.7        # Build system for code generation
-  mockito: ^5.4.4             # Mocking framework for testing
-```
-
-### Code Generation
-Run `dart run build_runner build` to generate serialization code after modifying models.
-
-### Testing Sync
-Currently, the AT Protocol service includes placeholder authentication. For full testing:
-1. Set up a BlueSky account and PDS
-2. Implement proper authentication flow
-3. Configure PDS URL in settings
-4. Test cross-device synchronization
-
-## 💡 Architecture Benefits
-
-### Graceful Migration Path
-- Users aren't forced to set up BlueSky immediately
-- Can evaluate the app with local storage first
-- Smooth transition to sync when ready
-
-### Decentralized Architecture
-- No vendor lock-in - users choose their PDS
-- Compatible with AT Protocol ecosystem
-- Future-proof as BlueSky grows
-
-### Offline-First Design
-- App works without internet connection
-- Sync happens when connectivity is available
-- No data loss during network issues
-
-### Privacy-Focused
-- User maintains control over their data
-- No tracking or analytics by default
-- Transparent about what data goes where
-
-This implementation provides a solid foundation for a privacy-respecting, user-controlled medication management system that can grow with the user's needs and the AT Protocol ecosystem.
+### Sync & Backup (Optional)
+- [ ] BlueSky sync implementation
+- [ ] Local backup/restore
+- [ ] Cloud backup (optional, encrypted)
+- [ ] Device-to-device sync
+- [ ] Kanta Integration for Prescription Import (Future consideration)
