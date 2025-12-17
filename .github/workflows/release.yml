@@ -103,7 +103,15 @@ jobs:
       run: flutter build apk --release --split-per-abi
 
     - name: Build Android App Bundle
-      run: flutter build appbundle --release
+      run: |
+        # Calculate version code: base version from pubspec.yaml + run number offset
+        # This ensures each workflow run gets a unique, incrementing version code
+        PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | cut -d'+' -f2)
+        BASE_VERSION=${PUBSPEC_VERSION:-5}
+        VERSION_CODE=$((BASE_VERSION + ${{ github.run_number }}))
+        
+        echo "Building with version code: $VERSION_CODE"
+        flutter build appbundle --release --build-number=$VERSION_CODE
 
     - name: Upload APK to release
       uses: actions/upload-release-asset@v1
