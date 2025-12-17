@@ -31,10 +31,16 @@ A **privacy-focused medication management app** that gives users complete contro
 - ✅ **Open Source**: Audit-able privacy practices
 
 ### 🔄 **Smart Synchronization**
+- ✅ **Google Drive Backup**: Secure cloud backup with auto-restore
 - ✅ **AT Protocol Integration**: Uses BlueSky's decentralized network
 - ✅ **Conflict Resolution**: Intelligent sync with timestamp-based merging
 - ✅ **Background Sync**: Automatic synchronization when enabled
 - ✅ **Manual Control**: Sync on-demand via settings
+
+### 💾 **Data Management**
+- ✅ **Export/Import**: Transfer data between devices via JSON
+- ✅ **Auto-Restore**: Automatically restore backups on new devices
+- ✅ **Local-First**: Full functionality without internet connection
 
 ### 🛡️ **Security & Automation**
 - ✅ **Enterprise CI/CD**: Automated testing, building, and deployment
@@ -228,6 +234,7 @@ git checkout -b feature/amazing-feature
 
 ### **User Documentation**
 - 📖 [User Guide](docs/user-guide.md) - Complete usage instructions
+- 🚀 [Feature Documentation](docs/features/) - Detailed feature specifications
 - 🔒 [Privacy Policy](PRIVACY_POLICY.md) - Data handling practices
 - ❓ [FAQ](docs/faq.md) - Frequently asked questions
 
@@ -244,7 +251,9 @@ git checkout -b feature/amazing-feature
 
 ## 🎯 **Roadmap**
 
-### **✅ Completed (v1.0)**
+### **✅ Completed (v1.3)**
+- ✅ Google Drive Backup & Restore
+- ✅ Data Export/Import (JSON)
 - ✅ Core medication management
 - ✅ Local storage with sync metadata
 - ✅ AT Protocol integration framework
@@ -253,15 +262,14 @@ git checkout -b feature/amazing-feature
 - ✅ Multi-platform builds
 - ✅ Security implementation
 
-### **🚧 In Progress (v1.1)**
+### **🚧 In Progress (v1.4)**
 - 🚧 BlueSky authentication flow
 - 🚧 Real-time sync implementation
 - 🚧 Enhanced notification system
 - 🚧 iOS platform support
 
-### **📋 Planned (v1.2+)**
+### **📋 Planned (v1.5+)**
 - 📋 Advanced conflict resolution UI
-- 📋 Data export/import features
 - 📋 Medication sharing capabilities
 - 📋 Healthcare provider integration
 - 📋 Advanced analytics dashboard
