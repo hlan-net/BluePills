@@ -100,4 +100,9 @@ class DatabaseHelper {
   Future<List<MedicationLog>> getMedicationLogsForToday() async {
     return await _adapter.getMedicationLogsForToday();
   }
+
+  /// Returns the file path of the database, or null if not applicable.
+  Future<String?> getDatabasePath() async {
+    return await _adapter.getDatabasePath();
+  }
 }

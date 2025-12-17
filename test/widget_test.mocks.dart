@@ -109,4 +109,22 @@ class MockDatabaseAdapter extends _i1.Mock implements _i2.DatabaseAdapter {
             returnValue: _i3.Future<DateTime?>.value(),
           )
           as _i3.Future<DateTime?>);
+
+  @override
+  _i3.Future<List<_i5.MedicationLog>> getMedicationLogsForToday() =>
+      (super.noSuchMethod(
+            Invocation.method(#getMedicationLogsForToday, []),
+            returnValue: _i3.Future<List<_i5.MedicationLog>>.value(
+              <_i5.MedicationLog>[],
+            ),
+          )
+          as _i3.Future<List<_i5.MedicationLog>>);
+
+  @override
+  _i3.Future<String?> getDatabasePath() =>
+      (super.noSuchMethod(
+            Invocation.method(#getDatabasePath, []),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
 }

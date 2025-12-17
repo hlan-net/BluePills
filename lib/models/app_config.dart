@@ -30,6 +30,9 @@ class AppConfig {
   /// The current synchronization mode.
   final SyncMode syncMode;
 
+  /// Whether automatic restore from Google Drive is enabled.
+  final bool autoRestoreEnabled;
+
   /// Creates a new [AppConfig] instance with default values.
   ///
   /// By default, sync is disabled and the sync mode is set to [SyncMode.localOnly].
@@ -39,6 +42,7 @@ class AppConfig {
     this.pdsUrl,
     this.lastSyncTime,
     this.syncMode = SyncMode.localOnly,
+    this.autoRestoreEnabled = true,
   });
 
   /// Creates an [AppConfig] instance from JSON data.
@@ -58,6 +62,7 @@ class AppConfig {
     String? pdsUrl,
     DateTime? lastSyncTime,
     SyncMode? syncMode,
+    bool? autoRestoreEnabled,
   }) {
     return AppConfig(
       syncEnabled: syncEnabled ?? this.syncEnabled,
@@ -65,6 +70,7 @@ class AppConfig {
       pdsUrl: pdsUrl ?? this.pdsUrl,
       lastSyncTime: lastSyncTime ?? this.lastSyncTime,
       syncMode: syncMode ?? this.syncMode,
+      autoRestoreEnabled: autoRestoreEnabled ?? this.autoRestoreEnabled,
     );
   }
 }

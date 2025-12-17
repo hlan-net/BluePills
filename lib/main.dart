@@ -25,6 +25,7 @@ import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/l10n/app_localizations_delegate.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/services/sync_service.dart';
+import 'package:bluepills/services/backup_service.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
@@ -52,6 +53,13 @@ void main() async {
     debugPrint('ConfigService initialized successfully');
   } catch (e) {
     debugPrint('Error initializing ConfigService: $e');
+  }
+
+  try {
+    await BackupService().checkAndRestore();
+    debugPrint('BackupService check completed');
+  } catch (e) {
+    debugPrint('Error checking backup: $e');
   }
 
   try {

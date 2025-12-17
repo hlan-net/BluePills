@@ -2,6 +2,9 @@ library;
 
 import 'package:bluepills/services/export_service.dart';
 import 'package:bluepills/services/import_service.dart';
+import 'package:bluepills/services/google_drive_service.dart';
+import 'package:bluepills/services/backup_service.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/models/app_config.dart';
@@ -15,15 +18,21 @@ class SettingsScreen extends StatefulWidget {
   final ConfigService configService;
   final ExportService exportService;
   final ImportService importService;
+  final GoogleDriveService driveService;
+  final BackupService backupService;
 
   SettingsScreen({
     super.key,
     ConfigService? configService,
     ExportService? exportService,
     ImportService? importService,
+    GoogleDriveService? driveService,
+    BackupService? backupService,
   }) : configService = configService ?? ConfigService(),
        exportService = exportService ?? ExportService(),
-       importService = importService ?? ImportService();
+       importService = importService ?? ImportService(),
+       driveService = driveService ?? GoogleDriveService(),
+       backupService = backupService ?? BackupService();
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -39,10 +48,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _pdsUrlController = TextEditingController();
   bool _isLoading = false;
 
+  GoogleSignInAccount? _googleUser;
+  bool _isBackupLoading = false;
+
   @override
   void initState() {
     super.initState();
     _loadCurrentConfig();
+    widget.driveService.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      setState(() {
+        _googleUser = account;
+      });
+    });
+    widget.driveService.signInSilently();
   }
 
   @override
@@ -195,6 +213,70 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Future<void> _connectGoogle() async {
+    setState(() => _isBackupLoading = true);
+    try {
+      await widget.driveService.signIn();
+    } finally {
+      setState(() => _isBackupLoading = false);
+    }
+  }
+
+  Future<void> _disconnectGoogle() async {
+    setState(() => _isBackupLoading = true);
+    try {
+      await widget.driveService.signOut();
+    } finally {
+      setState(() => _isBackupLoading = false);
+    }
+  }
+
+  Future<void> _backupToDrive() async {
+    setState(() => _isBackupLoading = true);
+    try {
+      await widget.backupService.backup();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Backup successful!'), backgroundColor: Colors.green),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Backup failed: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      setState(() => _isBackupLoading = false);
+    }
+  }
+
+  Future<void> _restoreFromDrive() async {
+    setState(() => _isBackupLoading = true);
+    try {
+      final success = await widget.backupService.restore();
+      if (mounted) {
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Restore successful! Please restart the app.'), backgroundColor: Colors.green),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No backup found.'), backgroundColor: Colors.orange),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Restore failed: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      setState(() => _isBackupLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final config = widget.configService.config;
@@ -310,6 +392,80 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               backgroundColor: Colors.orange,
                               foregroundColor: Colors.white,
                             ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.backup,
+                            color: _googleUser != null ? Colors.green : Colors.grey,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Google Drive Backup',
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      if (_googleUser == null)
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: _isBackupLoading ? null : _connectGoogle,
+                            icon: const Icon(Icons.login),
+                            label: const Text('Connect Google Account'),
+                          ),
+                        )
+                      else ...[
+                        Text('Connected as: ${_googleUser!.email}'),
+                        const SizedBox(height: 8),
+                        SwitchListTile(
+                          title: const Text('Auto-restore from backup'),
+                          subtitle: const Text('Restore newer backup on startup'),
+                          value: config.autoRestoreEnabled,
+                          onChanged: (value) async {
+                            await widget.configService.updateConfig(
+                              config.copyWith(autoRestoreEnabled: value),
+                            );
+                            setState(() {});
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: _isBackupLoading ? null : _backupToDrive,
+                              icon: const Icon(Icons.cloud_upload),
+                              label: const Text('Backup Now'),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: _isBackupLoading ? null : _restoreFromDrive,
+                              icon: const Icon(Icons.cloud_download),
+                              label: const Text('Restore Now'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: _isBackupLoading ? null : _disconnectGoogle,
+                            icon: const Icon(Icons.logout),
+                            label: const Text('Disconnect'),
                           ),
                         ),
                       ],

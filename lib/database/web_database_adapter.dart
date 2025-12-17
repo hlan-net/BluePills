@@ -163,4 +163,9 @@ class WebDatabaseAdapter extends DatabaseAdapter {
     }
     return [];
   }
+
+  @override
+  Future<String?> getDatabasePath() async {
+    return null;
+  }
 }

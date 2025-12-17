@@ -32,8 +32,7 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
     _database = await _initDatabase();
   }
 
-  Future<Database> _initDatabase() async {
-    String path;
+  Future<String> _getDatabasePath() async {
     if (Platform.isLinux) {
       final home = Platform.environment['HOME'];
       if (home != null) {
@@ -41,16 +40,15 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
         if (!await bluePillsDir.exists()) {
           await bluePillsDir.create(recursive: true);
         }
-        path = join(bluePillsDir.path, 'medications.db');
-      } else {
-        // Fallback if HOME is not set
-        final documentsDirectory = await getApplicationDocumentsDirectory();
-        path = join(documentsDirectory.path, 'medications.db');
+        return join(bluePillsDir.path, 'medications.db');
       }
-    } else {
-      final documentsDirectory = await getApplicationDocumentsDirectory();
-      path = join(documentsDirectory.path, 'medications.db');
     }
+    final documentsDirectory = await getApplicationDocumentsDirectory();
+    return join(documentsDirectory.path, 'medications.db');
+  }
+
+  Future<Database> _initDatabase() async {
+    final path = await _getDatabasePath();
 
     return await openDatabase(
       path,
@@ -58,6 +56,11 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
+  }
+
+  @override
+  Future<String?> getDatabasePath() async {
+    return await _getDatabasePath();
   }
 
   Future<void> _onCreate(Database db, int version) async {
