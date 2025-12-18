@@ -123,12 +123,7 @@ This approach runs the Android emulator on Windows and connects to it from WSL2.
 
 2. **Run Flutter app**:
    ```bash
-   cd /path/to/BluePills
-   flutter devices
-   # Should list the emulator
-   
-   flutter run
-   ```
+   cd .   ```
 
 ### Troubleshooting Windows Emulator Connection
 
@@ -613,9 +608,7 @@ Using a physical device is often simpler and provides better performance.
 ### Run on Physical Device
 
 ```bash
-cd /home/larry/slorba/bluepills
-flutter devices
-flutter run -d <device-id>
+cd .
 ```
 
 ## Option 4: Web Development
@@ -623,11 +616,7 @@ flutter run -d <device-id>
 For quick testing, you can also run BluePills as a web app:
 
 ```bash
-cd /home/larry/slorba/bluepills
-flutter run -d chrome
-# Or
-flutter run -d web-server --web-port=8080
-# Then open browser on Windows: http://localhost:8080
+cd .
 ```
 
 ## Automated Setup Script

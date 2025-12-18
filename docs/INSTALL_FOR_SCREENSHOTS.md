@@ -73,7 +73,7 @@ If you want to test before publishing to internal testing:
 ### Build an APK Locally
 
 ```bash
-cd /home/larry/slorba/BluePills
+cd .
 
 # Build debug APK (easier for testing)
 flutter build apk --debug

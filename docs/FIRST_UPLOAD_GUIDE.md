@@ -10,7 +10,7 @@ Google Play Console requires the **first release** to be uploaded manually throu
 
 ```bash
 # Navigate to your project
-cd /home/larry/slorba/BluePills
+cd .
 
 # Clean previous builds
 flutter clean

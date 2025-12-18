@@ -34,7 +34,7 @@ Create the file `android/key.properties`:
 storePassword=YOUR_KEYSTORE_PASSWORD
 keyPassword=YOUR_KEY_PASSWORD
 keyAlias=bluepills-key
-storeFile=/Users/YOUR_USERNAME/android-keys/bluepills-upload-key.keystore
+storeFile=<PATH_TO_KEYS>/bluepills-upload-key.keystore
 ```
 
 ## Build Configuration
