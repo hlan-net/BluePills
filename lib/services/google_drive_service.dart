@@ -1,29 +1,74 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
-import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart';
+import 'package:http/http.dart' as http;
+import 'package:rxdart/rxdart.dart'; // Import for BehaviorSubject
+
+/// TODO: Replace with your actual Google Cloud Console credentials
+/// Create OAuth 2.0 Client IDs for 'Web application' and 'Desktop app'.
+/// The Web application Client ID is used for `clientId`.
+/// The Desktop app Client Secret is used for `clientSecret` (only for desktop platforms).
+const String _kGoogleClientId = 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
+const String _kGoogleClientSecret = 'YOUR_DESKTOP_CLIENT_SECRET'; // Only for desktop
+
+class GoogleAuthClient extends http.BaseClient {
+  final String _accessToken;
+  final String _idToken;
+  final http.Client _inner;
+
+  GoogleAuthClient(this._accessToken, this._idToken, [http.Client? inner])
+      : _inner = inner ?? http.Client();
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    request.headers['Authorization'] = 'Bearer $_accessToken';
+    request.headers['X-Identity-Token'] = _idToken;
+    return _inner.send(request);
+  }
+}
 
 class GoogleDriveService {
   static const _scopes = [drive.DriveApi.driveAppdataScope];
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: _scopes);
   
-  GoogleSignInAccount? get currentUser => _googleSignIn.currentUser;
-  
-  Stream<GoogleSignInAccount?> get onCurrentUserChanged => _googleSignIn.onCurrentUserChanged;
+  // Use a lazy singleton pattern
+  static final GoogleDriveService _instance = GoogleDriveService._internal();
+  factory GoogleDriveService() => _instance;
 
-  Future<GoogleSignInAccount?> signIn() async {
+  final GoogleSignIn _googleSignIn;
+  final BehaviorSubject<GoogleSignInCredentials?> _currentCredentials;
+
+  GoogleDriveService._internal()
+      : _googleSignIn = GoogleSignIn(
+          params: GoogleSignInParams(
+            clientId: _kGoogleClientId,
+            clientSecret: _kGoogleClientSecret, // Required for desktop
+            scopes: _scopes,
+          ),
+        ),
+        _currentCredentials = BehaviorSubject<GoogleSignInCredentials?>.seeded(null) {
+    _googleSignIn.authenticationState.listen((credentials) {
+      _currentCredentials.add(credentials);
+    });
+  }
+
+  GoogleSignInCredentials? get currentUser => _currentCredentials.value;
+  Stream<GoogleSignInCredentials?> get onCurrentUserChanged => _currentCredentials.stream;
+
+  Future<GoogleSignInCredentials?> signIn() async {
     try {
-      return await _googleSignIn.signIn();
+      final credentials = await _googleSignIn.signIn();
+      return credentials;
     } catch (e) {
       debugPrint('Error signing in: $e');
       return null;
     }
   }
 
-  Future<GoogleSignInAccount?> signInSilently() async {
+  Future<GoogleSignInCredentials?> signInSilently() async {
     try {
-      return await _googleSignIn.signInSilently();
+      final credentials = await _googleSignIn.silentSignIn();
+      return credentials;
     } catch (e) {
       debugPrint('Error signing in silently: $e');
       return null;
@@ -31,12 +76,14 @@ class GoogleDriveService {
   }
 
   Future<void> signOut() async {
-    await _googleSignIn.disconnect();
+    await _googleSignIn.signOut();
   }
 
   Future<drive.DriveApi?> _getDriveApi() async {
-    final client = await _googleSignIn.authenticatedClient();
-    if (client == null) return null;
+    final credentials = _currentCredentials.value;
+    if (credentials == null || credentials.accessToken == null) return null;
+
+    final client = GoogleAuthClient(credentials.accessToken!, credentials.idToken ?? '');
     return drive.DriveApi(client);
   }
 

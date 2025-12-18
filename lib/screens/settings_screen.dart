@@ -4,7 +4,7 @@ import 'package:bluepills/services/export_service.dart';
 import 'package:bluepills/services/import_service.dart';
 import 'package:bluepills/services/google_drive_service.dart';
 import 'package:bluepills/services/backup_service.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart';
 import 'package:flutter/material.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/models/app_config.dart';
@@ -48,14 +48,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _pdsUrlController = TextEditingController();
   bool _isLoading = false;
 
-  GoogleSignInAccount? _googleUser;
+  GoogleSignInCredentials? _googleUser;
   bool _isBackupLoading = false;
 
   @override
   void initState() {
     super.initState();
     _loadCurrentConfig();
-    widget.driveService.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+    widget.driveService.onCurrentUserChanged.listen((GoogleSignInCredentials? account) {
       setState(() {
         _googleUser = account;
       });
@@ -420,17 +420,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      if (_googleUser == null)
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: _isBackupLoading ? null : _connectGoogle,
-                            icon: const Icon(Icons.login),
-                            label: const Text('Connect Google Account'),
-                          ),
-                        )
-                      else ...[
-                        Text('Connected as: ${_googleUser!.email}'),
+                      SwitchListTile(
+                        title: const Text('Enable Google Drive Backup'),
+                        value: _googleUser != null,
+                        onChanged: (bool value) {
+                          if (value) {
+                            _connectGoogle();
+                          } else {
+                            _disconnectGoogle();
+                          }
+                        },
+                      ),
+                      if (_googleUser != null) ...[
+                        Text('Connected as: ${_googleUser!.idToken != null ? "User with ID Token" : "User (No ID Token)"}'),
                         const SizedBox(height: 8),
                         SwitchListTile(
                           title: const Text('Auto-restore from backup'),
