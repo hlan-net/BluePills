@@ -407,31 +407,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(
-                            Icons.backup,
-                            color: _googleUser != null ? Colors.green : Colors.grey,
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.backup,
+                                color: _googleUser != null ? Colors.green : Colors.grey,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Google Drive Backup',
+                                style: Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Google Drive Backup',
-                            style: Theme.of(context).textTheme.headlineSmall,
+                          Switch(
+                            value: _googleUser != null,
+                            onChanged: (bool value) {
+                              if (value) {
+                                _connectGoogle();
+                              } else {
+                                _disconnectGoogle();
+                              }
+                            },
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      SwitchListTile(
-                        title: const Text('Enable Google Drive Backup'),
-                        value: _googleUser != null,
-                        onChanged: (bool value) {
-                          if (value) {
-                            _connectGoogle();
-                          } else {
-                            _disconnectGoogle();
-                          }
-                        },
-                      ),
                       if (_googleUser != null) ...[
+                        const SizedBox(height: 16),
                         Text('Connected as: ${_googleUser!.idToken != null ? "User with ID Token" : "User (No ID Token)"}'),
                         const SizedBox(height: 8),
                         SwitchListTile(
