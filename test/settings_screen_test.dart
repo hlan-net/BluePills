@@ -13,7 +13,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'settings_screen_test.mocks.dart';
 
-@GenerateMocks([ConfigService, ExportService, ImportService, GoogleDriveService, BackupService])
+@GenerateMocks([
+  ConfigService,
+  ExportService,
+  ImportService,
+  GoogleDriveService,
+  BackupService,
+])
 void main() {
   late MockConfigService mockConfigService;
   late MockExportService mockExportService;
@@ -32,7 +38,9 @@ void main() {
       mockConfigService.config,
     ).thenReturn(AppConfig(syncEnabled: false, syncMode: SyncMode.localOnly));
 
-    when(mockDriveService.onCurrentUserChanged).thenAnswer((_) => Stream.value(null));
+    when(
+      mockDriveService.onCurrentUserChanged,
+    ).thenAnswer((_) => Stream.value(null));
     when(mockDriveService.signInSilently()).thenAnswer((_) async => null);
   });
 
@@ -54,7 +62,10 @@ void main() {
 
       // Verify that the import and export buttons are displayed.
       // Note: They might be off-screen, so we need to scroll to them.
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, -500));
+      await tester.drag(
+        find.byType(SingleChildScrollView),
+        const Offset(0, -500),
+      );
       await tester.pump();
 
       expect(find.text('Import Data'), findsOneWidget);

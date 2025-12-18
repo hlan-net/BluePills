@@ -374,11 +374,11 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                       if (!logsSnapshot.hasData) {
                         return const SizedBox.shrink();
                       }
-                      
+
                       final logsToday = logsSnapshot.data!;
                       final takenCount = logsToday.length;
                       final totalCount = medications.length;
-                      
+
                       return Card(
                         elevation: 2,
                         margin: const EdgeInsets.all(16),
@@ -389,13 +389,15 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Today's Medications",
-                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
@@ -424,12 +426,18 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                   (log) => log.medicationId == med.id,
                                 );
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                  ),
                                   child: Row(
                                     children: [
                                       Icon(
-                                        isTaken ? Icons.check_circle : Icons.schedule,
-                                        color: isTaken ? Colors.green : Colors.orange,
+                                        isTaken
+                                            ? Icons.check_circle
+                                            : Icons.schedule,
+                                        color: isTaken
+                                            ? Colors.green
+                                            : Colors.orange,
                                         size: 20,
                                       ),
                                       const SizedBox(width: 8),
@@ -446,28 +454,40 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                       ),
                                       if (!isTaken)
                                         IconButton(
-                                          icon: const Icon(Icons.check, color: Colors.green),
+                                          icon: const Icon(
+                                            Icons.check,
+                                            color: Colors.green,
+                                          ),
                                           onPressed: () async {
                                             if (med.quantity > 0) {
-                                              final updatedMedication = med.copyWith(
-                                                quantity: med.quantity - 1,
-                                              );
-                                              await DatabaseHelper().updateMedication(
-                                                updatedMedication,
-                                              );
-                                              await DatabaseHelper().insertMedicationLog(
-                                                MedicationLog(
-                                                  medicationId: med.id!,
-                                                  timestamp: DateTime.now(),
-                                                ),
-                                              );
+                                              final updatedMedication = med
+                                                  .copyWith(
+                                                    quantity: med.quantity - 1,
+                                                  );
+                                              await DatabaseHelper()
+                                                  .updateMedication(
+                                                    updatedMedication,
+                                                  );
+                                              await DatabaseHelper()
+                                                  .insertMedicationLog(
+                                                    MedicationLog(
+                                                      medicationId: med.id!,
+                                                      timestamp: DateTime.now(),
+                                                    ),
+                                                  );
                                               _refreshMedicationList();
                                               if (!mounted) return;
-                                              ScaffoldMessenger.of(context).showSnackBar(
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
                                                 SnackBar(
-                                                  content: Text('✓ ${med.name} marked as taken'),
+                                                  content: Text(
+                                                    '✓ ${med.name} marked as taken',
+                                                  ),
                                                   backgroundColor: Colors.green,
-                                                  duration: const Duration(seconds: 2),
+                                                  duration: const Duration(
+                                                    seconds: 2,
+                                                  ),
                                                 ),
                                               );
                                             }
@@ -488,110 +508,104 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                   padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Text(
                     'All Medications',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-                ...List.generate(
-                  medications.length,
-                  (index) {
-                    final medication = medications[index];
-                return Card(
-                  elevation: 4,
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 16,
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      child: const Icon(
-                        Icons.medical_services,
-                        color: Colors.white,
+                ...List.generate(medications.length, (index) {
+                  final medication = medications[index];
+                  return Card(
+                    elevation: 4,
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: const Icon(
+                          Icons.medical_services,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    title: Text(
-                      medication.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      '${medication.dosage} - ${medication.frequency} - Quantity: ${medication.quantity}',
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.check),
-                          onPressed: () async {
-                            if (medication.quantity > 0) {
-                              final updatedMedication = medication.copyWith(
-                                quantity: medication.quantity - 1,
-                              );
-                              await DatabaseHelper().updateMedication(
-                                updatedMedication,
-                              );
-                              await DatabaseHelper().insertMedicationLog(
-                                MedicationLog(
-                                  medicationId: medication.id!,
-                                  timestamp: DateTime.now(),
+                      title: Text(
+                        medication.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        '${medication.dosage} - ${medication.frequency} - Quantity: ${medication.quantity}',
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.check),
+                            onPressed: () async {
+                              if (medication.quantity > 0) {
+                                final updatedMedication = medication.copyWith(
+                                  quantity: medication.quantity - 1,
+                                );
+                                await DatabaseHelper().updateMedication(
+                                  updatedMedication,
+                                );
+                                await DatabaseHelper().insertMedicationLog(
+                                  MedicationLog(
+                                    medicationId: medication.id!,
+                                    timestamp: DateTime.now(),
+                                  ),
+                                );
+                                _refreshMedicationList();
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              final confirm = await showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Delete Medication?'),
+                                  content: const Text(
+                                    'Are you sure you want to delete this medication?',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
                                 ),
                               );
-                              _refreshMedicationList();
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () async {
-                            final confirm = await showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Delete Medication?'),
-                                content: const Text(
-                                  'Are you sure you want to delete this medication?',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    child: const Text('Delete'),
-                                  ),
-                                ],
-                              ),
-                            );
-                            if (confirm == true) {
-                              await DatabaseHelper().deleteMedication(
-                                medication.id!,
-                              );
-                              _refreshMedicationList();
-                            }
-                          },
-                        ),
-                      ],
+                              if (confirm == true) {
+                                await DatabaseHelper().deleteMedication(
+                                  medication.id!,
+                                );
+                                _refreshMedicationList();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      onTap: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MedicationDetailsScreen(medication: medication),
+                          ),
+                        );
+                        if (result == true) {
+                          _refreshMedicationList();
+                        }
+                      },
                     ),
-                    onTap: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              MedicationDetailsScreen(medication: medication),
-                        ),
-                      );
-                      if (result == true) {
-                        _refreshMedicationList();
-                      }
-                    },
-                  ),
-                    );
-                  },
-                ),
+                  );
+                }),
               ],
             );
           }

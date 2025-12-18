@@ -35,15 +35,15 @@ class BackupService {
     }
 
     final file = File(dbPath);
-    
+
     await _driveService.downloadBackup(metadata.id!, file);
-    
+
     return true;
   }
 
   Future<void> checkAndRestore() async {
     if (!_configService.config.autoRestoreEnabled) return;
-    
+
     // Check if signed in
     final account = await _driveService.signInSilently();
     if (account == null) return;
@@ -53,16 +53,17 @@ class BackupService {
 
     final dbPath = await _dbHelper.getDatabasePath();
     if (dbPath == null) return;
-    
+
     final file = File(dbPath);
     DateTime localModified = DateTime.fromMillisecondsSinceEpoch(0);
     if (await file.exists()) {
       localModified = await file.lastModified();
     }
 
-    if (metadata.modifiedTime != null && metadata.modifiedTime!.isAfter(localModified)) {
-       debugPrint('Newer backup found. Restoring...');
-       await restore();
+    if (metadata.modifiedTime != null &&
+        metadata.modifiedTime!.isAfter(localModified)) {
+      debugPrint('Newer backup found. Restoring...');
+      await restore();
     }
   }
 }

@@ -55,7 +55,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _loadCurrentConfig();
-    widget.driveService.onCurrentUserChanged.listen((GoogleSignInCredentials? account) {
+    widget.driveService.onCurrentUserChanged.listen((
+      GoogleSignInCredentials? account,
+    ) {
       setState(() {
         _googleUser = account;
       });
@@ -237,13 +239,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await widget.backupService.backup();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Backup successful!'), backgroundColor: Colors.green),
+          const SnackBar(
+            content: Text('Backup successful!'),
+            backgroundColor: Colors.green,
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Backup failed: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Backup failed: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -258,18 +266,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Restore successful! Please restart the app.'), backgroundColor: Colors.green),
+            const SnackBar(
+              content: Text('Restore successful! Please restart the app.'),
+              backgroundColor: Colors.green,
+            ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No backup found.'), backgroundColor: Colors.orange),
+            const SnackBar(
+              content: Text('No backup found.'),
+              backgroundColor: Colors.orange,
+            ),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Restore failed: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Restore failed: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -413,12 +430,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             children: [
                               Icon(
                                 Icons.backup,
-                                color: _googleUser != null ? Colors.green : Colors.grey,
+                                color: _googleUser != null
+                                    ? Colors.green
+                                    : Colors.grey,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 'Google Drive Backup',
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.headlineSmall,
                               ),
                             ],
                           ),
@@ -436,11 +457,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       if (_googleUser != null) ...[
                         const SizedBox(height: 16),
-                        Text('Connected as: ${_googleUser!.idToken != null ? "User with ID Token" : "User (No ID Token)"}'),
+                        Text(
+                          'Connected as: ${_googleUser!.idToken != null ? "User with ID Token" : "User (No ID Token)"}',
+                        ),
                         const SizedBox(height: 8),
                         SwitchListTile(
                           title: const Text('Auto-restore from backup'),
-                          subtitle: const Text('Restore newer backup on startup'),
+                          subtitle: const Text(
+                            'Restore newer backup on startup',
+                          ),
                           value: config.autoRestoreEnabled,
                           onChanged: (value) async {
                             await widget.configService.updateConfig(
@@ -454,12 +479,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton.icon(
-                              onPressed: _isBackupLoading ? null : _backupToDrive,
+                              onPressed: _isBackupLoading
+                                  ? null
+                                  : _backupToDrive,
                               icon: const Icon(Icons.cloud_upload),
                               label: const Text('Backup Now'),
                             ),
                             ElevatedButton.icon(
-                              onPressed: _isBackupLoading ? null : _restoreFromDrive,
+                              onPressed: _isBackupLoading
+                                  ? null
+                                  : _restoreFromDrive,
                               icon: const Icon(Icons.cloud_download),
                               label: const Text('Restore Now'),
                             ),
@@ -469,7 +498,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
-                            onPressed: _isBackupLoading ? null : _disconnectGoogle,
+                            onPressed: _isBackupLoading
+                                ? null
+                                : _disconnectGoogle,
                             icon: const Icon(Icons.logout),
                             label: const Text('Disconnect'),
                           ),

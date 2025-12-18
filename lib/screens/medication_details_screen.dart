@@ -42,43 +42,43 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
       },
       child: Scaffold(
         appBar: AppBar(title: Text(_medication.name)),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Dosage: ${_medication.dosage}'),
-            const SizedBox(height: 8),
-            Text('Frequency: ${_medication.frequency}'),
-            const SizedBox(height: 8),
-            Text('Quantity: ${_medication.quantity}'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AddStockScreen(medication: _medication),
-                  ),
-                );
-                if (result == true) {
-                  // Reload the medication from the database to get the updated quantity
-                  final updatedMedication = await DatabaseHelper()
-                      .getMedication(_medication.id!);
-                  if (updatedMedication != null) {
-                    setState(() {
-                      _medication = updatedMedication;
-                      _wasUpdated = true;
-                    });
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Dosage: ${_medication.dosage}'),
+              const SizedBox(height: 8),
+              Text('Frequency: ${_medication.frequency}'),
+              const SizedBox(height: 8),
+              Text('Quantity: ${_medication.quantity}'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          AddStockScreen(medication: _medication),
+                    ),
+                  );
+                  if (result == true) {
+                    // Reload the medication from the database to get the updated quantity
+                    final updatedMedication = await DatabaseHelper()
+                        .getMedication(_medication.id!);
+                    if (updatedMedication != null) {
+                      setState(() {
+                        _medication = updatedMedication;
+                        _wasUpdated = true;
+                      });
+                    }
                   }
-                }
-              },
-              child: const Text('Add Stock'),
-            ),
-          ],
+                },
+                child: const Text('Add Stock'),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

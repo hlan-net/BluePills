@@ -92,7 +92,9 @@ class WebDatabaseAdapter extends DatabaseAdapter {
     final List<Map<String, dynamic>> logs = _getLogsFromLocalStorage();
     int newId = 1;
     if (logs.isNotEmpty) {
-      newId = logs.map<int>((m) => m['id'] as int).reduce((a, b) => a > b ? a : b) + 1;
+      newId =
+          logs.map<int>((m) => m['id'] as int).reduce((a, b) => a > b ? a : b) +
+          1;
     }
     final Map<String, dynamic> logMap = log.toMap();
     logMap['id'] = newId;
@@ -123,11 +125,10 @@ class WebDatabaseAdapter extends DatabaseAdapter {
   @override
   Future<DateTime?> getLastTakenTime(int medicationId) async {
     final List<Map<String, dynamic>> logs = _getLogsFromLocalStorage();
-    final medicationLogs = logs
-        .where((log) => log['medicationId'] == medicationId)
-        .toList()
-      ..sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
-    
+    final medicationLogs =
+        logs.where((log) => log['medicationId'] == medicationId).toList()
+          ..sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
+
     if (medicationLogs.isNotEmpty) {
       return DateTime.parse(medicationLogs.first['timestamp']);
     }
@@ -140,7 +141,7 @@ class WebDatabaseAdapter extends DatabaseAdapter {
     final now = DateTime.now();
     final todayStart = DateTime(now.year, now.month, now.day);
     final todayEnd = todayStart.add(const Duration(days: 1));
-    
+
     return logs
         .where((log) {
           final timestamp = DateTime.parse(log['timestamp']);

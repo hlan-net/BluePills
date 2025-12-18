@@ -192,169 +192,172 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         return false;
       },
       child: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.medication == null
-              ? (localizations?.addMedication ?? 'Add Medication')
-              : (localizations?.editMedication ?? 'Edit Medication'),
+        appBar: AppBar(
+          title: Text(
+            widget.medication == null
+                ? (localizations?.addMedication ?? 'Add Medication')
+                : (localizations?.editMedication ?? 'Edit Medication'),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: localizations?.medicationName ?? 'Medication Name',
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText:
+                        localizations?.medicationName ?? 'Medication Name',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return localizations?.pleaseEnterMedicationName ??
+                          'Please enter a medication name';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return localizations?.pleaseEnterMedicationName ??
-                        'Please enter a medication name';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _dosageController,
-                decoration: InputDecoration(
-                  labelText: localizations?.dosage ?? 'Dosage',
+                TextFormField(
+                  controller: _dosageController,
+                  decoration: InputDecoration(
+                    labelText: localizations?.dosage ?? 'Dosage',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return localizations?.pleaseEnterDosage ??
+                          'Please enter the dosage';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return localizations?.pleaseEnterDosage ??
-                        'Please enter the dosage';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _quantityController,
-                decoration: InputDecoration(labelText: 'Quantity'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the quantity';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
+                TextFormField(
+                  controller: _quantityController,
+                  decoration: InputDecoration(labelText: 'Quantity'),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the quantity';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Please enter a valid number';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
 
-              // Frequency mode toggle
-              SwitchListTile(
-                title: const Text('Use Advanced Frequency'),
-                subtitle: Text(
-                  _useAdvancedFrequency
-                      ? 'Select specific days and patterns'
-                      : 'Use simple text frequency',
-                ),
-                value: _useAdvancedFrequency,
-                onChanged: (value) {
-                  setState(() {
-                    _useAdvancedFrequency = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 8),
-
-              // Frequency input - either simple text or advanced selector
-              if (!_useAdvancedFrequency)
-                DropdownButtonFormField<Frequency>(
-                  value: _selectedFrequency,
-                  items: Frequency.values.map((Frequency frequency) {
-                    return DropdownMenuItem<Frequency>(
-                      value: frequency,
-                      child: Text(frequency.toString().split('.').last),
-                    );
-                  }).toList(),
-                  onChanged: (Frequency? newValue) {
+                // Frequency mode toggle
+                SwitchListTile(
+                  title: const Text('Use Advanced Frequency'),
+                  subtitle: Text(
+                    _useAdvancedFrequency
+                        ? 'Select specific days and patterns'
+                        : 'Use simple text frequency',
+                  ),
+                  value: _useAdvancedFrequency,
+                  onChanged: (value) {
                     setState(() {
-                      _selectedFrequency = newValue!;
+                      _useAdvancedFrequency = value;
                     });
                   },
-                  decoration: InputDecoration(
-                    labelText: localizations?.frequency ?? 'Frequency',
-                  ),
-                )
-              else
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Frequency Pattern',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        if (_selectedFrequencyPattern != null)
+                ),
+                const SizedBox(height: 8),
+
+                // Frequency input - either simple text or advanced selector
+                if (!_useAdvancedFrequency)
+                  DropdownButtonFormField<Frequency>(
+                    value: _selectedFrequency,
+                    items: Frequency.values.map((Frequency frequency) {
+                      return DropdownMenuItem<Frequency>(
+                        value: frequency,
+                        child: Text(frequency.toString().split('.').last),
+                      );
+                    }).toList(),
+                    onChanged: (Frequency? newValue) {
+                      setState(() {
+                        _selectedFrequency = newValue!;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: localizations?.frequency ?? 'Frequency',
+                    ),
+                  )
+                else
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            _selectedFrequencyPattern!.toReadableString(),
-                            style: Theme.of(context).textTheme.bodyLarge
-                                ?.copyWith(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            'Frequency Pattern',
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                        const SizedBox(height: 16),
-                        FrequencySelector(
-                          initialPattern: _selectedFrequencyPattern,
-                          onPatternChanged: (pattern) {
-                            setState(() {
-                              _selectedFrequencyPattern = pattern;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ListTile(
-                title: Text(
-                  '${localizations?.reminderTime ?? 'Reminder Time'}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
-                ),
-                trailing: const Icon(Icons.access_time),
-                onTap: () => _selectTime(context),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _saveMedication(addAnother: false),
-                      icon: const Icon(Icons.check),
-                      label: Text(localizations?.saveMedication ?? 'Save'),
-                    ),
-                  ),
-                  if (widget.medication == null) ...[
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () => _saveMedication(addAnother: true),
-                        icon: const Icon(Icons.add),
-                        label: const Text('Save & Add More'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          foregroundColor: Colors.white,
-                        ),
+                          const SizedBox(height: 8),
+                          if (_selectedFrequencyPattern != null)
+                            Text(
+                              _selectedFrequencyPattern!.toReadableString(),
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          const SizedBox(height: 16),
+                          FrequencySelector(
+                            initialPattern: _selectedFrequencyPattern,
+                            onPatternChanged: (pattern) {
+                              setState(() {
+                                _selectedFrequencyPattern = pattern;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ),
+                  ),
+                ListTile(
+                  title: Text(
+                    '${localizations?.reminderTime ?? 'Reminder Time'}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
+                  ),
+                  trailing: const Icon(Icons.access_time),
+                  onTap: () => _selectTime(context),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _saveMedication(addAnother: false),
+                        icon: const Icon(Icons.check),
+                        label: Text(localizations?.saveMedication ?? 'Save'),
+                      ),
+                    ),
+                    if (widget.medication == null) ...[
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => _saveMedication(addAnother: true),
+                          icon: const Icon(Icons.add),
+                          label: const Text('Save & Add More'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
       ),
     );
   }

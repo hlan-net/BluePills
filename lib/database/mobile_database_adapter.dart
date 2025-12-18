@@ -211,13 +211,13 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
     final now = DateTime.now();
     final todayStart = DateTime(now.year, now.month, now.day);
     final todayEnd = todayStart.add(const Duration(days: 1));
-    
+
     final List<Map<String, dynamic>> maps = await db.query(
       'medication_logs',
       where: 'timestamp >= ? AND timestamp < ?',
       whereArgs: [todayStart.toIso8601String(), todayEnd.toIso8601String()],
     );
-    
+
     return List.generate(maps.length, (i) {
       return MedicationLog.fromMap(maps[i]);
     });
