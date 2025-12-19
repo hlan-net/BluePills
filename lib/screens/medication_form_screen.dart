@@ -186,10 +186,11 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         Navigator.pop(context, _wasSaved);
-        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -267,9 +268,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 const SizedBox(height: 8),
 
                 // Frequency input - either simple text or advanced selector
-                if (!_useAdvancedFrequency)
-                  DropdownButtonFormField<Frequency>(
-                    value: _selectedFrequency,
+                  if (!_useAdvancedFrequency)
+                    DropdownButtonFormField<Frequency>(
+                      initialValue: _selectedFrequency,
                     items: Frequency.values.map((Frequency frequency) {
                       return DropdownMenuItem<Frequency>(
                         value: frequency,

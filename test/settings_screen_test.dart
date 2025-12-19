@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import 'settings_screen_test.mocks.dart';
 

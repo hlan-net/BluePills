@@ -85,10 +85,10 @@ class GoogleDriveService {
 
   Future<drive.DriveApi?> _getDriveApi() async {
     final credentials = _currentCredentials.value;
-    if (credentials == null || credentials.accessToken == null) return null;
+    if (credentials == null) return null;
 
     final client = GoogleAuthClient(
-      credentials.accessToken!,
+      credentials.accessToken,
       credentials.idToken ?? '',
     );
     return drive.DriveApi(client);

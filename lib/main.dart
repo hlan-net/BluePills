@@ -161,12 +161,6 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     });
   }
 
-  /// Checks if a medication was taken today by querying medication logs
-  Future<bool> _isTakenToday(int medicationId) async {
-    final logsToday = await DatabaseHelper().getMedicationLogsForToday();
-    return logsToday.any((log) => log.medicationId == medicationId);
-  }
-
   void _toggleSpeedDial() {
     setState(() {
       _isSpeedDialOpen = !_isSpeedDialOpen;
@@ -290,19 +284,19 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           // Sync status indicator
-          if (configService.isSyncEnabled)
-            IconButton(
-              icon: Icon(Icons.sync, color: Colors.green),
-              onPressed: () async {
-                final scaffoldMessenger = ScaffoldMessenger.of(context);
-                final syncService = SyncService();
-                await syncService.performFullSync();
-                if (!mounted) return;
-                scaffoldMessenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      syncService.syncStatus == SyncStatus.success
-                          ? 'Sync completed successfully'
+           if (configService.isSyncEnabled)
+             IconButton(
+               icon: Icon(Icons.sync, color: Colors.green),
+                onPressed: () async {
+                  final syncService = SyncService();
+                  await syncService.performFullSync();
+                  if (!context.mounted) return;
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
+                  scaffoldMessenger.showSnackBar(
+                   SnackBar(
+                     content: Text(
+                       syncService.syncStatus == SyncStatus.success
+                           ? 'Sync completed successfully'
                           : 'Sync failed: ${syncService.lastError ?? 'Unknown error'}',
                     ),
                     backgroundColor:
@@ -476,7 +470,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                                     ),
                                                   );
                                               _refreshMedicationList();
-                                              if (!mounted) return;
+                                              if (!context.mounted) return;
                                               ScaffoldMessenger.of(
                                                 context,
                                               ).showSnackBar(
@@ -495,8 +489,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                         ),
                                     ],
                                   ),
-                                );
-                              }).toList(),
+                               );
+                              }),
                             ],
                           ),
                         ),

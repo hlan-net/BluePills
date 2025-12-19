@@ -470,7 +470,7 @@ packages:
     source: hosted
     version: "1.1.0"
   googleapis:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: googleapis
       sha256: "5c9e0f25be1dec13d8d2158263141104c51b5ba83487537c17a2330581e505ee"

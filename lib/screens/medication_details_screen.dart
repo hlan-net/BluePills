@@ -35,10 +35,11 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         Navigator.pop(context, _wasUpdated);
-        return false;
       },
       child: Scaffold(
         appBar: AppBar(title: Text(_medication.name)),
