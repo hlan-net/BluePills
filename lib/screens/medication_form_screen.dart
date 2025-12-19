@@ -268,9 +268,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 const SizedBox(height: 8),
 
                 // Frequency input - either simple text or advanced selector
-                  if (!_useAdvancedFrequency)
-                    DropdownButtonFormField<Frequency>(
-                      initialValue: _selectedFrequency,
+                if (!_useAdvancedFrequency)
+                  DropdownButtonFormField<Frequency>(
+                    initialValue: _selectedFrequency,
                     items: Frequency.values.map((Frequency frequency) {
                       return DropdownMenuItem<Frequency>(
                         value: frequency,

@@ -284,19 +284,19 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           // Sync status indicator
-           if (configService.isSyncEnabled)
-             IconButton(
-               icon: Icon(Icons.sync, color: Colors.green),
-                onPressed: () async {
-                  final syncService = SyncService();
-                  await syncService.performFullSync();
-                  if (!context.mounted) return;
-                  final scaffoldMessenger = ScaffoldMessenger.of(context);
-                  scaffoldMessenger.showSnackBar(
-                   SnackBar(
-                     content: Text(
-                       syncService.syncStatus == SyncStatus.success
-                           ? 'Sync completed successfully'
+          if (configService.isSyncEnabled)
+            IconButton(
+              icon: Icon(Icons.sync, color: Colors.green),
+              onPressed: () async {
+                final syncService = SyncService();
+                await syncService.performFullSync();
+                if (!context.mounted) return;
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      syncService.syncStatus == SyncStatus.success
+                          ? 'Sync completed successfully'
                           : 'Sync failed: ${syncService.lastError ?? 'Unknown error'}',
                     ),
                     backgroundColor:
@@ -489,7 +489,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                         ),
                                     ],
                                   ),
-                               );
+                                );
                               }),
                             ],
                           ),
