@@ -12,7 +12,8 @@ import 'package:bluepills/services/config_service.dart' as _i3;
 import 'package:bluepills/services/export_service.dart' as _i5;
 import 'package:bluepills/services/google_drive_service.dart' as _i7;
 import 'package:bluepills/services/import_service.dart' as _i6;
-import 'package:google_sign_in/google_sign_in.dart' as _i8;
+import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart'
+    as _i8;
 import 'package:googleapis/drive/v3.dart' as _i10;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -163,28 +164,28 @@ class MockGoogleDriveService extends _i1.Mock
   }
 
   @override
-  _i4.Stream<_i8.GoogleSignInAccount?> get onCurrentUserChanged =>
+  _i4.Stream<_i8.GoogleSignInCredentials?> get onCurrentUserChanged =>
       (super.noSuchMethod(
             Invocation.getter(#onCurrentUserChanged),
-            returnValue: _i4.Stream<_i8.GoogleSignInAccount?>.empty(),
+            returnValue: _i4.Stream<_i8.GoogleSignInCredentials?>.empty(),
           )
-          as _i4.Stream<_i8.GoogleSignInAccount?>);
+          as _i4.Stream<_i8.GoogleSignInCredentials?>);
 
   @override
-  _i4.Future<_i8.GoogleSignInAccount?> signIn() =>
+  _i4.Future<_i8.GoogleSignInCredentials?> signIn() =>
       (super.noSuchMethod(
             Invocation.method(#signIn, []),
-            returnValue: _i4.Future<_i8.GoogleSignInAccount?>.value(),
+            returnValue: _i4.Future<_i8.GoogleSignInCredentials?>.value(),
           )
-          as _i4.Future<_i8.GoogleSignInAccount?>);
+          as _i4.Future<_i8.GoogleSignInCredentials?>);
 
   @override
-  _i4.Future<_i8.GoogleSignInAccount?> signInSilently() =>
+  _i4.Future<_i8.GoogleSignInCredentials?> signInSilently() =>
       (super.noSuchMethod(
             Invocation.method(#signInSilently, []),
-            returnValue: _i4.Future<_i8.GoogleSignInAccount?>.value(),
+            returnValue: _i4.Future<_i8.GoogleSignInCredentials?>.value(),
           )
-          as _i4.Future<_i8.GoogleSignInAccount?>);
+          as _i4.Future<_i8.GoogleSignInCredentials?>);
 
   @override
   _i4.Future<void> signOut() =>
