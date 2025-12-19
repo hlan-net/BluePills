@@ -11,9 +11,32 @@ on:
         description: 'Release version (e.g., v1.0.1)'
         required: true
         type: string
+      deploy_android:
+        description: 'Deploy Android build to Google Play'
+        required: true
+        type: boolean
+        default: true
+      deploy_web:
+        description: 'Deploy web build'
+        required: true
+        type: boolean
+        default: true
+      track:
+        description: 'Google Play track'
+        required: true
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+        default: internal
 
 env:
   FLUTTER_VERSION: '3.32.7'
+  DEPLOY_ANDROID: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_android || 'true' }}
+  DEPLOY_WEB: ${{ github.event_name == 'workflow_dispatch' && inputs.deploy_web || 'true' }}
+  PLAY_TRACK: ${{ github.event_name == 'workflow_dispatch' && inputs.track || 'internal' }}
 
 jobs:
   # Create GitHub Release
@@ -133,8 +156,8 @@ jobs:
         asset_name: BluePills-android.aab
         asset_content_type: application/octet-stream
 
-    - name: Upload to Google Play (Internal Testing)
-      if: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
+    - name: Upload to Google Play
+      if: ${{ env.DEPLOY_ANDROID == 'true' && secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
       env:
         GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
       uses: r0adkll/upload-google-play@v1
@@ -142,7 +165,7 @@ jobs:
         serviceAccountJsonPlainText: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
         packageName: net.hlan.bluepills
         releaseFiles: build/app/outputs/bundle/release/app-release.aab
-        track: internal
+        track: ${{ env.PLAY_TRACK }}
         status: completed
 
   # Build Web Release
@@ -185,12 +208,21 @@ jobs:
         asset_content_type: application/gzip
 
     - name: Deploy to GitHub Pages
-      if: github.repository_owner == github.actor
+      if: ${{ env.DEPLOY_WEB == 'true' && github.repository_owner == github.actor }}
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: build/web
         cname: bluepills.yourdomain.com  # Replace with your domain
+
+    - name: Deploy to Firebase Hosting (optional)
+      if: ${{ env.DEPLOY_WEB == 'true' && secrets.FIREBASE_PROJECT_ID != '' && secrets.FIREBASE_TOKEN != '' }}
+      env:
+        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      run: |
+        npm install -g firebase-tools
+        firebase deploy --only hosting --project $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN
 
   # Build Linux Release
   build-linux:
@@ -313,3 +345,49 @@ jobs:
         asset_path: BluePills-macos.tar.gz
         asset_name: BluePills-macos.tar.gz
         asset_content_type: application/gzip
+
+  notify-deployment:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [build-android, build-web]
+    if: always()
+    steps:
+    - name: Notify Slack (optional)
+      if: ${{ secrets.SLACK_WEBHOOK != '' }}
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"BluePills release pipeline completed. Android: ${{ needs.build-android.result }}, Web: ${{ needs.build-web.result }}.\"}" \
+          $SLACK_WEBHOOK
+
+    - name: Create deployment summary
+      run: |
+        echo "## Deployment Summary" > deployment-summary.md
+        echo "" >> deployment-summary.md
+        echo "- **Android Build**: ${{ needs.build-android.result }}" >> deployment-summary.md
+        echo "- **Web Build**: ${{ needs.build-web.result }}" >> deployment-summary.md
+        echo "- **Google Play Track**: ${{ env.PLAY_TRACK }}" >> deployment-summary.md
+        echo "- **Deploy Android Enabled**: ${{ env.DEPLOY_ANDROID }}" >> deployment-summary.md
+        echo "- **Deploy Web Enabled**: ${{ env.DEPLOY_WEB }}" >> deployment-summary.md
+        echo "- **Timestamp**: $(date -u)" >> deployment-summary.md
+
+    - name: Comment deployment summary
+      uses: actions/github-script@v8
+      with:
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('deployment-summary.md', 'utf8');
+          const releases = await github.rest.repos.listReleases({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            per_page: 1
+          });
+          if (releases.data.length > 0) {
+            await github.rest.repos.createReleaseComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: releases.data[0].id,
+              body: summary
+            });
+          }
