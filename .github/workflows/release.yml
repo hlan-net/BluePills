@@ -54,9 +54,9 @@ jobs:
       id: version
       run: |
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          echo "version=${{ github.event.inputs.version }}" >> "$GITHUB_OUTPUT"
         else
-          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
         fi
 
     - name: Generate changelog
@@ -81,15 +81,13 @@ jobs:
     - name: Determine deployment settings
       id: release-settings
       run: |
-        EVENT_NAME="${{ github.event_name }}"
-        DEPLOY_ANDROID_INPUT="${{ github.event.inputs.deploy_android }}"
-        DEPLOY_WEB_INPUT="${{ github.event.inputs.deploy_web }}"
-        PLAY_TRACK_INPUT="${{ github.event.inputs.track }}"
-
-        if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-          DEPLOY_ANDROID="${DEPLOY_ANDROID_INPUT:-true}"
-          DEPLOY_WEB="${DEPLOY_WEB_INPUT:-true}"
-          PLAY_TRACK="${PLAY_TRACK_INPUT:-internal}"
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          DEPLOY_ANDROID="${{ github.event.inputs.deploy_android }}"
+          DEPLOY_WEB="${{ github.event.inputs.deploy_web }}"
+          PLAY_TRACK="${{ github.event.inputs.track }}"
+          if [ -z "$DEPLOY_ANDROID" ]; then DEPLOY_ANDROID="true"; fi
+          if [ -z "$DEPLOY_WEB" ]; then DEPLOY_WEB="true"; fi
+          if [ -z "$PLAY_TRACK" ]; then PLAY_TRACK="internal"; fi
         else
           DEPLOY_ANDROID="true"
           DEPLOY_WEB="true"
@@ -105,6 +103,8 @@ jobs:
     name: Build Android Release
     runs-on: ubuntu-latest
     needs: create-release
+    env:
+      GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
@@ -179,9 +179,7 @@ jobs:
         asset_content_type: application/octet-stream
 
     - name: Upload to Google Play
-      if: ${{ needs.create-release.outputs.deploy-android == 'true' && secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
-      env:
-        GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+      if: ${{ needs.create-release.outputs.deploy-android == 'true' && env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
       uses: r0adkll/upload-google-play@v1
       with:
         serviceAccountJsonPlainText: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
@@ -195,6 +193,9 @@ jobs:
     name: Build Web Release
     runs-on: ubuntu-latest
     needs: create-release
+    env:
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
@@ -238,10 +239,7 @@ jobs:
         cname: bluepills.yourdomain.com  # Replace with your domain
 
     - name: Deploy to Firebase Hosting (optional)
-      if: ${{ needs.create-release.outputs.deploy-web == 'true' && secrets.FIREBASE_PROJECT_ID != '' && secrets.FIREBASE_TOKEN != '' }}
-      env:
-        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      if: ${{ needs.create-release.outputs.deploy-web == 'true' && env.FIREBASE_PROJECT_ID != '' && env.FIREBASE_TOKEN != '' }}
       run: |
         npm install -g firebase-tools
         firebase deploy --only hosting --project $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN
@@ -373,11 +371,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [create-release, build-android, build-web]
     if: always()
+    env:
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     steps:
     - name: Notify Slack (optional)
-      if: ${{ secrets.SLACK_WEBHOOK != '' }}
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      if: ${{ env.SLACK_WEBHOOK != '' }}
       run: |
         curl -X POST -H 'Content-type: application/json' \
           --data "{\"text\":\"BluePills release pipeline completed. Android: ${{ needs.build-android.result }}, Web: ${{ needs.build-web.result }}.\"}" \
