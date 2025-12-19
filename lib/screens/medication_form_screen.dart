@@ -270,7 +270,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 // Frequency input - either simple text or advanced selector
                 if (!_useAdvancedFrequency)
                   DropdownButtonFormField<Frequency>(
-                    initialValue: _selectedFrequency,
+                    // ignore: deprecated_member_use
+                    value: _selectedFrequency,
                     items: Frequency.values.map((Frequency frequency) {
                       return DropdownMenuItem<Frequency>(
                         value: frequency,
