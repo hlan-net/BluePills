@@ -26,7 +26,7 @@ android {
         applicationId = "net.hlan.bluepills"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 21  // Required for modern features and Play Store
+        minSdk = flutter.minSdkVersion  // Required for modern features and Play Store
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

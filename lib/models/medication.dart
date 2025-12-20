@@ -90,21 +90,31 @@ class Medication {
 
   /// Creates a [Medication] instance from a database Map.
   factory Medication.fromMap(Map<String, dynamic> map) {
+    // Helper to safely parse integers from likely String or Int sources
+    int parseInt(dynamic value, [int defaultValue = 0]) {
+      if (value == null) return defaultValue;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? defaultValue;
+      return defaultValue;
+    }
+
     FrequencyPattern? pattern;
     if (map['frequencyPatternType'] != null) {
       pattern = FrequencyPattern(
-        type: FrequencyType.values[map['frequencyPatternType']],
+        type: FrequencyType.values[parseInt(map['frequencyPatternType'])],
         daysOfWeek:
             map['frequencyPatternDaysOfWeek'] != null &&
                 map['frequencyPatternDaysOfWeek'].toString().isNotEmpty
             ? map['frequencyPatternDaysOfWeek']
                   .toString()
                   .split(',')
-                  .map((e) => int.parse(e))
+                  .map((e) => parseInt(e))
                   .toList()
             : [],
-        intervalDays: map['frequencyPatternIntervalDays'],
-        timesPerDay: map['frequencyPatternTimesPerDay'] ?? 1,
+        intervalDays: map['frequencyPatternIntervalDays'] != null
+            ? parseInt(map['frequencyPatternIntervalDays'])
+            : null,
+        timesPerDay: parseInt(map['frequencyPatternTimesPerDay'], 1),
         specificTimes:
             map['frequencyPatternSpecificTimes'] != null &&
                 map['frequencyPatternSpecificTimes'].toString().isNotEmpty
@@ -118,11 +128,11 @@ class Medication {
     }
 
     return Medication(
-      id: map['id'],
+      id: map['id'], // ID should ideally be allowed to be null or int
       name: map['name'],
       dosage: map['dosage'],
-      quantity: map['quantity'] ?? 0,
-      frequency: Frequency.values[map['frequency']],
+      quantity: parseInt(map['quantity']),
+      frequency: Frequency.values[parseInt(map['frequency'])],
       frequencyPattern: pattern,
       reminderTime: map['reminderTime'] != null
           ? DateTime.parse(map['reminderTime'])
@@ -131,7 +141,7 @@ class Medication {
       lastSynced: map['lastSynced'] != null
           ? DateTime.parse(map['lastSynced'])
           : null,
-      needsSync: map['needsSync'] == 1,
+      needsSync: map['needsSync'] == 1 || map['needsSync'] == '1', // Handle potential string "1"
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])
           : DateTime.now(),

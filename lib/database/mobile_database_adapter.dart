@@ -33,16 +33,8 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   }
 
   Future<String> _getDatabasePath() async {
-    if (Platform.isLinux) {
-      final home = Platform.environment['HOME'];
-      if (home != null) {
-        final bluePillsDir = Directory(join(home, '.bluepills'));
-        if (!await bluePillsDir.exists()) {
-          await bluePillsDir.create(recursive: true);
-        }
-        return join(bluePillsDir.path, 'medications.db');
-      }
-    }
+    // Use path_provider for all platforms to ensure robust path handling
+    // (including Sandbox support for Snap/Flatpak on Linux)
     final documentsDirectory = await getApplicationDocumentsDirectory();
     return join(documentsDirectory.path, 'medications.db');
   }
