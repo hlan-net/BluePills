@@ -141,7 +141,9 @@ class Medication {
       lastSynced: map['lastSynced'] != null
           ? DateTime.parse(map['lastSynced'])
           : null,
-      needsSync: map['needsSync'] == 1 || map['needsSync'] == '1', // Handle potential string "1"
+      needsSync:
+          map['needsSync'] == 1 ||
+          map['needsSync'] == '1', // Handle potential string "1"
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])
           : DateTime.now(),
