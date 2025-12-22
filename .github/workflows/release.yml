@@ -151,7 +151,7 @@ jobs:
       run: |
         # Calculate version code: base version from pubspec.yaml + run number offset
         # This ensures each workflow run gets a unique, incrementing version code
-        PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | cut -d'+' -f2)
+        PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | cut -d':' -f2 | cut -d'+' -f1 | tr -d ' ')
         BASE_VERSION=${PUBSPEC_VERSION:-5}
         VERSION_CODE=$((BASE_VERSION + ${{ github.run_number }}))
         
