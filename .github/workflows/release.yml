@@ -43,6 +43,9 @@ jobs:
     outputs:
       release-id: ${{ steps.create-release.outputs.id }}
       upload-url: ${{ steps.create-release.outputs.upload_url }}
+      release-tag: ${{ steps.version.outputs.version }}
+      release-name: ${{ steps.normalized-version.outputs.value }}
+      android-version-code: ${{ steps.android-version-code.outputs.code }}
       deploy-android: ${{ steps.release-settings.outputs.deploy_android }}
       deploy-web: ${{ steps.release-settings.outputs.deploy_web }}
       play-track: ${{ steps.release-settings.outputs.play_track }}
@@ -58,6 +61,48 @@ jobs:
         else
           echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
         fi
+
+    - name: Normalize version string
+      id: normalized-version
+      run: |
+        RAW_VERSION="${{ steps.version.outputs.version }}"
+        if [ -z "$RAW_VERSION" ]; then
+          echo "value=1.0.0" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        CLEANED="${RAW_VERSION#v}"
+        if [ -z "$CLEANED" ]; then
+          CLEANED="$RAW_VERSION"
+        fi
+        CLEANED=$(echo "$CLEANED" | tr -d '[:space:]')
+        if [ -z "$CLEANED" ]; then
+          CLEANED="1.0.0"
+        fi
+        echo "value=$CLEANED" >> "$GITHUB_OUTPUT"
+
+    - name: Compute Android version code
+      id: android-version-code
+      run: |
+        VERSION_NAME="${{ steps.normalized-version.outputs.value }}"
+        CORE_VERSION="${VERSION_NAME%%+*}"
+        CORE_VERSION="${CORE_VERSION%%-*}"
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$CORE_VERSION"
+        MAJOR=${MAJOR:-0}
+        MINOR=${MINOR:-0}
+        PATCH=${PATCH:-0}
+        BASE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
+        ATTEMPT="${GITHUB_RUN_ATTEMPT:-1}"
+        if [ -z "$ATTEMPT" ]; then
+          ATTEMPT=1
+        fi
+        if [ "$ATTEMPT" -gt 99 ]; then
+          ATTEMPT=$((ATTEMPT % 100))
+          if [ "$ATTEMPT" -eq 0 ]; then
+            ATTEMPT=1
+          fi
+        fi
+        VERSION_CODE=$((BASE * 100 + ATTEMPT))
+        echo "code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
 
     - name: Generate changelog
       id: changelog
@@ -105,6 +150,8 @@ jobs:
     needs: create-release
     env:
       GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+      RELEASE_VERSION_NAME: ${{ needs.create-release.outputs.release-name }}
+      ANDROID_VERSION_CODE: ${{ needs.create-release.outputs.android-version-code }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
@@ -145,22 +192,28 @@ jobs:
         echo "storeFile=keystore.jks" >> android/key.properties
 
     - name: Build Android APK
-      run: flutter build apk --release --split-per-abi
+      run: |
+        flutter build apk --release --split-per-abi \
+          --build-name="$RELEASE_VERSION_NAME" \
+          --build-number="$ANDROID_VERSION_CODE"
 
     - name: Build Android App Bundle
       run: |
-        # Get semantic version for display (versionName)
-        PUBSPEC_NAME=$(grep '^version:' pubspec.yaml | cut -d':' -f2 | cut -d'+' -f1 | tr -d ' ')
+        if [ -z "$RELEASE_VERSION_NAME" ]; then
+          echo "RELEASE_VERSION_NAME was not provided" >&2
+          exit 1
+        fi
+        if [ -z "$ANDROID_VERSION_CODE" ]; then
+          echo "ANDROID_VERSION_CODE was not provided" >&2
+          exit 1
+        fi
 
-        # Get an integer versionCode (unique per CI run)
-        VERSION_CODE="$GITHUB_RUN_NUMBER"
-
-        echo "Building with build-name: $PUBSPEC_NAME"
-        echo "Building with build-number (versionCode): $VERSION_CODE"
+        echo "Building with build-name: $RELEASE_VERSION_NAME"
+        echo "Building with build-number (versionCode): $ANDROID_VERSION_CODE"
 
         flutter build appbundle --release \
-          --build-name="$PUBSPEC_NAME" \
-          --build-number="$VERSION_CODE"
+          --build-name="$RELEASE_VERSION_NAME" \
+          --build-number="$ANDROID_VERSION_CODE"
 
     - name: Upload APK to release
       uses: actions/upload-release-asset@v1
