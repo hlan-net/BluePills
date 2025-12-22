@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
@@ -27,50 +28,54 @@ void main() {
       frequency: Frequency.asNeeded,
       reminderTime: DateTime.now(),
     );
-    
+
     final map = med.toMap();
-    print('Medication Map: $map');
-    
+    debugPrint('Medication Map: $map');
+
     final reconstructed = Medication.fromMap(map);
     expect(reconstructed.name, 'Ibuprofen');
   });
 
-  test('Blind reproduction: Insert medication with complex frequency pattern', () async {
-     final med = Medication(
-      name: 'Complex Med',
-      dosage: '10mg',
-      quantity: 30,
-      frequency: Frequency.onceDaily, 
-      frequencyPattern: FrequencyPattern.specificDays(
-        daysOfWeek: [1, 3, 5],
-        timesPerDay: 2,
-        specificTimes: [
-          DateTime(2025, 12, 20, 8, 0),
-          DateTime(2025, 12, 20, 20, 0),
-        ]
-      ),
-      reminderTime: DateTime.now(),
-    );
+  test(
+    'Blind reproduction: Insert medication with complex frequency pattern',
+    () async {
+      final med = Medication(
+        name: 'Complex Med',
+        dosage: '10mg',
+        quantity: 30,
+        frequency: Frequency.onceDaily,
+        frequencyPattern: FrequencyPattern.specificDays(
+          daysOfWeek: [1, 3, 5],
+          timesPerDay: 2,
+          specificTimes: [
+            DateTime(2025, 12, 20, 8, 0),
+            DateTime(2025, 12, 20, 20, 0),
+          ],
+        ),
+        reminderTime: DateTime.now(),
+      );
 
-    try {
-      await DatabaseHelper().init();
-    } catch (e) {
-      if (e.toString().contains('MissingPluginException') || e.toString().contains('MethodChannel')) {
-         print('Skipping DB insert due to platform channel missing: $e');
-         return; 
+      try {
+        await DatabaseHelper().init();
+      } catch (e) {
+        if (e.toString().contains('MissingPluginException') ||
+            e.toString().contains('MethodChannel')) {
+          debugPrint('Skipping DB insert due to platform channel missing: $e');
+          return;
+        }
+        rethrow;
       }
-      rethrow;
-    }
 
-    try {
-      final id = await DatabaseHelper().insertMedication(med);
-      print('Inserted medication with ID: $id');
-      expect(id, isPositive);
-    } catch (e) {
-      print('Database insert failed: $e');
-      fail('Database insert should not fail: $e');
-    }
-  });
+      try {
+        final id = await DatabaseHelper().insertMedication(med);
+        debugPrint('Inserted medication with ID: $id');
+        expect(id, isPositive);
+      } catch (e) {
+        debugPrint('Database insert failed: $e');
+        fail('Database insert should not fail: $e');
+      }
+    },
+  );
 
   test('Reproduction: String vs Int mismatch in fromMap', () {
     // Simulate a map where integers come back as Strings (common in some DB/JSON scenarios)
@@ -87,9 +92,9 @@ void main() {
 
     try {
       final med = Medication.fromMap(badMap);
-      print('Successfully parsed bad map: ${med.name}');
+      debugPrint('Successfully parsed bad map: ${med.name}');
     } catch (e) {
-      print('Caught expected error: $e');
+      debugPrint('Caught expected error: $e');
       expect(e.toString(), contains("subtype of type"));
     }
   });

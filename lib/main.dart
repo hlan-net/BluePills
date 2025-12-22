@@ -608,14 +608,6 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       floatingActionButton: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          // Backdrop overlay when speed dial is open
-          if (_isSpeedDialOpen)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: _closeSpeedDial,
-                child: Container(color: Colors.black38),
-              ),
-            ),
           // Speed dial options
           Column(
             mainAxisSize: MainAxisSize.min,
