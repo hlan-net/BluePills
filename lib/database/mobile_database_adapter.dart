@@ -4,8 +4,6 @@
 /// that uses SQLite for persistent storage through the sqflite package.
 library;
 
-import 'dart:io';
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';

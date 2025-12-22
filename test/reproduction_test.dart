@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
@@ -29,7 +30,7 @@ void main() {
     );
 
     final map = med.toMap();
-    print('Medication Map: $map');
+    debugPrint('Medication Map: $map');
 
     final reconstructed = Medication.fromMap(map);
     expect(reconstructed.name, 'Ibuprofen');
@@ -59,7 +60,7 @@ void main() {
       } catch (e) {
         if (e.toString().contains('MissingPluginException') ||
             e.toString().contains('MethodChannel')) {
-          print('Skipping DB insert due to platform channel missing: $e');
+          debugPrint('Skipping DB insert due to platform channel missing: $e');
           return;
         }
         rethrow;
@@ -67,10 +68,10 @@ void main() {
 
       try {
         final id = await DatabaseHelper().insertMedication(med);
-        print('Inserted medication with ID: $id');
+        debugPrint('Inserted medication with ID: $id');
         expect(id, isPositive);
       } catch (e) {
-        print('Database insert failed: $e');
+        debugPrint('Database insert failed: $e');
         fail('Database insert should not fail: $e');
       }
     },
@@ -91,9 +92,9 @@ void main() {
 
     try {
       final med = Medication.fromMap(badMap);
-      print('Successfully parsed bad map: ${med.name}');
+      debugPrint('Successfully parsed bad map: ${med.name}');
     } catch (e) {
-      print('Caught expected error: $e');
+      debugPrint('Caught expected error: $e');
       expect(e.toString(), contains("subtype of type"));
     }
   });
