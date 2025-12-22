@@ -34,8 +34,8 @@ class GoogleAuthClient extends http.BaseClient {
   /// Creates a new [GoogleAuthClient] with the provided OAuth tokens.
   ///
   /// Parameters:
-  /// - [_accessToken]: The OAuth 2.0 access token
-  /// - [_idToken]: The OpenID Connect ID token
+  /// - [accessToken]: The OAuth 2.0 access token
+  /// - [idToken]: The OpenID Connect ID token
   /// - [inner]: Optional HTTP client to wrap (defaults to a new [http.Client])
   GoogleAuthClient(this._accessToken, this._idToken, [http.Client? inner])
     : _inner = inner ?? http.Client();
@@ -95,7 +95,7 @@ class GoogleDriveService {
 
   /// Returns the currently signed-in user's credentials, or null if not signed in.
   GoogleSignInCredentials? get currentUser => _currentCredentials.value;
-  
+
   /// Stream of authentication state changes.
   ///
   /// Emits the current user's credentials whenever the sign-in state changes.
