@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:bluepills/database/database_helper.dart';
+import 'package:bluepills/models/frequency.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/models/medication_log.dart';
 import 'package:bluepills/screens/medication_form_screen.dart';
@@ -87,8 +88,45 @@ void main() async {
 /// - Material Design 3 theming
 /// - Localization support for English and Finnish
 /// - The medication list as the home screen
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final ConfigService _configService = ConfigService();
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateLocale();
+    // This is a bit of a hack. A better solution would be to use a state management solution.
+    // For the sake of this exercise, we'll just re-read the config every second.
+    // A better solution would be to have the ConfigService be a listenable.
+    Future.doWhile(() async {
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) {
+        _updateLocale();
+      }
+      return mounted;
+    });
+  }
+
+  void _updateLocale() {
+    final languageCode = _configService.config.languageCode;
+    if (languageCode != null && languageCode.isNotEmpty) {
+      setState(() {
+        _locale = Locale(languageCode);
+      });
+    } else {
+      setState(() {
+        _locale = null;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +143,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      // Force English locale to effectively "translate" from Finnish
-      locale: const Locale('en', 'US'),
+      locale: _locale,
       home: const MedicationListScreen(),
     );
   }
@@ -134,6 +171,19 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   bool _isSpeedDialOpen = false;
   late AnimationController _animationController;
   late Animation<double> _animation;
+
+  String _getFrequencyText(Frequency frequency, AppLocalizations localizations) {
+    switch (frequency) {
+      case Frequency.onceDaily:
+        return localizations.onceDaily;
+      case Frequency.twiceDaily:
+        return localizations.twiceDaily;
+      case Frequency.threeTimesDaily:
+        return localizations.threeTimesDaily;
+      case Frequency.asNeeded:
+        return localizations.asNeeded;
+    }
+  }
 
   @override
   void initState() {
@@ -196,11 +246,13 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     final medications = await DatabaseHelper().getMedications();
     if (!mounted) return;
 
+    final localizations = AppLocalizations.of(context)!;
+
     if (medications.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'No medications available. Please add a medication first.',
+            localizations.noMedicationsAvailable,
           ),
         ),
       );
@@ -210,7 +262,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     final selectedMed = await showDialog<Medication>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Medication'),
+        title: Text(localizations.selectMedication),
         content: SizedBox(
           width: double.maxFinite,
           child: ListView.builder(
@@ -229,7 +281,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(localizations.cancel),
           ),
         ],
       ),
@@ -251,14 +303,14 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Logged dose for ${selectedMed.name}'),
+            content: Text(localizations.loggedDoseFor(selectedMed.name)),
             backgroundColor: Colors.green,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('No ${selectedMed.name} left in stock'),
+            content: Text(localizations.noMedicationLeftInStock(selectedMed.name)),
             backgroundColor: Colors.orange,
           ),
         );
@@ -268,19 +320,20 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
   Future<void> _setReminder() async {
     _closeSpeedDial();
+    final localizations = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Set reminder feature - coming soon!')),
+      SnackBar(content: Text(localizations.setReminderFeatureComingSoon)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
     final configService = ConfigService();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations?.myMedications ?? 'My Medications'),
+        title: Text(localizations.myMedications),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           // Sync status indicator
@@ -329,7 +382,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           } else if (snapshot.hasError) {
             return Center(
               child: Text(
-                '${localizations?.error ?? 'Error'}: ${snapshot.error}',
+                '${localizations.error}: ${snapshot.error}',
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -344,13 +397,12 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    localizations?.noMedicationsYet ??
-                        'No medications added yet.',
+                    localizations.noMedicationsYet,
                     style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Tap the + button to add your first medication',
+                    localizations.tapThePlusButtonToAdd,
                     style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                   ),
                 ],
@@ -387,7 +439,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Today's Medications",
+                                    localizations.todaysMedications,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleLarge
@@ -405,7 +457,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
-                                      '$takenCount of $totalCount taken',
+                                      localizations.takenOf(takenCount, totalCount),
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -476,7 +528,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                               ).showSnackBar(
                                                 SnackBar(
                                                   content: Text(
-                                                    '✓ ${med.name} marked as taken',
+                                                    localizations.markedAsTaken(med.name),
                                                   ),
                                                   backgroundColor: Colors.green,
                                                   duration: const Duration(
@@ -498,11 +550,11 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                     },
                   ),
                 // All Medications List
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Text(
-                    'All Medications',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    localizations.allMedications,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 ...List.generate(medications.length, (index) {
@@ -526,7 +578,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        '${medication.dosage} - ${medication.frequency} - Quantity: ${medication.quantity}',
+                        '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}',
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -557,20 +609,20 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                               final confirm = await showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: const Text('Delete Medication?'),
-                                  content: const Text(
-                                    'Are you sure you want to delete this medication?',
+                                  title: Text(localizations.deleteMedication),
+                                  content: Text(
+                                    localizations.areYouSureYouWantToDeleteThisMedication,
                                   ),
                                   actions: [
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(false),
-                                      child: const Text('Cancel'),
+                                      child: Text(localizations.cancel),
                                     ),
                                     TextButton(
                                       onPressed: () =>
                                           Navigator.of(context).pop(true),
-                                      child: const Text('Delete'),
+                                      child: Text(localizations.delete),
                                     ),
                                   ],
                                 ),
@@ -637,9 +689,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                             ),
                           ],
                         ),
-                        child: const Text(
-                          'Set Reminder',
-                          style: TextStyle(
+                        child: Text(
+                          localizations.setReminder,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -681,9 +733,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                             ),
                           ],
                         ),
-                        child: const Text(
-                          'Log Dose',
-                          style: TextStyle(
+                        child: Text(
+                          localizations.logDose,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -725,9 +777,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                             ),
                           ],
                         ),
-                        child: const Text(
-                          'New Medication',
-                          style: TextStyle(
+                        child: Text(
+                          localizations.newMedication,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -750,7 +802,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               FloatingActionButton(
                 heroTag: 'main',
                 onPressed: _toggleSpeedDial,
-                tooltip: 'Add',
+                tooltip: localizations.add,
                 child: AnimatedRotation(
                   turns: _isSpeedDialOpen ? 0.125 : 0, // 45 degree rotation
                   duration: const Duration(milliseconds: 200),

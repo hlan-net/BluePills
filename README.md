@@ -12,8 +12,8 @@ A **privacy-focused medication management app** that gives users complete contro
 - 🔒 **Privacy-First**: Your data stays on your device by default
 - 🔄 **Optional Sync**: Enable BlueSky synchronization when you're ready
 - 🌐 **Decentralized**: Use your own Personal Data Server (PDS)
+- 🌍 **Multi-language**: Available in English, Finnish, Swedish, German, and Spanish
 - 📱 **Cross-Platform**: Android, Web, Linux, Windows, macOS
-- 🚀 **Professional**: Enterprise-grade automation and security
 
 ## 🌟 **Key Features**
 
@@ -22,6 +22,10 @@ A **privacy-focused medication management app** that gives users complete contro
 - ✅ Set personalized reminder notifications
 - ✅ Intuitive Material Design 3 interface
 - ✅ Offline-first functionality
+
+### 🌍 **Localization**
+- ✅ **Multi-language Support**: English, Finnish, Swedish, German, and Spanish
+- ✅ **Language Selection**: Choose your preferred language in the settings
 
 ### 🔒 **Privacy & Control**
 - ✅ **Start Local**: Works immediately without any setup
@@ -43,7 +47,7 @@ A **privacy-focused medication management app** that gives users complete contro
 - ✅ **Local-First**: Full functionality without internet connection
 
 ### 🛡️ **Security & Automation**
-- ✅ **Enterprise CI/CD**: Automated testing, building, and deployment
+- ✅ **CI/CD**: Automated testing, building, and deployment
 - ✅ **Security Scanning**: Continuous vulnerability monitoring
 - ✅ **Quality Assurance**: Automated code formatting and linting
 - ✅ **Multi-Platform Builds**: Automated releases for all platforms
@@ -218,29 +222,23 @@ cd BluePills
 git checkout -b feature/amazing-feature
 
 # 5. Make changes and test
-./scripts/test.sh
+flutter test
 
 # 6. Submit pull request
 ```
 
 ### **Development Tools**
 - 🔧 **Automated Setup**: `./setup-automation.sh`
-- 🧪 **Testing**: `./scripts/test.sh`
-- 🏗️ **Building**: `./scripts/build.sh`
-- 🚀 **Deployment**: `./scripts/deploy.sh`
 - 🔒 **Security**: `./scripts/security-check.sh`
 
 ## 📚 **Documentation**
 
 ### **User Documentation**
-- 📖 [User Guide](docs/user-guide.md) - Complete usage instructions
 - 🚀 [Feature Documentation](docs/features/) - Detailed feature specifications
 - 🔒 [Privacy Policy](PRIVACY_POLICY.md) - Data handling practices
-- ❓ [FAQ](docs/faq.md) - Frequently asked questions
 
 ### **Developer Documentation**
 - 🏗️ [Implementation Status](IMPLEMENTATION_STATUS.md) - Technical overview
-- 🔧 [Development Setup](docs/development.md) - Local development guide
 - 🔒 [Security Guide](docs/SECURITY.md) - Security best practices
 - 🤖 [Automation Guide](.github/AUTOMATION_GUIDE.md) - CI/CD documentation
 
@@ -278,7 +276,7 @@ git checkout -b feature/amazing-feature
 
 - 🌟 **MIT Licensed**: Industry-standard open source license
 - 🏥 **Healthcare-Grade**: Privacy-first medical application
-- 🔒 **Security-First**: Enterprise-level security practices
+- 🔒 **Security-First**: Professional security practices
 - 🤖 **Automation Excellence**: Professional CI/CD pipeline
 
 ## 📄 **License**

@@ -17,6 +17,7 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
       $enumDecodeNullable(_$SyncModeEnumMap, json['syncMode']) ??
       SyncMode.localOnly,
   autoRestoreEnabled: json['autoRestoreEnabled'] as bool? ?? true,
+  languageCode: json['languageCode'] as String?,
 );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
@@ -26,6 +27,7 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
   'lastSyncTime': instance.lastSyncTime?.toIso8601String(),
   'syncMode': _$SyncModeEnumMap[instance.syncMode]!,
   'autoRestoreEnabled': instance.autoRestoreEnabled,
+  'languageCode': instance.languageCode,
 };
 
 const _$SyncModeEnumMap = {

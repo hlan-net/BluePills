@@ -11,6 +11,10 @@ import 'app_localizations.dart';
 import 'en/app_localizations_en.dart';
 import 'fi/app_localizations_fi.dart';
 
+import 'es/app_localizations_es.dart';
+import 'de/app_localizations_de.dart';
+import 'sv/app_localizations_sv.dart';
+
 /// Delegate for loading [AppLocalizations] based on the device's locale.
 ///
 /// This delegate is registered with MaterialApp to provide automatic
@@ -21,7 +25,7 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
 
   @override
   bool isSupported(Locale locale) {
-    return ['en', 'fi'].contains(locale.languageCode);
+    return ['en', 'fi', 'sv', 'de', 'es'].contains(locale.languageCode);
   }
 
   @override
@@ -29,6 +33,12 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
     switch (locale.languageCode) {
       case 'fi':
         return SynchronousFuture<AppLocalizations>(AppLocalizationsFi());
+      case 'sv':
+        return SynchronousFuture<AppLocalizations>(AppLocalizationsSv());
+      case 'de':
+        return SynchronousFuture<AppLocalizations>(AppLocalizationsDe());
+      case 'es':
+        return SynchronousFuture<AppLocalizations>(AppLocalizationsEs());
       default:
         return SynchronousFuture<AppLocalizations>(AppLocalizationsEn());
     }
