@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/screens/add_stock_screen.dart';
-import 'package:bluepills/database/database_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
 
 /// Screen displaying detailed information about a specific medication.
 ///
@@ -35,6 +36,8 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -48,11 +51,11 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Dosage: ${_medication.dosage}'),
+              Text('${localizations.dosageLabel} ${_medication.dosage}'),
               const SizedBox(height: 8),
-              Text('Frequency: ${_medication.frequency}'),
+              Text('${localizations.frequencyLabel} ${_medication.frequency.toString().split('.').last}'),
               const SizedBox(height: 8),
-              Text('Quantity: ${_medication.quantity}'),
+              Text('${localizations.quantityLabel} ${_medication.quantity}'),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {
@@ -75,7 +78,7 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
                     }
                   }
                 },
-                child: const Text('Add Stock'),
+                child: Text(localizations.addStock),
               ),
             ],
           ),

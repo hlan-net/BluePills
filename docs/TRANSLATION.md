@@ -1,30 +1,28 @@
-# Finnish to English Translation for BluePills
+# Multi-language Support for BluePills
 
-This document demonstrates the translation from Finnish to English for the BluePills medication management app.
+This document outlines the multi-language support in the BluePills application.
 
-## Translation Mapping
+## Supported Languages
 
-| Finnish (Original) | English (Translation) |
-|-------------------|----------------------|
-| SinisetPillerit | BluePills |
-| Minun lääkkeeni | My Medications |
-| Lääkkeitä ei ole vielä lisätty. | No medications added yet. |
-| Lisää lääke | Add Medication |
-| Muokkaa lääkettä | Edit Medication |
-| Lääkkeen nimi | Medication Name |
-| Annostus | Dosage |
-| Taajuus | Frequency |
-| Muistutusaika | Reminder Time |
-| Tallenna lääke | Save Medication |
-| Syötä lääkkeen nimi | Please enter a medication name |
-| Syötä annostus | Please enter the dosage |
-| Syötä taajuus | Please enter the frequency |
-| Virhe | Error |
+The application currently supports the following languages:
+
+- **English** (Default)
+- **Finnish**
+- **Swedish**
+- **German**
+- **Spanish**
+
+## Language Selection
+
+Users can select their preferred language from the settings screen. The available options are:
+
+- **Device Language**: The application will use the language of the device.
+- **English**
+- **Finnish**
+- **Swedish**
+- **German**
+- **Spanish**
 
 ## Implementation
 
-The app now supports both Finnish and English languages, with English being the default (effectively "translating" from Finnish to English). The localization system allows users to switch between languages, and the Finnish translations have been provided and mapped to their English equivalents.
-
-## Usage
-
-The app is configured to use English by default, which serves as the translation target from the Finnish source text. All UI elements that were previously hardcoded in English now use the localization system, allowing for proper translation support.
+The localization system has been expanded to include Swedish, German, and Spanish, in addition to the existing English and Finnish translations. The UI now includes a language selection dropdown in the settings, allowing users to switch between the supported languages dynamically. All user-facing strings have been externalized and translated.

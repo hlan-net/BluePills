@@ -90,12 +90,13 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
   void _saveMedication({bool addAnother = false}) async {
     if (_formKey.currentState!.validate()) {
+      final localizations = AppLocalizations.of(context)!;
       // Validate frequency pattern if using advanced mode
       if (_useAdvancedFrequency) {
         if (_selectedFrequencyPattern == null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please select a frequency pattern'),
+            SnackBar(
+              content: Text(localizations.pleaseSelectAFrequencyPattern),
               backgroundColor: Colors.orange,
             ),
           );
@@ -104,8 +105,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         if (_selectedFrequencyPattern!.type == FrequencyType.specificDays &&
             _selectedFrequencyPattern!.daysOfWeek.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please select at least one day'),
+            SnackBar(
+              content: Text(localizations.pleaseSelectAtLeastOneDay),
               backgroundColor: Colors.orange,
             ),
           );
@@ -155,10 +156,10 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
             // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Medication saved! Add another.'),
+              SnackBar(
+                content: Text(localizations.medicationSavedAddAnother),
                 backgroundColor: Colors.green,
-                duration: Duration(seconds: 2),
+                duration: const Duration(seconds: 2),
               ),
             );
           } else {
@@ -172,7 +173,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to save medication: $e'),
+              content: Text(localizations.failedToSaveMedication(e.toString())),
               backgroundColor: Colors.red,
               duration: const Duration(seconds: 5),
             ),
@@ -184,7 +185,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
+    final localizations = AppLocalizations.of(context)!;
 
     return PopScope(
       canPop: false,
@@ -196,8 +197,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         appBar: AppBar(
           title: Text(
             widget.medication == null
-                ? (localizations?.addMedication ?? 'Add Medication')
-                : (localizations?.editMedication ?? 'Edit Medication'),
+                ? localizations.addMedication
+                : localizations.editMedication,
           ),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         ),
@@ -210,13 +211,11 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText:
-                        localizations?.medicationName ?? 'Medication Name',
+                    labelText: localizations.medicationName,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return localizations?.pleaseEnterMedicationName ??
-                          'Please enter a medication name';
+                      return localizations.pleaseEnterMedicationName;
                     }
                     return null;
                   },
@@ -224,26 +223,25 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 TextFormField(
                   controller: _dosageController,
                   decoration: InputDecoration(
-                    labelText: localizations?.dosage ?? 'Dosage',
+                    labelText: localizations.dosage,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return localizations?.pleaseEnterDosage ??
-                          'Please enter the dosage';
+                      return localizations.pleaseEnterDosage;
                     }
                     return null;
                   },
                 ),
                 TextFormField(
                   controller: _quantityController,
-                  decoration: InputDecoration(labelText: 'Quantity'),
+                  decoration: InputDecoration(labelText: localizations.quantity),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter the quantity';
+                      return localizations.pleaseEnterTheQuantity;
                     }
                     if (int.tryParse(value) == null) {
-                      return 'Please enter a valid number';
+                      return localizations.pleaseEnterAValidNumber;
                     }
                     return null;
                   },
@@ -252,11 +250,11 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
 
                 // Frequency mode toggle
                 SwitchListTile(
-                  title: const Text('Use Advanced Frequency'),
+                  title: Text(localizations.useAdvancedFrequency),
                   subtitle: Text(
                     _useAdvancedFrequency
-                        ? 'Select specific days and patterns'
-                        : 'Use simple text frequency',
+                        ? localizations.selectSpecificDaysAndPatterns
+                        : localizations.useSimpleTextFrequency,
                   ),
                   value: _useAdvancedFrequency,
                   onChanged: (value) {
@@ -273,9 +271,24 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                     // ignore: deprecated_member_use
                     value: _selectedFrequency,
                     items: Frequency.values.map((Frequency frequency) {
+                      String frequencyText;
+                      switch (frequency) {
+                        case Frequency.onceDaily:
+                          frequencyText = localizations.onceDaily;
+                          break;
+                        case Frequency.twiceDaily:
+                          frequencyText = localizations.twiceDaily;
+                          break;
+                        case Frequency.threeTimesDaily:
+                          frequencyText = localizations.threeTimesDaily;
+                          break;
+                        case Frequency.asNeeded:
+                          frequencyText = localizations.asNeeded;
+                          break;
+                      }
                       return DropdownMenuItem<Frequency>(
                         value: frequency,
-                        child: Text(frequency.toString().split('.').last),
+                        child: Text(frequencyText),
                       );
                     }).toList(),
                     onChanged: (Frequency? newValue) {
@@ -284,7 +297,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                       });
                     },
                     decoration: InputDecoration(
-                      labelText: localizations?.frequency ?? 'Frequency',
+                      labelText: localizations.frequency,
                     ),
                   )
                 else
@@ -295,7 +308,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Frequency Pattern',
+                            localizations.frequencyPattern,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: 8),
@@ -325,7 +338,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                   ),
                 ListTile(
                   title: Text(
-                    '${localizations?.reminderTime ?? 'Reminder Time'}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
+                    '${localizations.reminderTime}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
                   ),
                   trailing: const Icon(Icons.access_time),
                   onTap: () => _selectTime(context),
@@ -337,7 +350,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                       child: ElevatedButton.icon(
                         onPressed: () => _saveMedication(addAnother: false),
                         icon: const Icon(Icons.check),
-                        label: Text(localizations?.saveMedication ?? 'Save'),
+                        label: Text(localizations.save),
                       ),
                     ),
                     if (widget.medication == null) ...[
@@ -346,7 +359,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                         child: ElevatedButton.icon(
                           onPressed: () => _saveMedication(addAnother: true),
                           icon: const Icon(Icons.add),
-                          label: const Text('Save & Add More'),
+                          label: Text(localizations.saveAndAddMore),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,

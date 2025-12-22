@@ -5,6 +5,7 @@
 library;
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
 
 part 'app_config.g.dart';
 
@@ -33,6 +34,9 @@ class AppConfig {
   /// Whether automatic restore from Google Drive is enabled.
   final bool autoRestoreEnabled;
 
+  /// The selected language code. If null, the device language is used.
+  final String? languageCode;
+
   /// Creates a new [AppConfig] instance with default values.
   ///
   /// By default, sync is disabled and the sync mode is set to [SyncMode.localOnly].
@@ -43,6 +47,7 @@ class AppConfig {
     this.lastSyncTime,
     this.syncMode = SyncMode.localOnly,
     this.autoRestoreEnabled = true,
+    this.languageCode,
   });
 
   /// Creates an [AppConfig] instance from JSON data.
@@ -63,6 +68,7 @@ class AppConfig {
     DateTime? lastSyncTime,
     SyncMode? syncMode,
     bool? autoRestoreEnabled,
+    String? languageCode,
   }) {
     return AppConfig(
       syncEnabled: syncEnabled ?? this.syncEnabled,
@@ -71,6 +77,7 @@ class AppConfig {
       lastSyncTime: lastSyncTime ?? this.lastSyncTime,
       syncMode: syncMode ?? this.syncMode,
       autoRestoreEnabled: autoRestoreEnabled ?? this.autoRestoreEnabled,
+      languageCode: languageCode ?? this.languageCode,
     );
   }
 }
@@ -97,14 +104,14 @@ extension SyncModeExtension on SyncMode {
   }
 
   /// Returns a detailed description of what this sync mode does.
-  String get description {
+  String description(AppLocalizations localizations) {
     switch (this) {
       case SyncMode.localOnly:
-        return 'Store data locally on this device only';
+        return localizations.syncModeLocalOnlyDescription;
       case SyncMode.syncEnabled:
-        return 'Store locally and sync with BlueSky';
+        return localizations.syncModeSyncEnabledDescription;
       case SyncMode.syncOnly:
-        return 'Store only on BlueSky (requires internet)';
+        return localizations.syncModeSyncOnlyDescription;
     }
   }
 }

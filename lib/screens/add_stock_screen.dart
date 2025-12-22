@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/database/database_helper.dart';
+import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
 /// Screen for adding stock to an existing medication.
 ///
@@ -38,6 +39,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   void _saveStock() async {
+    final localizations = AppLocalizations.of(context)!;
     if (_formKey.currentState!.validate()) {
       final quantity = int.tryParse(_quantityController.text) ?? 0;
       final updatedMedication = widget.medication.copyWith(
@@ -51,8 +53,10 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Add Stock for ${widget.medication.name}')),
+      appBar: AppBar(title: Text(localizations.addStockFor(widget.medication.name))),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -61,14 +65,14 @@ class _AddStockScreenState extends State<AddStockScreen> {
             children: [
               TextFormField(
                 controller: _quantityController,
-                decoration: const InputDecoration(labelText: 'Quantity'),
+                decoration: InputDecoration(labelText: localizations.quantity),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the quantity';
+                    return localizations.pleaseEnterTheQuantity;
                   }
                   if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
+                    return localizations.pleaseEnterAValidNumber;
                   }
                   return null;
                 },
@@ -76,7 +80,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _saveStock,
-                child: const Text('Save Stock'),
+                child: Text(localizations.saveStock),
               ),
             ],
           ),
