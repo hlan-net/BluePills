@@ -1,3 +1,9 @@
+/// Service for integrating with Google Drive for backup functionality.
+///
+/// This library provides Google Drive backup and restore capabilities using
+/// the Google Drive API and OAuth 2.0 authentication.
+library;
+
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
@@ -5,19 +11,32 @@ import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart';
 import 'package:http/http.dart' as http;
 import 'package:rxdart/rxdart.dart'; // Import for BehaviorSubject
 
-/// TODO: Replace with your actual Google Cloud Console credentials
-/// Create OAuth 2.0 Client IDs for 'Web application' and 'Desktop app'.
-/// The Web application Client ID is used for `clientId`.
-/// The Desktop app Client Secret is used for `clientSecret` (only for desktop platforms).
+/// Google Cloud Console OAuth 2.0 credentials for Google Drive integration.
+///
+/// To use Google Drive backup functionality, you need to:
+/// 1. Create OAuth 2.0 Client IDs in Google Cloud Console
+/// 2. Create a 'Web application' Client ID for [_kGoogleClientId]
+/// 3. Create a 'Desktop app' Client Secret for [_kGoogleClientSecret] (desktop platforms only)
+/// 4. Replace the placeholder values below with your actual credentials
 const String _kGoogleClientId = 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com';
 const String _kGoogleClientSecret =
     'YOUR_DESKTOP_CLIENT_SECRET'; // Only for desktop
 
+/// HTTP client that adds Google OAuth 2.0 authentication headers to requests.
+///
+/// This client wraps a standard HTTP client and automatically adds the
+/// Authorization and X-Identity-Token headers required for Google API requests.
 class GoogleAuthClient extends http.BaseClient {
   final String _accessToken;
   final String _idToken;
   final http.Client _inner;
 
+  /// Creates a new [GoogleAuthClient] with the provided OAuth tokens.
+  ///
+  /// Parameters:
+  /// - [_accessToken]: The OAuth 2.0 access token
+  /// - [_idToken]: The OpenID Connect ID token
+  /// - [inner]: Optional HTTP client to wrap (defaults to a new [http.Client])
   GoogleAuthClient(this._accessToken, this._idToken, [http.Client? inner])
     : _inner = inner ?? http.Client();
 
@@ -29,6 +48,25 @@ class GoogleAuthClient extends http.BaseClient {
   }
 }
 
+/// Singleton service for Google Drive backup and restore operations.
+///
+/// This service manages Google Sign-In authentication and provides methods
+/// to backup and restore the BluePills database to/from Google Drive's
+/// app data folder. All backups are stored in the private app data folder,
+/// which is not accessible to users or other applications.
+///
+/// Example usage:
+/// ```dart
+/// final driveService = GoogleDriveService();
+///
+/// // Sign in to Google
+/// final credentials = await driveService.signIn();
+///
+/// // Upload backup
+/// if (credentials != null) {
+///   await driveService.uploadBackup(databaseFile);
+/// }
+/// ```
 class GoogleDriveService {
   static const _scopes = [drive.DriveApi.driveAppdataScope];
 
@@ -55,10 +93,20 @@ class GoogleDriveService {
     });
   }
 
+  /// Returns the currently signed-in user's credentials, or null if not signed in.
   GoogleSignInCredentials? get currentUser => _currentCredentials.value;
+  
+  /// Stream of authentication state changes.
+  ///
+  /// Emits the current user's credentials whenever the sign-in state changes.
   Stream<GoogleSignInCredentials?> get onCurrentUserChanged =>
       _currentCredentials.stream;
 
+  /// Signs in the user to their Google account.
+  ///
+  /// Shows the Google Sign-In UI and requests permission to access the
+  /// Drive app data folder. Returns the user's credentials if successful,
+  /// or null if the sign-in was cancelled or failed.
   Future<GoogleSignInCredentials?> signIn() async {
     try {
       final credentials = await _googleSignIn.signIn();
@@ -69,6 +117,11 @@ class GoogleDriveService {
     }
   }
 
+  /// Attempts to sign in silently using cached credentials.
+  ///
+  /// This method tries to authenticate without showing any UI, using
+  /// previously saved credentials. Returns the user's credentials if
+  /// successful, or null if silent sign-in is not possible.
   Future<GoogleSignInCredentials?> signInSilently() async {
     try {
       final credentials = await _googleSignIn.silentSignIn();
@@ -79,6 +132,9 @@ class GoogleDriveService {
     }
   }
 
+  /// Signs the user out of their Google account.
+  ///
+  /// Clears all cached credentials and revokes access to the app.
   Future<void> signOut() async {
     await _googleSignIn.signOut();
   }
@@ -94,6 +150,16 @@ class GoogleDriveService {
     return drive.DriveApi(client);
   }
 
+  /// Uploads a database backup file to Google Drive.
+  ///
+  /// The backup is stored in the app's private data folder on Google Drive
+  /// with the filename 'bluepills_backup.db'. If a backup already exists,
+  /// it will be updated with the new file contents.
+  ///
+  /// Throws an [Exception] if the user is not signed in.
+  ///
+  /// Parameters:
+  /// - [file]: The database file to upload
   Future<void> uploadBackup(File file) async {
     final api = await _getDriveApi();
     if (api == null) throw Exception('Not signed in');
@@ -117,6 +183,10 @@ class GoogleDriveService {
     }
   }
 
+  /// Retrieves metadata for the backup file from Google Drive.
+  ///
+  /// Returns information about the backup including its ID, name, modification
+  /// time, and size. Returns null if no backup exists or the user is not signed in.
   Future<drive.File?> getBackupMetadata() async {
     final api = await _getDriveApi();
     if (api == null) return null;
@@ -133,6 +203,16 @@ class GoogleDriveService {
     return null;
   }
 
+  /// Downloads a backup file from Google Drive to the local device.
+  ///
+  /// Retrieves the backup file with the specified ID from Google Drive
+  /// and saves it to the target file location.
+  ///
+  /// Throws an [Exception] if the user is not signed in.
+  ///
+  /// Parameters:
+  /// - [fileId]: The Google Drive file ID of the backup
+  /// - [targetFile]: The local file where the backup will be saved
   Future<void> downloadBackup(String fileId, File targetFile) async {
     final api = await _getDriveApi();
     if (api == null) throw Exception('Not signed in');
