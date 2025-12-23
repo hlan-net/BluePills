@@ -10,6 +10,7 @@
 /// - Multi-language support (English and Finnish)
 library;
 
+import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -98,6 +99,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final ConfigService _configService = ConfigService();
   Locale? _locale;
+  Timer? _configRefreshTimer;
 
   @override
   void initState() {
@@ -105,14 +107,16 @@ class _MyAppState extends State<MyApp> {
     _updateLocale();
     // This is a bit of a hack. A better solution would be to use a state management solution.
     // For the sake of this exercise, we'll just re-read the config every second.
-    // A better solution would be to have the ConfigService be a listenable.
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) {
-        _updateLocale();
-      }
-      return mounted;
+    _configRefreshTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      _updateLocale();
     });
+  }
+
+  @override
+  void dispose() {
+    _configRefreshTimer?.cancel();
+    super.dispose();
   }
 
   void _updateLocale() {
@@ -172,7 +176,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   late AnimationController _animationController;
   late Animation<double> _animation;
 
-  String _getFrequencyText(Frequency frequency, AppLocalizations localizations) {
+  String _getFrequencyText(
+    Frequency frequency,
+    AppLocalizations localizations,
+  ) {
     switch (frequency) {
       case Frequency.onceDaily:
         return localizations.onceDaily;
@@ -250,11 +257,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
     if (medications.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            localizations.noMedicationsAvailable,
-          ),
-        ),
+        SnackBar(content: Text(localizations.noMedicationsAvailable)),
       );
       return;
     }
@@ -310,7 +313,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(localizations.noMedicationLeftInStock(selectedMed.name)),
+            content: Text(
+              localizations.noMedicationLeftInStock(selectedMed.name),
+            ),
             backgroundColor: Colors.orange,
           ),
         );
@@ -381,9 +386,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
-              child: Text(
-                '${localizations.error}: ${snapshot.error}',
-              ),
+              child: Text('${localizations.error}: ${snapshot.error}'),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
@@ -457,7 +460,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
-                                      localizations.takenOf(takenCount, totalCount),
+                                      localizations.takenOf(
+                                        takenCount,
+                                        totalCount,
+                                      ),
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
@@ -528,7 +534,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                               ).showSnackBar(
                                                 SnackBar(
                                                   content: Text(
-                                                    localizations.markedAsTaken(med.name),
+                                                    localizations.markedAsTaken(
+                                                      med.name,
+                                                    ),
                                                   ),
                                                   backgroundColor: Colors.green,
                                                   duration: const Duration(
@@ -554,7 +562,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                   padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Text(
                     localizations.allMedications,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 ...List.generate(medications.length, (index) {
@@ -611,7 +622,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                 builder: (context) => AlertDialog(
                                   title: Text(localizations.deleteMedication),
                                   content: Text(
-                                    localizations.areYouSureYouWantToDeleteThisMedication,
+                                    localizations
+                                        .areYouSureYouWantToDeleteThisMedication,
                                   ),
                                   actions: [
                                     TextButton(

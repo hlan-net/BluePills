@@ -80,7 +80,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spanish => 'Spanish';
 
   @override
-  String get noMedicationsAvailable => 'No medications available. Please add a medication first.';
+  String get noMedicationsAvailable =>
+      'No medications available. Please add a medication first.';
 
   @override
   String get selectMedication => 'Select Medication';
@@ -89,16 +90,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String loggedDoseFor(String medicationName) => 'Logged dose for $medicationName';
+  String loggedDoseFor(String medicationName) =>
+      'Logged dose for $medicationName';
 
   @override
-  String noMedicationLeftInStock(String medicationName) => 'No $medicationName left in stock';
+  String noMedicationLeftInStock(String medicationName) =>
+      'No $medicationName left in stock';
 
   @override
-  String get setReminderFeatureComingSoon => 'Set reminder feature - coming soon!';
+  String get setReminderFeatureComingSoon =>
+      'Set reminder feature - coming soon!';
 
   @override
-  String get tapThePlusButtonToAdd => 'Tap the + button to add your first medication';
+  String get tapThePlusButtonToAdd =>
+      'Tap the + button to add your first medication';
 
   @override
   String get todaysMedications => "Today's Medications";
@@ -107,7 +112,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String takenOf(int taken, int total) => '$taken of $total taken';
 
   @override
-  String markedAsTaken(String medicationName) => '✓ $medicationName marked as taken';
+  String markedAsTaken(String medicationName) =>
+      '✓ $medicationName marked as taken';
 
   @override
   String get allMedications => 'All Medications';
@@ -116,7 +122,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteMedication => 'Delete Medication?';
 
   @override
-  String get areYouSureYouWantToDeleteThisMedication => 'Are you sure you want to delete this medication?';
+  String get areYouSureYouWantToDeleteThisMedication =>
+      'Are you sure you want to delete this medication?';
 
   @override
   String get delete => 'Delete';
@@ -134,7 +141,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get add => 'Add';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Please select a frequency pattern';
+  String get pleaseSelectAFrequencyPattern =>
+      'Please select a frequency pattern';
 
   @override
   String get pleaseSelectAtLeastOneDay => 'Please select at least one day';
@@ -143,7 +151,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get medicationSavedAddAnother => 'Medication saved! Add another.';
 
   @override
-  String failedToSaveMedication(String error) => 'Failed to save medication: $error';
+  String failedToSaveMedication(String error) =>
+      'Failed to save medication: $error';
 
   @override
   String get quantity => 'Quantity';
@@ -158,7 +167,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useAdvancedFrequency => 'Use Advanced Frequency';
 
   @override
-  String get selectSpecificDaysAndPatterns => 'Select specific days and patterns';
+  String get selectSpecificDaysAndPatterns =>
+      'Select specific days and patterns';
 
   @override
   String get useSimpleTextFrequency => 'Use simple text frequency';
@@ -252,7 +262,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String failedToDisableSync(String error) => 'Failed to disable sync: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky sync enabled successfully!';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky sync enabled successfully!';
 
   @override
   String failedToEnableSync(String error) => 'Failed to enable sync: $error';
@@ -329,7 +340,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get licenseAndLegal => 'License & Legal';
 
   @override
-  String get mitLicense => 'BluePills is open source software licensed under the MIT License.';
+  String get mitLicense =>
+      'BluePills is open source software licensed under the MIT License.';
 
   @override
   String get medicalDisclaimer => 'Medical Disclaimer';
@@ -339,11 +351,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'This software is for informational purposes only and is not intended to replace professional medical advice, diagnosis, or treatment. Always consult healthcare professionals regarding your medications.';
 
   @override
-  String get syncModeLocalOnlyDescription => 'Store data locally on this device only';
+  String get syncModeLocalOnlyDescription =>
+      'Store data locally on this device only';
 
   @override
-  String get syncModeSyncEnabledDescription => 'Store locally and sync with BlueSky';
+  String get syncModeSyncEnabledDescription =>
+      'Store locally and sync with BlueSky';
 
   @override
-  String get syncModeSyncOnlyDescription => 'Store only on BlueSky (requires internet connection)';
+  String get syncModeSyncOnlyDescription =>
+      'Store only on BlueSky (requires internet connection)';
 }

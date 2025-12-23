@@ -80,7 +80,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get spanish => 'Spanska';
 
   @override
-  String get noMedicationsAvailable => 'Inga mediciner tillgängliga. Lägg till en medicin först.';
+  String get noMedicationsAvailable =>
+      'Inga mediciner tillgängliga. Lägg till en medicin först.';
 
   @override
   String get selectMedication => 'Välj medicin';
@@ -89,16 +90,20 @@ class AppLocalizationsSv extends AppLocalizations {
   String get cancel => 'Avbryt';
 
   @override
-  String loggedDoseFor(String medicationName) => 'Dos loggad för $medicationName';
+  String loggedDoseFor(String medicationName) =>
+      'Dos loggad för $medicationName';
 
   @override
-  String noMedicationLeftInStock(String medicationName) => 'Ingen $medicationName kvar i lager';
+  String noMedicationLeftInStock(String medicationName) =>
+      'Ingen $medicationName kvar i lager';
 
   @override
-  String get setReminderFeatureComingSoon => 'Ställ in påminnelsefunktion - kommer snart!';
+  String get setReminderFeatureComingSoon =>
+      'Ställ in påminnelsefunktion - kommer snart!';
 
   @override
-  String get tapThePlusButtonToAdd => 'Tryck på + -knappen för att lägga till din första medicin';
+  String get tapThePlusButtonToAdd =>
+      'Tryck på + -knappen för att lägga till din första medicin';
 
   @override
   String get todaysMedications => "Dagens mediciner";
@@ -107,7 +112,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String takenOf(int taken, int total) => '$taken av $total tagna';
 
   @override
-  String markedAsTaken(String medicationName) => '✓ $medicationName markerad som tagen';
+  String markedAsTaken(String medicationName) =>
+      '✓ $medicationName markerad som tagen';
 
   @override
   String get allMedications => 'Alla mediciner';
@@ -116,7 +122,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get deleteMedication => 'Ta bort medicin?';
 
   @override
-  String get areYouSureYouWantToDeleteThisMedication => 'Är du säker på att du vill ta bort den här medicinen?';
+  String get areYouSureYouWantToDeleteThisMedication =>
+      'Är du säker på att du vill ta bort den här medicinen?';
 
   @override
   String get delete => 'Ta bort';
@@ -134,7 +141,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get add => 'Lägg till';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Vänligen välj ett frekvensmönster';
+  String get pleaseSelectAFrequencyPattern =>
+      'Vänligen välj ett frekvensmönster';
 
   @override
   String get pleaseSelectAtLeastOneDay => 'Vänligen välj minst en dag';
@@ -143,7 +151,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get medicationSavedAddAnother => 'Medicin sparad! Lägg till en till.';
 
   @override
-  String failedToSaveMedication(String error) => 'Kunde inte spara medicin: $error';
+  String failedToSaveMedication(String error) =>
+      'Kunde inte spara medicin: $error';
 
   @override
   String get quantity => 'Kvantitet';
@@ -158,7 +167,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get useAdvancedFrequency => 'Använd avancerad frekvens';
 
   @override
-  String get selectSpecificDaysAndPatterns => 'Välj specifika dagar och mönster';
+  String get selectSpecificDaysAndPatterns =>
+      'Välj specifika dagar och mönster';
 
   @override
   String get useSimpleTextFrequency => 'Använd enkel textfrekvens';
@@ -197,7 +207,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get addStock => 'Lägg till i lager';
 
   @override
-  String addStockFor(String medicationName) => 'Lägg till i lager för $medicationName';
+  String addStockFor(String medicationName) =>
+      'Lägg till i lager för $medicationName';
 
   @override
   String get saveStock => 'Spara lager';
@@ -249,13 +260,16 @@ class AppLocalizationsSv extends AppLocalizations {
   String get blueskySyncDisabled => 'BlueSky-synkronisering inaktiverad';
 
   @override
-  String failedToDisableSync(String error) => 'Misslyckades med att inaktivera synkronisering: $error';
+  String failedToDisableSync(String error) =>
+      'Misslyckades med att inaktivera synkronisering: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky-synkronisering har aktiverats!';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky-synkronisering har aktiverats!';
 
   @override
-  String failedToEnableSync(String error) => 'Misslyckades med att aktivera synkronisering: $error';
+  String failedToEnableSync(String error) =>
+      'Misslyckades med att aktivera synkronisering: $error';
 
   @override
   String get googleDriveBackup => 'Google Drive-säkerhetskopia';
@@ -267,7 +281,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get autoRestoreFromBackup => 'Auto-återställ från säkerhetskopia';
 
   @override
-  String get restoreNewerBackupOnStartup => 'Återställ nyare säkerhetskopia vid start';
+  String get restoreNewerBackupOnStartup =>
+      'Återställ nyare säkerhetskopia vid start';
 
   @override
   String get backupNow => 'Säkerhetskopiera nu';
@@ -282,7 +297,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get backupSuccessful => 'Säkerhetskopiering lyckades!';
 
   @override
-  String backupFailed(String error) => 'Säkerhetskopiering misslyckades: $error';
+  String backupFailed(String error) =>
+      'Säkerhetskopiering misslyckades: $error';
 
   @override
   String get restoreSuccessful => 'Återställning lyckades! Starta om appen.';
@@ -306,13 +322,15 @@ class AppLocalizationsSv extends AppLocalizations {
   String get dataImportedSuccessfully => 'Data importerades framgångsrikt!';
 
   @override
-  String failedToImportData(String error) => 'Misslyckades med att importera data: $error';
+  String failedToImportData(String error) =>
+      'Misslyckades med att importera data: $error';
 
   @override
   String get dataExportedSuccessfully => 'Data exporterades framgångsrikt!';
 
   @override
-  String failedToExportData(String error) => 'Misslyckades med att exportera data: $error';
+  String failedToExportData(String error) =>
+      'Misslyckades med att exportera data: $error';
 
   @override
   String get aboutBlueSkyIntegration => 'Om BlueSky-integration';
@@ -329,7 +347,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get licenseAndLegal => 'Licens och juridiskt';
 
   @override
-  String get mitLicense => 'BluePills är öppen källkodsprogramvara licensierad under MIT-licensen.';
+  String get mitLicense =>
+      'BluePills är öppen källkodsprogramvara licensierad under MIT-licensen.';
 
   @override
   String get medicalDisclaimer => 'Medicinsk ansvarsfriskrivning';
@@ -339,11 +358,14 @@ class AppLocalizationsSv extends AppLocalizations {
       'Denna programvara är endast avsedd för informationsändamål och är inte avsedd att ersätta professionell medicinsk rådgivning, diagnos eller behandling. Rådgör alltid med sjukvårdspersonal angående dina mediciner.';
 
   @override
-  String get syncModeLocalOnlyDescription => 'Lagra data endast lokalt på denna enhet';
+  String get syncModeLocalOnlyDescription =>
+      'Lagra data endast lokalt på denna enhet';
 
   @override
-  String get syncModeSyncEnabledDescription => 'Lagra lokalt och synkronisera med BlueSky';
+  String get syncModeSyncEnabledDescription =>
+      'Lagra lokalt och synkronisera med BlueSky';
 
   @override
-  String get syncModeSyncOnlyDescription => 'Lagra endast på BlueSky (kräver internetanslutning)';
+  String get syncModeSyncOnlyDescription =>
+      'Lagra endast på BlueSky (kräver internetanslutning)';
 }

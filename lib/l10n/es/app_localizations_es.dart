@@ -41,7 +41,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get saveMedication => 'Guardar Medicamento';
 
   @override
-  String get pleaseEnterMedicationName => 'Por favor, introduzca un nombre de medicamento';
+  String get pleaseEnterMedicationName =>
+      'Por favor, introduzca un nombre de medicamento';
 
   @override
   String get pleaseEnterDosage => 'Por favor, introduzca la dosis';
@@ -80,7 +81,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get spanish => 'Español';
 
   @override
-  String get noMedicationsAvailable => 'No hay medicamentos disponibles. Agregue un medicamento primero.';
+  String get noMedicationsAvailable =>
+      'No hay medicamentos disponibles. Agregue un medicamento primero.';
 
   @override
   String get selectMedication => 'Seleccionar medicamento';
@@ -89,16 +91,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancel => 'Cancelar';
 
   @override
-  String loggedDoseFor(String medicationName) => 'Dosis registrada para $medicationName';
+  String loggedDoseFor(String medicationName) =>
+      'Dosis registrada para $medicationName';
 
   @override
-  String noMedicationLeftInStock(String medicationName) => 'No queda $medicationName en stock';
+  String noMedicationLeftInStock(String medicationName) =>
+      'No queda $medicationName en stock';
 
   @override
-  String get setReminderFeatureComingSoon => 'Función de recordatorio - ¡próximamente!';
+  String get setReminderFeatureComingSoon =>
+      'Función de recordatorio - ¡próximamente!';
 
   @override
-  String get tapThePlusButtonToAdd => 'Toca el botón + para agregar tu primer medicamento';
+  String get tapThePlusButtonToAdd =>
+      'Toca el botón + para agregar tu primer medicamento';
 
   @override
   String get todaysMedications => "Medicamentos de hoy";
@@ -107,7 +113,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String takenOf(int taken, int total) => '$taken de $total tomados';
 
   @override
-  String markedAsTaken(String medicationName) => '✓ $medicationName marcado como tomado';
+  String markedAsTaken(String medicationName) =>
+      '✓ $medicationName marcado como tomado';
 
   @override
   String get allMedications => 'Todos los medicamentos';
@@ -116,7 +123,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deleteMedication => '¿Eliminar medicamento?';
 
   @override
-  String get areYouSureYouWantToDeleteThisMedication => '¿Estás seguro de que quieres eliminar este medicamento?';
+  String get areYouSureYouWantToDeleteThisMedication =>
+      '¿Estás seguro de que quieres eliminar este medicamento?';
 
   @override
   String get delete => 'Eliminar';
@@ -134,16 +142,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get add => 'Añadir';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Por favor, seleccione un patrón de frecuencia';
+  String get pleaseSelectAFrequencyPattern =>
+      'Por favor, seleccione un patrón de frecuencia';
 
   @override
-  String get pleaseSelectAtLeastOneDay => 'Por favor, seleccione al menos un día';
+  String get pleaseSelectAtLeastOneDay =>
+      'Por favor, seleccione al menos un día';
 
   @override
   String get medicationSavedAddAnother => '¡Medicamento guardado! Añadir otro.';
 
   @override
-  String failedToSaveMedication(String error) => 'Error al guardar el medicamento: $error';
+  String failedToSaveMedication(String error) =>
+      'Error al guardar el medicamento: $error';
 
   @override
   String get quantity => 'Cantidad';
@@ -152,13 +163,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pleaseEnterTheQuantity => 'Por favor, introduzca la cantidad';
 
   @override
-  String get pleaseEnterAValidNumber => 'Por favor, introduzca un número válido';
+  String get pleaseEnterAValidNumber =>
+      'Por favor, introduzca un número válido';
 
   @override
   String get useAdvancedFrequency => 'Usar frecuencia avanzada';
 
   @override
-  String get selectSpecificDaysAndPatterns => 'Seleccionar días y patrones específicos';
+  String get selectSpecificDaysAndPatterns =>
+      'Seleccionar días y patrones específicos';
 
   @override
   String get useSimpleTextFrequency => 'Usar frecuencia de texto simple';
@@ -197,7 +210,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addStock => 'Añadir existencias';
 
   @override
-  String addStockFor(String medicationName) => 'Añadir existencias para $medicationName';
+  String addStockFor(String medicationName) =>
+      'Añadir existencias para $medicationName';
 
   @override
   String get saveStock => 'Guardar existencias';
@@ -212,10 +226,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yourHandleBskySocial => 'tu.usuario.bsky.social';
 
   @override
-  String get pleaseEnterYourBlueskyHandle => 'Por favor, introduzca su usuario de BlueSky';
+  String get pleaseEnterYourBlueskyHandle =>
+      'Por favor, introduzca su usuario de BlueSky';
 
   @override
-  String get personalDataServerPDSURL => 'URL del servidor de datos personales (PDS)';
+  String get personalDataServerPDSURL =>
+      'URL del servidor de datos personales (PDS)';
 
   @override
   String get yourPdsExampleCom => 'https://tu-pds.ejemplo.com';
@@ -249,13 +265,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get blueskySyncDisabled => 'Sincronización de BlueSky deshabilitada';
 
   @override
-  String failedToDisableSync(String error) => 'Error al deshabilitar la sincronización: $error';
+  String failedToDisableSync(String error) =>
+      'Error al deshabilitar la sincronización: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => '¡Sincronización de BlueSky habilitada con éxito!';
+  String get blueskySyncEnabledSuccessfully =>
+      '¡Sincronización de BlueSky habilitada con éxito!';
 
   @override
-  String failedToEnableSync(String error) => 'Error al habilitar la sincronización: $error';
+  String failedToEnableSync(String error) =>
+      'Error al habilitar la sincronización: $error';
 
   @override
   String get googleDriveBackup => 'Copia de seguridad de Google Drive';
@@ -264,10 +283,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String connectedAs(String userId) => 'Conectado como: $userId';
 
   @override
-  String get autoRestoreFromBackup => 'Restauración automática desde la copia de seguridad';
+  String get autoRestoreFromBackup =>
+      'Restauración automática desde la copia de seguridad';
 
   @override
-  String get restoreNewerBackupOnStartup => 'Restaurar copia de seguridad más reciente al iniciar';
+  String get restoreNewerBackupOnStartup =>
+      'Restaurar copia de seguridad más reciente al iniciar';
 
   @override
   String get backupNow => 'Hacer copia de seguridad ahora';
@@ -285,7 +306,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String backupFailed(String error) => 'Error en la copia de seguridad: $error';
 
   @override
-  String get restoreSuccessful => '¡Restauración exitosa! Por favor, reinicie la aplicación.';
+  String get restoreSuccessful =>
+      '¡Restauración exitosa! Por favor, reinicie la aplicación.';
 
   @override
   String get noBackupFound => 'No se encontró ninguna copia de seguridad.';
@@ -329,7 +351,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get licenseAndLegal => 'Licencia y legal';
 
   @override
-  String get mitLicense => 'BluePills es un software de código abierto con licencia MIT.';
+  String get mitLicense =>
+      'BluePills es un software de código abierto con licencia MIT.';
 
   @override
   String get medicalDisclaimer => 'Descargo de responsabilidad médica';
@@ -339,11 +362,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Este software es solo para fines informativos y no pretende reemplazar el consejo, diagnóstico o tratamiento médico profesional. Siempre consulte a profesionales de la salud con respecto a sus medicamentos.';
 
   @override
-  String get syncModeLocalOnlyDescription => 'Almacenar datos solo localmente en este dispositivo';
+  String get syncModeLocalOnlyDescription =>
+      'Almacenar datos solo localmente en este dispositivo';
 
   @override
-  String get syncModeSyncEnabledDescription => 'Almacenar localmente y sincronizar con BlueSky';
+  String get syncModeSyncEnabledDescription =>
+      'Almacenar localmente y sincronizar con BlueSky';
 
   @override
-  String get syncModeSyncOnlyDescription => 'Almacenar solo en BlueSky (requiere conexión a internet)';
+  String get syncModeSyncOnlyDescription =>
+      'Almacenar solo en BlueSky (requiere conexión a internet)';
 }

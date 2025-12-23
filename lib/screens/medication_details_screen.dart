@@ -53,7 +53,9 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
             children: [
               Text('${localizations.dosageLabel} ${_medication.dosage}'),
               const SizedBox(height: 8),
-              Text('${localizations.frequencyLabel} ${_medication.frequency.toString().split('.').last}'),
+              Text(
+                '${localizations.frequencyLabel} ${_medication.frequency.toString().split('.').last}',
+              ),
               const SizedBox(height: 8),
               Text('${localizations.quantityLabel} ${_medication.quantity}'),
               const SizedBox(height: 16),

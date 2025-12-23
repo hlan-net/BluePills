@@ -80,7 +80,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get spanish => 'Espanja';
 
   @override
-  String get noMedicationsAvailable => 'Lääkkeitä ei ole saatavilla. Lisää ensin lääke.';
+  String get noMedicationsAvailable =>
+      'Lääkkeitä ei ole saatavilla. Lisää ensin lääke.';
 
   @override
   String get selectMedication => 'Valitse lääke';
@@ -89,16 +90,20 @@ class AppLocalizationsFi extends AppLocalizations {
   String get cancel => 'Peruuta';
 
   @override
-  String loggedDoseFor(String medicationName) => 'Annos kirjattu lääkkeelle $medicationName';
+  String loggedDoseFor(String medicationName) =>
+      'Annos kirjattu lääkkeelle $medicationName';
 
   @override
-  String noMedicationLeftInStock(String medicationName) => '$medicationName on loppu varastosta';
+  String noMedicationLeftInStock(String medicationName) =>
+      '$medicationName on loppu varastosta';
 
   @override
-  String get setReminderFeatureComingSoon => 'Aseta muistutus -ominaisuus - tulossa pian!';
+  String get setReminderFeatureComingSoon =>
+      'Aseta muistutus -ominaisuus - tulossa pian!';
 
   @override
-  String get tapThePlusButtonToAdd => 'Napauta + -painiketta lisätäksesi ensimmäisen lääkkeesi';
+  String get tapThePlusButtonToAdd =>
+      'Napauta + -painiketta lisätäksesi ensimmäisen lääkkeesi';
 
   @override
   String get todaysMedications => "Tämän päivän lääkkeet";
@@ -107,7 +112,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String takenOf(int taken, int total) => '$taken/$total otettu';
 
   @override
-  String markedAsTaken(String medicationName) => '✓ $medicationName merkitty otetuksi';
+  String markedAsTaken(String medicationName) =>
+      '✓ $medicationName merkitty otetuksi';
 
   @override
   String get allMedications => 'Kaikki lääkkeet';
@@ -116,7 +122,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get deleteMedication => 'Poista lääke?';
 
   @override
-  String get areYouSureYouWantToDeleteThisMedication => 'Haluatko varmasti poistaa tämän lääkkeen?';
+  String get areYouSureYouWantToDeleteThisMedication =>
+      'Haluatko varmasti poistaa tämän lääkkeen?';
 
   @override
   String get delete => 'Poista';
@@ -143,7 +150,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get medicationSavedAddAnother => 'Lääke tallennettu! Lisää toinen.';
 
   @override
-  String failedToSaveMedication(String error) => 'Lääkkeen tallentaminen epäonnistui: $error';
+  String failedToSaveMedication(String error) =>
+      'Lääkkeen tallentaminen epäonnistui: $error';
 
   @override
   String get quantity => 'Määrä';
@@ -161,7 +169,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get selectSpecificDaysAndPatterns => 'Valitse tietyt päivät ja kuviot';
 
   @override
-  String get useSimpleTextFrequency => 'Käytä yksinkertaista tekstitoistuvuutta';
+  String get useSimpleTextFrequency =>
+      'Käytä yksinkertaista tekstitoistuvuutta';
 
   @override
   String get frequencyPattern => 'Toistokuvio';
@@ -197,7 +206,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get addStock => 'Lisää varastoon';
 
   @override
-  String addStockFor(String medicationName) => 'Lisää varastoon lääkettä $medicationName';
+  String addStockFor(String medicationName) =>
+      'Lisää varastoon lääkettä $medicationName';
 
   @override
   String get saveStock => 'Tallenna varasto';
@@ -215,7 +225,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get pleaseEnterYourBlueskyHandle => 'Anna BlueSky-kahvasi';
 
   @override
-  String get personalDataServerPDSURL => 'Henkilökohtaisen datapalvelimen (PDS) URL-osoite';
+  String get personalDataServerPDSURL =>
+      'Henkilökohtaisen datapalvelimen (PDS) URL-osoite';
 
   @override
   String get yourPdsExampleCom => 'https://sinun-pds.esimerkki.com';
@@ -249,13 +260,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get blueskySyncDisabled => 'BlueSky-synkronointi poistettu käytöstä';
 
   @override
-  String failedToDisableSync(String error) => 'Synkronoinnin poistaminen käytöstä epäonnistui: $error';
+  String failedToDisableSync(String error) =>
+      'Synkronoinnin poistaminen käytöstä epäonnistui: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky-synkronointi otettu käyttöön onnistuneesti!';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky-synkronointi otettu käyttöön onnistuneesti!';
 
   @override
-  String failedToEnableSync(String error) => 'Synkronoinnin käyttöönotto epäonnistui: $error';
+  String failedToEnableSync(String error) =>
+      'Synkronoinnin käyttöönotto epäonnistui: $error';
 
   @override
   String get googleDriveBackup => 'Google Drive -varmuuskopio';
@@ -267,7 +281,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get autoRestoreFromBackup => 'Automaattinen palautus varmuuskopiosta';
 
   @override
-  String get restoreNewerBackupOnStartup => 'Palauta uudempi varmuuskopio käynnistyksen yhteydessä';
+  String get restoreNewerBackupOnStartup =>
+      'Palauta uudempi varmuuskopio käynnistyksen yhteydessä';
 
   @override
   String get backupNow => 'Varmuuskopioi nyt';
@@ -285,7 +300,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String backupFailed(String error) => 'Varmuuskopiointi epäonnistui: $error';
 
   @override
-  String get restoreSuccessful => 'Palautus onnistui! Käynnistä sovellus uudelleen.';
+  String get restoreSuccessful =>
+      'Palautus onnistui! Käynnistä sovellus uudelleen.';
 
   @override
   String get noBackupFound => 'Varmuuskopiota ei löytynyt.';
@@ -306,13 +322,15 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dataImportedSuccessfully => 'Tiedot tuotu onnistuneesti!';
 
   @override
-  String failedToImportData(String error) => 'Tietojen tuonti epäonnistui: $error';
+  String failedToImportData(String error) =>
+      'Tietojen tuonti epäonnistui: $error';
 
   @override
   String get dataExportedSuccessfully => 'Tiedot viety onnistuneesti!';
 
   @override
-  String failedToExportData(String error) => 'Tietojen vienti epäonnistui: $error';
+  String failedToExportData(String error) =>
+      'Tietojen vienti epäonnistui: $error';
 
   @override
   String get aboutBlueSkyIntegration => 'Tietoja BlueSky-integraatiosta';
@@ -329,7 +347,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get licenseAndLegal => 'Lisenssi ja lakiasiat';
 
   @override
-  String get mitLicense => 'BluePills on avoimen lähdekoodin ohjelmisto, joka on lisensoitu MIT-lisenssillä.';
+  String get mitLicense =>
+      'BluePills on avoimen lähdekoodin ohjelmisto, joka on lisensoitu MIT-lisenssillä.';
 
   @override
   String get medicalDisclaimer => 'Lääketieteellinen vastuuvapauslauseke';
@@ -339,11 +358,14 @@ class AppLocalizationsFi extends AppLocalizations {
       'Tämä ohjelmisto on tarkoitettu vain tiedoksi, eikä sitä ole tarkoitettu korvaamaan ammattimaista lääketieteellistä neuvontaa, diagnoosia tai hoitoa. Keskustele aina terveydenhuollon ammattilaisten kanssa lääkkeistäsi.';
 
   @override
-  String get syncModeLocalOnlyDescription => 'Tallenna tiedot vain tähän laitteeseen paikallisesti';
+  String get syncModeLocalOnlyDescription =>
+      'Tallenna tiedot vain tähän laitteeseen paikallisesti';
 
   @override
-  String get syncModeSyncEnabledDescription => 'Tallenna paikallisesti ja synkronoi BlueSkyn kanssa';
+  String get syncModeSyncEnabledDescription =>
+      'Tallenna paikallisesti ja synkronoi BlueSkyn kanssa';
 
   @override
-  String get syncModeSyncOnlyDescription => 'Tallenna vain BlueSkyyn (vaatii internetyhteyden)';
+  String get syncModeSyncOnlyDescription =>
+      'Tallenna vain BlueSkyyn (vaatii internetyhteyden)';
 }
