@@ -41,7 +41,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get saveMedication => 'Medikament speichern';
 
   @override
-  String get pleaseEnterMedicationName => 'Bitte geben Sie einen Medikamentennamen ein';
+  String get pleaseEnterMedicationName =>
+      'Bitte geben Sie einen Medikamentennamen ein';
 
   @override
   String get pleaseEnterDosage => 'Bitte geben Sie die Dosierung ein';
@@ -80,7 +81,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get spanish => 'Spanisch';
 
   @override
-  String get noMedicationsAvailable => 'Keine Medikamente verfügbar. Bitte fügen Sie zuerst ein Medikament hinzu.';
+  String get noMedicationsAvailable =>
+      'Keine Medikamente verfügbar. Bitte fügen Sie zuerst ein Medikament hinzu.';
 
   @override
   String get selectMedication => 'Medikament auswählen';
@@ -89,16 +91,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
-  String loggedDoseFor(String medicationName) => 'Dosis für $medicationName protokolliert';
+  String loggedDoseFor(String medicationName) =>
+      'Dosis für $medicationName protokolliert';
 
   @override
-  String noMedicationLeftInStock(String medicationName) => 'Kein $medicationName mehr auf Lager';
+  String noMedicationLeftInStock(String medicationName) =>
+      'Kein $medicationName mehr auf Lager';
 
   @override
-  String get setReminderFeatureComingSoon => 'Erinnerungsfunktion einstellen - kommt bald!';
+  String get setReminderFeatureComingSoon =>
+      'Erinnerungsfunktion einstellen - kommt bald!';
 
   @override
-  String get tapThePlusButtonToAdd => 'Tippen Sie auf die + -Taste, um Ihr erstes Medikament hinzuzufügen';
+  String get tapThePlusButtonToAdd =>
+      'Tippen Sie auf die + -Taste, um Ihr erstes Medikament hinzuzufügen';
 
   @override
   String get todaysMedications => "Heutige Medikamente";
@@ -107,7 +113,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String takenOf(int taken, int total) => '$taken von $total eingenommen';
 
   @override
-  String markedAsTaken(String medicationName) => '✓ $medicationName als eingenommen markiert';
+  String markedAsTaken(String medicationName) =>
+      '✓ $medicationName als eingenommen markiert';
 
   @override
   String get allMedications => 'Alle Medikamente';
@@ -116,7 +123,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteMedication => 'Medikament löschen?';
 
   @override
-  String get areYouSureYouWantToDeleteThisMedication => 'Sind Sie sicher, dass Sie dieses Medikament löschen möchten?';
+  String get areYouSureYouWantToDeleteThisMedication =>
+      'Sind Sie sicher, dass Sie dieses Medikament löschen möchten?';
 
   @override
   String get delete => 'Löschen';
@@ -134,16 +142,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get add => 'Hinzufügen';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Bitte wählen Sie ein Frequenzmuster';
+  String get pleaseSelectAFrequencyPattern =>
+      'Bitte wählen Sie ein Frequenzmuster';
 
   @override
-  String get pleaseSelectAtLeastOneDay => 'Bitte wählen Sie mindestens einen Tag aus';
+  String get pleaseSelectAtLeastOneDay =>
+      'Bitte wählen Sie mindestens einen Tag aus';
 
   @override
-  String get medicationSavedAddAnother => 'Medikament gespeichert! Fügen Sie ein weiteres hinzu.';
+  String get medicationSavedAddAnother =>
+      'Medikament gespeichert! Fügen Sie ein weiteres hinzu.';
 
   @override
-  String failedToSaveMedication(String error) => 'Fehler beim Speichern des Medikaments: $error';
+  String failedToSaveMedication(String error) =>
+      'Fehler beim Speichern des Medikaments: $error';
 
   @override
   String get quantity => 'Menge';
@@ -152,13 +164,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pleaseEnterTheQuantity => 'Bitte geben Sie die Menge ein';
 
   @override
-  String get pleaseEnterAValidNumber => 'Bitte geben Sie eine gültige Nummer ein';
+  String get pleaseEnterAValidNumber =>
+      'Bitte geben Sie eine gültige Nummer ein';
 
   @override
   String get useAdvancedFrequency => 'Erweiterte Häufigkeit verwenden';
 
   @override
-  String get selectSpecificDaysAndPatterns => 'Spezifische Tage und Muster auswählen';
+  String get selectSpecificDaysAndPatterns =>
+      'Spezifische Tage und Muster auswählen';
 
   @override
   String get useSimpleTextFrequency => 'Einfache Texthäufigkeit verwenden';
@@ -197,7 +211,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get addStock => 'Bestand hinzufügen';
 
   @override
-  String addStockFor(String medicationName) => 'Bestand für $medicationName hinzufügen';
+  String addStockFor(String medicationName) =>
+      'Bestand für $medicationName hinzufügen';
 
   @override
   String get saveStock => 'Bestand speichern';
@@ -212,10 +227,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get yourHandleBskySocial => 'dein.handle.bsky.social';
 
   @override
-  String get pleaseEnterYourBlueskyHandle => 'Bitte geben Sie Ihren BlueSky-Handle ein';
+  String get pleaseEnterYourBlueskyHandle =>
+      'Bitte geben Sie Ihren BlueSky-Handle ein';
 
   @override
-  String get personalDataServerPDSURL => 'URL des persönlichen Datenservers (PDS)';
+  String get personalDataServerPDSURL =>
+      'URL des persönlichen Datenservers (PDS)';
 
   @override
   String get yourPdsExampleCom => 'https://dein-pds.beispiel.com';
@@ -249,13 +266,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get blueskySyncDisabled => 'BlueSky-Synchronisation deaktiviert';
 
   @override
-  String failedToDisableSync(String error) => 'Fehler beim Deaktivieren der Synchronisierung: $error';
+  String failedToDisableSync(String error) =>
+      'Fehler beim Deaktivieren der Synchronisierung: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky-Synchronisation erfolgreich aktiviert!';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky-Synchronisation erfolgreich aktiviert!';
 
   @override
-  String failedToEnableSync(String error) => 'Fehler beim Aktivieren der Synchronisierung: $error';
+  String failedToEnableSync(String error) =>
+      'Fehler beim Aktivieren der Synchronisierung: $error';
 
   @override
   String get googleDriveBackup => 'Google Drive-Sicherung';
@@ -264,10 +284,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String connectedAs(String userId) => 'Verbunden als: $userId';
 
   @override
-  String get autoRestoreFromBackup => 'Automatische Wiederherstellung aus Backup';
+  String get autoRestoreFromBackup =>
+      'Automatische Wiederherstellung aus Backup';
 
   @override
-  String get restoreNewerBackupOnStartup => 'Neueres Backup beim Start wiederherstellen';
+  String get restoreNewerBackupOnStartup =>
+      'Neueres Backup beim Start wiederherstellen';
 
   @override
   String get backupNow => 'Jetzt sichern';
@@ -285,13 +307,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String backupFailed(String error) => 'Sicherung fehlgeschlagen: $error';
 
   @override
-  String get restoreSuccessful => 'Wiederherstellung erfolgreich! Bitte starten Sie die App neu.';
+  String get restoreSuccessful =>
+      'Wiederherstellung erfolgreich! Bitte starten Sie die App neu.';
 
   @override
   String get noBackupFound => 'Kein Backup gefunden.';
 
   @override
-  String restoreFailed(String error) => 'Wiederherstellung fehlgeschlagen: $error';
+  String restoreFailed(String error) =>
+      'Wiederherstellung fehlgeschlagen: $error';
 
   @override
   String get dataManagement => 'Datenverwaltung';
@@ -306,13 +330,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dataImportedSuccessfully => 'Daten erfolgreich importiert!';
 
   @override
-  String failedToImportData(String error) => 'Fehler beim Importieren von Daten: $error';
+  String failedToImportData(String error) =>
+      'Fehler beim Importieren von Daten: $error';
 
   @override
   String get dataExportedSuccessfully => 'Daten erfolgreich exportiert!';
 
   @override
-  String failedToExportData(String error) => 'Fehler beim Exportieren von Daten: $error';
+  String failedToExportData(String error) =>
+      'Fehler beim Exportieren von Daten: $error';
 
   @override
   String get aboutBlueSkyIntegration => 'Über die BlueSky-Integration';
@@ -329,7 +355,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get licenseAndLegal => 'Lizenz & Rechtliches';
 
   @override
-  String get mitLicense => 'BluePills ist eine Open-Source-Software, die unter der MIT-Lizenz lizenziert ist.';
+  String get mitLicense =>
+      'BluePills ist eine Open-Source-Software, die unter der MIT-Lizenz lizenziert ist.';
 
   @override
   String get medicalDisclaimer => 'Medizinischer Haftungsausschluss';
@@ -339,11 +366,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Software dient nur zu Informationszwecken und ist nicht dazu bestimmt, professionelle medizinische Beratung, Diagnose oder Behandlung zu ersetzen. Konsultieren Sie immer medizinisches Fachpersonal bezüglich Ihrer Medikamente.';
 
   @override
-  String get syncModeLocalOnlyDescription => 'Daten nur lokal auf diesem Gerät speichern';
+  String get syncModeLocalOnlyDescription =>
+      'Daten nur lokal auf diesem Gerät speichern';
 
   @override
-  String get syncModeSyncEnabledDescription => 'Lokal speichern und mit BlueSky synchronisieren';
+  String get syncModeSyncEnabledDescription =>
+      'Lokal speichern und mit BlueSky synchronisieren';
 
   @override
-  String get syncModeSyncOnlyDescription => 'Nur auf BlueSky speichern (erfordert Internetverbindung)';
+  String get syncModeSyncOnlyDescription =>
+      'Nur auf BlueSky speichern (erfordert Internetverbindung)';
 }

@@ -121,9 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.disableBlueSkySync),
-        content: Text(
-          localizations.disableBlueSkySyncConfirmation,
-        ),
+        content: Text(localizations.disableBlueSkySyncConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -465,7 +463,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (_googleUser != null) ...[
                         const SizedBox(height: 16),
                         Text(
-                          localizations.connectedAs(_googleUser!.idToken != null ? "User with ID Token" : "User (No ID Token)"),
+                          localizations.connectedAs(
+                            _googleUser!.idToken != null
+                                ? "User with ID Token"
+                                : "User (No ID Token)",
+                          ),
                         ),
                         const SizedBox(height: 8),
                         SwitchListTile(
@@ -609,9 +611,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        localizations.aboutBlueSkyIntegrationDescription,
-                      ),
+                      Text(localizations.aboutBlueSkyIntegrationDescription),
                       const SizedBox(height: 8),
                       Text(
                         localizations.aboutBlueSkyIntegrationDescription2,

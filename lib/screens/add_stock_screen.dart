@@ -56,7 +56,9 @@ class _AddStockScreenState extends State<AddStockScreen> {
     final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(localizations.addStockFor(widget.medication.name))),
+      appBar: AppBar(
+        title: Text(localizations.addStockFor(widget.medication.name)),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

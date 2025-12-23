@@ -222,9 +222,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 ),
                 TextFormField(
                   controller: _dosageController,
-                  decoration: InputDecoration(
-                    labelText: localizations.dosage,
-                  ),
+                  decoration: InputDecoration(labelText: localizations.dosage),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return localizations.pleaseEnterDosage;
@@ -234,7 +232,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 ),
                 TextFormField(
                   controller: _quantityController,
-                  decoration: InputDecoration(labelText: localizations.quantity),
+                  decoration: InputDecoration(
+                    labelText: localizations.quantity,
+                  ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
