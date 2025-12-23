@@ -1,3 +1,5 @@
+import 'package:bluepills/l10n/app_localizations.dart';
+import 'package:bluepills/l10n/app_localizations_delegate.dart';
 import 'package:bluepills/models/app_config.dart';
 import 'package:bluepills/screens/settings_screen.dart';
 import 'package:bluepills/services/config_service.dart';
@@ -6,6 +8,7 @@ import 'package:bluepills/services/import_service.dart';
 import 'package:bluepills/services/google_drive_service.dart';
 import 'package:bluepills/services/backup_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -49,6 +52,13 @@ void main() {
       // Build our app and trigger a frame.
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: const [
+            AppLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
           home: SettingsScreen(
             configService: mockConfigService,
             exportService: mockExportService,

@@ -39,7 +39,6 @@ class _AddStockScreenState extends State<AddStockScreen> {
   }
 
   void _saveStock() async {
-    final localizations = AppLocalizations.of(context)!;
     if (_formKey.currentState!.validate()) {
       final quantity = int.tryParse(_quantityController.text) ?? 0;
       final updatedMedication = widget.medication.copyWith(

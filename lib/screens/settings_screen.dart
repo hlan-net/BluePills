@@ -563,7 +563,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const SizedBox(height: 16),
                       DropdownButtonFormField<String>(
-                        value: config.languageCode ?? '',
+                        initialValue: config.languageCode ?? '',
                         decoration: InputDecoration(
                           labelText: localizations.appLanguage,
                           prefixIcon: const Icon(Icons.language),

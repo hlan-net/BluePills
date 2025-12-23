@@ -10,6 +10,7 @@
 /// - Multi-language support (English and Finnish)
 library;
 
+import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -98,6 +99,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final ConfigService _configService = ConfigService();
   Locale? _locale;
+  Timer? _configRefreshTimer;
 
   @override
   void initState() {
@@ -105,14 +107,16 @@ class _MyAppState extends State<MyApp> {
     _updateLocale();
     // This is a bit of a hack. A better solution would be to use a state management solution.
     // For the sake of this exercise, we'll just re-read the config every second.
-    // A better solution would be to have the ConfigService be a listenable.
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) {
-        _updateLocale();
-      }
-      return mounted;
+    _configRefreshTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      _updateLocale();
     });
+  }
+
+  @override
+  void dispose() {
+    _configRefreshTimer?.cancel();
+    super.dispose();
   }
 
   void _updateLocale() {
