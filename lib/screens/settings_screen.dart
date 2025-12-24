@@ -431,22 +431,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.backup,
-                                color: _googleUser != null
-                                    ? Colors.green
-                                    : Colors.grey,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                localizations.googleDriveBackup,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.headlineSmall,
-                              ),
-                            ],
+                          Flexible(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.backup,
+                                  color: _googleUser != null
+                                      ? Colors.green
+                                      : Colors.grey,
+                                ),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: Text(
+                                    localizations.googleDriveBackup,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.headlineSmall,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           Switch(
                             value: _googleUser != null,
