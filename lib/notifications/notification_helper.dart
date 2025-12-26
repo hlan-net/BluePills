@@ -4,25 +4,24 @@
 /// medication reminder notifications using flutter_local_notifications.
 library;
 
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart' show
+    FlutterLocalNotificationsPlugin,
+    NotificationDetails,
+    AndroidInitializationSettings,
+    LinuxInitializationSettings,
+    InitializationSettings,
+    DateTimeComponents,
+    AndroidNotificationDetails,
+    AndroidScheduleMode;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:bluepills/models/frequency_pattern.dart'; // Import FrequencyPattern
 
-/// Singleton service for managing medication reminder notifications.
+
+/// Singleton service for managing local notifications.
 ///
-/// This service handles initialization of the notification system and
-/// scheduling of medication reminders. It uses the flutter_local_notifications
-/// plugin to display platform-specific notifications.
-///
-/// Example usage:
-/// ```dart
-/// final notificationHelper = NotificationHelper();
-/// await notificationHelper.init();
-/// await notificationHelper.scheduleNotification(
-///   1,
-///   'Medication Reminder',
-///   'Time to take your medication!',
-///   DateTime.now().add(Duration(hours: 1)),
-/// );
-/// ```
+/// This library provides functionality for scheduling and displaying
+/// medication reminder notifications using flutter_local_notifications.
 class NotificationHelper {
   static final NotificationHelper _instance = NotificationHelper._internal();
 
@@ -36,9 +35,10 @@ class NotificationHelper {
 
   /// Initializes the notification system with platform-specific settings.
   ///
-  /// This method must be called before scheduling any notifications.
+  /// This method must be called before any other operations.
   /// Sets up notification icons and action names for Android and Linux.
   Future<void> init() async {
+    tz.initializeTimeZones();
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
     const LinuxInitializationSettings initializationSettingsLinux =
@@ -65,12 +65,28 @@ class NotificationHelper {
     int id,
     String title,
     String body,
-    DateTime scheduledTime,
-  ) async {
-    await _notificationsPlugin.show(
+    DateTime scheduledTime, {
+    FrequencyPattern? frequencyPattern,
+  }) async {
+    DateTimeComponents? matchDateTimeComponents;
+    if (frequencyPattern != null) {
+      switch (frequencyPattern.type) {
+        case FrequencyType.daily:
+          matchDateTimeComponents = DateTimeComponents.time;
+          break;
+        case FrequencyType.specificDays:
+          matchDateTimeComponents = DateTimeComponents.dayOfWeekAndTime;
+          break;
+        default:
+          break;
+      }
+    }
+
+    await _notificationsPlugin.zonedSchedule(
       id,
       title,
       body,
+      tz.TZDateTime.from(scheduledTime, tz.local),
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'medication_reminders',
@@ -78,6 +94,8 @@ class NotificationHelper {
           channelDescription: 'Reminders to take your medication',
         ),
       ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: matchDateTimeComponents,
     );
   }
 }

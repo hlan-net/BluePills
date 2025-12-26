@@ -151,6 +151,12 @@ class WebDatabaseAdapter extends DatabaseAdapter {
         .toList();
   }
 
+  @override
+  Future<List<MedicationLog>> getAllLogs() async {
+    final List<Map<String, dynamic>> logs = _getLogsFromLocalStorage();
+    return logs.map((map) => MedicationLog.fromMap(map)).toList();
+  }
+
   void _saveLogsToLocalStorage(List<Map<String, dynamic>> logs) {
     final String data = jsonEncode(logs);
     _prefs.setString('medication_logs', data);

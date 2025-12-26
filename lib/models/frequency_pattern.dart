@@ -140,15 +140,18 @@ class FrequencyPattern {
   }
 
   /// Checks if medication should be taken on a given date
-  bool shouldTakeOnDate(DateTime date) {
+  bool shouldTakeOnDate(DateTime date, DateTime createdAt) {
     switch (type) {
       case FrequencyType.daily:
         return true;
       case FrequencyType.specificDays:
         return daysOfWeek.contains(date.weekday);
       case FrequencyType.everyNDays:
-        // This would need a start date reference for proper calculation
-        return true; // Simplified for now
+        if (intervalDays == null || intervalDays! <= 0) {
+          return false; // Or handle as an error
+        }
+        final difference = date.difference(createdAt).inDays;
+        return difference % intervalDays! == 0;
       case FrequencyType.asNeeded:
         return false;
     }

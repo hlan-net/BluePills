@@ -141,6 +141,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             'Medication Reminder',
             'Time to take your ${newMedication.name}!',
             newMedication.reminderTime,
+            frequencyPattern: newMedication.frequencyPattern,
           );
         } catch (e) {
           debugPrint('Failed to schedule notification: $e');
