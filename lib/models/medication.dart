@@ -216,8 +216,6 @@ class Medication {
         return true;
       case Frequency.asNeeded:
         return false;
-      default:
-        return true; // Default to true for safety
     }
   }
 
@@ -227,8 +225,9 @@ class Medication {
   /// of them have a timestamp from the current day.
   bool isTakenToday(List<MedicationLog> logs) {
     final today = DateTime.now();
-    return logs.any((log) =>
-        log.medicationId == id && _isSameDay(log.timestamp, today));
+    return logs.any(
+      (log) => log.medicationId == id && _isSameDay(log.timestamp, today),
+    );
   }
 
   /// Helper to check if two DateTimes are on the same calendar day.

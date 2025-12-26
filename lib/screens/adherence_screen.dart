@@ -46,7 +46,10 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
       if (medication.frequencyPattern != null) {
         for (int i = 0; i < duration.inDays; i++) {
           final day = startDate.add(Duration(days: i));
-          if (medication.frequencyPattern!.shouldTakeOnDate(day, medication.createdAt)) {
+          if (medication.frequencyPattern!.shouldTakeOnDate(
+            day,
+            medication.createdAt,
+          )) {
             expectedDoses += medication.frequencyPattern!.timesPerDay;
           }
         }
@@ -54,8 +57,10 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
     }
 
     takenDoses = _allLogs
-        .where((log) =>
-            log.timestamp.isAfter(startDate) && log.timestamp.isBefore(now))
+        .where(
+          (log) =>
+              log.timestamp.isAfter(startDate) && log.timestamp.isBefore(now),
+        )
         .length;
 
     if (expectedDoses == 0) {
@@ -69,9 +74,7 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.medicationAdherence),
-      ),
+      appBar: AppBar(title: Text(localizations.medicationAdherence)),
       body: FutureBuilder<List<dynamic>>(
         future: _data,
         builder: (context, snapshot) {
@@ -142,9 +145,13 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildAdherenceCard(
-                            localizations.last7Days, _calculateAdherence(const Duration(days: 7))),
+                          localizations.last7Days,
+                          _calculateAdherence(const Duration(days: 7)),
+                        ),
                         _buildAdherenceCard(
-                            localizations.last30Days, _calculateAdherence(const Duration(days: 30))),
+                          localizations.last30Days,
+                          _calculateAdherence(const Duration(days: 30)),
+                        ),
                       ],
                     ),
                   ],
@@ -167,10 +174,9 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
             const SizedBox(height: 8),
             Text(
               '${percentage.toStringAsFixed(1)}%',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineMedium
-                  ?.copyWith(color: _getAdherenceColor(percentage)),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: _getAdherenceColor(percentage),
+              ),
             ),
           ],
         ),

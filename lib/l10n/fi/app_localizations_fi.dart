@@ -427,16 +427,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get timesPerDay => 'Kertaa päivässä:';
 
   @override
-  String timesDaily(int times) => times == 1 ? 'Kerran päivässä' : '$times kertaa päivässä';
+  String timesDaily(int times) =>
+      times == 1 ? 'Kerran päivässä' : '$times kertaa päivässä';
 
   @override
-  String onDays(String days) => '$days';
+  String onDays(String days) => days;
 
   @override
-  String timesOnDays(int times, String days) => times == 1 ? '$days' : '$times kertaa $days';
+  String timesOnDays(int times, String days) =>
+      times == 1 ? days : '$times kertaa $days';
 
   @override
-  String everyIntervalDays(int days) => days == 1 ? 'Joka päivä' : 'Joka $days. päivä';
+  String everyIntervalDays(int days) =>
+      days == 1 ? 'Joka päivä' : 'Joka $days. päivä';
 
   @override
   String get everyDay => 'Joka päivä';

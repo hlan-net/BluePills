@@ -4,19 +4,19 @@
 /// medication reminder notifications using flutter_local_notifications.
 library;
 
-import 'package:flutter_local_notifications/flutter_local_notifications.dart' show
-    FlutterLocalNotificationsPlugin,
-    NotificationDetails,
-    AndroidInitializationSettings,
-    LinuxInitializationSettings,
-    InitializationSettings,
-    DateTimeComponents,
-    AndroidNotificationDetails,
-    AndroidScheduleMode;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show
+        FlutterLocalNotificationsPlugin,
+        NotificationDetails,
+        AndroidInitializationSettings,
+        LinuxInitializationSettings,
+        InitializationSettings,
+        DateTimeComponents,
+        AndroidNotificationDetails,
+        AndroidScheduleMode;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:bluepills/models/frequency_pattern.dart'; // Import FrequencyPattern
-
 
 /// Singleton service for managing local notifications.
 ///

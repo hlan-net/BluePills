@@ -315,7 +315,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                           const SizedBox(height: 8),
                           if (_selectedFrequencyPattern != null)
                             Text(
-                              _selectedFrequencyPattern!.toReadableString(localizations),
+                              _selectedFrequencyPattern!.toReadableString(
+                                localizations,
+                              ),
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(
                                     color: Theme.of(

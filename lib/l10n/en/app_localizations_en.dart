@@ -364,7 +364,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   // Low Stock & Dashboard
   @override
-  String criticallyLowStock(int count) => '$count medication(s) are critically low on stock!';
+  String criticallyLowStock(int count) =>
+      '$count medication(s) are critically low on stock!';
 
   @override
   String get dismiss => 'DISMISS';
@@ -373,7 +374,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get takeAll => 'Take All';
 
   @override
-  String get noMedicationsScheduledForToday => 'No medications scheduled for today.';
+  String get noMedicationsScheduledForToday =>
+      'No medications scheduled for today.';
 
   // Adherence Screen
   @override
@@ -420,16 +422,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timesPerDay => 'Times per day:';
 
   @override
-  String timesDaily(int times) => times == 1 ? 'Once daily' : '$times times daily';
+  String timesDaily(int times) =>
+      times == 1 ? 'Once daily' : '$times times daily';
 
   @override
   String onDays(String days) => 'On $days';
 
   @override
-  String timesOnDays(int times, String days) => times == 1 ? 'On $days' : '$times times on $days';
+  String timesOnDays(int times, String days) =>
+      times == 1 ? 'On $days' : '$times times on $days';
 
   @override
-  String everyIntervalDays(int days) => days == 1 ? 'Every day' : 'Every $days days';
+  String everyIntervalDays(int days) =>
+      days == 1 ? 'Every day' : 'Every $days days';
 
   @override
   String get everyDay => 'Every day';

@@ -379,7 +379,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   // Low Stock & Dashboard
   @override
-  String criticallyLowStock(int count) => '$count Medikament(e) haben einen kritisch niedrigen Bestand!';
+  String criticallyLowStock(int count) =>
+      '$count Medikament(e) haben einen kritisch niedrigen Bestand!';
 
   @override
   String get dismiss => 'SCHLIESSEN';
@@ -388,7 +389,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get takeAll => 'Alle einnehmen';
 
   @override
-  String get noMedicationsScheduledForToday => 'Keine Medikamente für heute geplant.';
+  String get noMedicationsScheduledForToday =>
+      'Keine Medikamente für heute geplant.';
 
   // Adherence Screen
   @override
@@ -435,16 +437,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get timesPerDay => 'Mal pro Tag:';
 
   @override
-  String timesDaily(int times) => times == 1 ? 'Einmal täglich' : '$times Mal täglich';
+  String timesDaily(int times) =>
+      times == 1 ? 'Einmal täglich' : '$times Mal täglich';
 
   @override
   String onDays(String days) => 'Am $days';
 
   @override
-  String timesOnDays(int times, String days) => times == 1 ? 'Am $days' : '$times Mal am $days';
+  String timesOnDays(int times, String days) =>
+      times == 1 ? 'Am $days' : '$times Mal am $days';
 
   @override
-  String everyIntervalDays(int days) => days == 1 ? 'Jeden Tag' : 'Alle $days Tage';
+  String everyIntervalDays(int days) =>
+      days == 1 ? 'Jeden Tag' : 'Alle $days Tage';
 
   @override
   String get everyDay => 'Jeden Tag';

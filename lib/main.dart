@@ -242,15 +242,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   Future<void> _takeMedication(Medication med) async {
     final localizations = AppLocalizations.of(context)!;
     if (med.quantity > 0) {
-      final updatedMedication = med.copyWith(
-        quantity: med.quantity - 1,
-      );
+      final updatedMedication = med.copyWith(quantity: med.quantity - 1);
       await DatabaseHelper().updateMedication(updatedMedication);
       await DatabaseHelper().insertMedicationLog(
-        MedicationLog(
-          medicationId: med.id!,
-          timestamp: DateTime.now(),
-        ),
+        MedicationLog(medicationId: med.id!, timestamp: DateTime.now()),
       );
       _refreshMedicationList();
       if (!mounted) return;
@@ -274,7 +269,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   Future<void> _takeAllMedications() async {
     final medications = await _medications;
     final logs = await DatabaseHelper().getMedicationLogsForToday();
-    final todaysMedications = medications.where((m) => m.shouldTakeToday()).toList();
+    final todaysMedications = medications
+        .where((m) => m.shouldTakeToday())
+        .toList();
     for (final med in todaysMedications) {
       if (!med.isTakenToday(logs)) {
         await _takeMedication(med);
@@ -501,16 +498,23 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                   MaterialBanner(
                     padding: const EdgeInsets.all(16),
                     content: Text(
-                      localizations.criticallyLowStock(criticallyLowStockMeds.length),
+                      localizations.criticallyLowStock(
+                        criticallyLowStockMeds.length,
+                      ),
                       style: const TextStyle(color: Colors.white),
                     ),
                     backgroundColor: Colors.red,
                     actions: [
                       TextButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                          ScaffoldMessenger.of(
+                            context,
+                          ).hideCurrentMaterialBanner();
                         },
-                        child: Text(localizations.dismiss, style: const TextStyle(color: Colors.white)),
+                        child: Text(
+                          localizations.dismiss,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
@@ -525,7 +529,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                             return const SizedBox.shrink();
                           }
                           final logsToday = logsSnapshot.data!;
-                          final todaysMedicationsForWidget = snapshot.data! // Use original unfiltered list
+                          final todaysMedicationsForWidget = snapshot
+                              .data! // Use original unfiltered list
                               .where((m) => m.shouldTakeToday())
                               .toList();
                           if (todaysMedicationsForWidget.isEmpty) {
@@ -560,8 +565,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                           ),
                           child: ListTile(
                             leading: CircleAvatar(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
                               child: const Icon(
                                 Icons.medical_services,
                                 color: Colors.white,
@@ -569,8 +575,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                             ),
                             title: Text(
                               medication.name,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             subtitle: Text(
                               '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}',
@@ -581,46 +588,53 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                                 if (medication.getDaysOfSupply() < 3)
                                   const Icon(Icons.error, color: Colors.red)
                                 else if (medication.getDaysOfSupply() < 7)
-                                  const Icon(Icons.warning,
-                                      color: Colors.amber),
+                                  const Icon(
+                                    Icons.warning,
+                                    color: Colors.amber,
+                                  ),
                                 IconButton(
                                   icon: const Icon(Icons.check),
                                   onPressed: () async {
                                     if (medication.quantity > 0) {
-                                      final updatedMedication =
-                                          medication.copyWith(
-                                        quantity: medication.quantity - 1,
-                                      );
+                                      final updatedMedication = medication
+                                          .copyWith(
+                                            quantity: medication.quantity - 1,
+                                          );
                                       await DatabaseHelper().updateMedication(
                                         updatedMedication,
                                       );
                                       await DatabaseHelper()
                                           .insertMedicationLog(
-                                        MedicationLog(
-                                          medicationId: medication.id!,
-                                          timestamp: DateTime.now(),
-                                        ),
-                                      );
+                                            MedicationLog(
+                                              medicationId: medication.id!,
+                                              timestamp: DateTime.now(),
+                                            ),
+                                          );
                                       _refreshMedicationList();
                                     }
                                   },
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete,
-                                      color: Colors.red),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
                                   onPressed: () async {
                                     final confirm = await showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
                                         title: Text(
-                                            localizations.deleteMedication),
-                                        content: Text(localizations
-                                            .areYouSureYouWantToDeleteThisMedication),
+                                          localizations.deleteMedication,
+                                        ),
+                                        content: Text(
+                                          localizations
+                                              .areYouSureYouWantToDeleteThisMedication,
+                                        ),
                                         actions: [
                                           TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context)
-                                                    .pop(false),
+                                            onPressed: () => Navigator.of(
+                                              context,
+                                            ).pop(false),
                                             child: Text(localizations.cancel),
                                           ),
                                           TextButton(
@@ -645,9 +659,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                               final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      MedicationDetailsScreen(
-                                          medication: medication),
+                                  builder: (context) => MedicationDetailsScreen(
+                                    medication: medication,
+                                  ),
                                 ),
                               );
                               if (result == true) {
