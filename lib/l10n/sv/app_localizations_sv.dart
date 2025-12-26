@@ -368,4 +368,76 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get syncModeSyncOnlyDescription =>
       'Lagra endast på BlueSky (kräver internetanslutning)';
+
+  // Low Stock & Dashboard
+  @override
+  String criticallyLowStock(int count) => '$count mediciner har kritiskt lågt lager!';
+
+  @override
+  String get dismiss => 'AVFÄRDA';
+
+  @override
+  String get takeAll => 'Ta alla';
+
+  @override
+  String get noMedicationsScheduledForToday => 'Inga mediciner schemalagda för idag.';
+
+  // Adherence Screen
+  @override
+  String get medicationAdherence => 'Medicinföljsamhet';
+
+  @override
+  String get noDataAvailable => 'Inga data tillgängliga.';
+
+  @override
+  String get noMedicationLogsYet => 'Inga medicinloggar än.';
+
+  @override
+  String get adherenceStatistics => 'Följsamhetsstatistik';
+
+  @override
+  String get last7Days => 'Senaste 7 dagarna';
+
+  @override
+  String get last30Days => 'Senaste 30 dagarna';
+
+  // Frequency Selector & Patterns
+  @override
+  String get daily => 'Dagligen';
+
+  @override
+  String get specificDays => 'Specifika dagar';
+
+  @override
+  String get everyNDays => 'Var N:e dag';
+
+  @override
+  String get selectDays => 'Välj dagar:';
+
+  @override
+  String get every => 'Varje';
+
+  @override
+  String get day => 'dag';
+
+  @override
+  String get days => 'dagar';
+
+  @override
+  String get timesPerDay => 'Gånger per dag:';
+
+  @override
+  String timesDaily(int times) => times == 1 ? 'En gång dagligen' : '$times gånger dagligen';
+
+  @override
+  String onDays(String days) => 'På $days';
+
+  @override
+  String timesOnDays(int times, String days) => times == 1 ? 'På $days' : '$times gånger på $days';
+
+  @override
+  String everyIntervalDays(int days) => days == 1 ? 'Varje dag' : 'Var $days:e dag';
+
+  @override
+  String get everyDay => 'Varje dag';
 }

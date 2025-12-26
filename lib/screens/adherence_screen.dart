@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication_log.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
 
 class AdherenceScreen extends StatefulWidget {
   const AdherenceScreen({super.key});
@@ -66,9 +67,10 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Medication Adherence'),
+        title: Text(localizations.medicationAdherence),
       ),
       body: FutureBuilder<List<dynamic>>(
         future: _data,
@@ -77,7 +79,7 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No data available.'));
+            return Center(child: Text(localizations.noDataAvailable));
           }
 
           return Column(
@@ -132,7 +134,7 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'Adherence Statistics',
+                      localizations.adherenceStatistics,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 8),
@@ -140,9 +142,9 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildAdherenceCard(
-                            'Last 7 Days', _calculateAdherence(const Duration(days: 7))),
+                            localizations.last7Days, _calculateAdherence(const Duration(days: 7))),
                         _buildAdherenceCard(
-                            'Last 30 Days', _calculateAdherence(const Duration(days: 30))),
+                            localizations.last30Days, _calculateAdherence(const Duration(days: 30))),
                       ],
                     ),
                   ],

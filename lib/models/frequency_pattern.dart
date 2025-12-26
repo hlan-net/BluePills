@@ -1,3 +1,5 @@
+import 'package:bluepills/l10n/app_localizations.dart';
+
 /// Represents a frequency pattern for medication scheduling.
 ///
 /// This model supports complex medication schedules including:
@@ -108,29 +110,21 @@ class FrequencyPattern {
   }
 
   /// Returns a human-readable description of this frequency pattern
-  String toReadableString() {
+  String toReadableString(AppLocalizations localizations) {
     switch (type) {
       case FrequencyType.daily:
-        if (timesPerDay == 1) {
-          return 'Once daily';
-        } else {
-          return '$timesPerDay times daily';
-        }
+        return localizations.timesDaily(timesPerDay);
       case FrequencyType.specificDays:
         final dayNames = daysOfWeek.map((d) => _getDayName(d)).join(', ');
-        if (timesPerDay == 1) {
-          return 'On $dayNames';
-        } else {
-          return '$timesPerDay times on $dayNames';
-        }
+        return localizations.timesOnDays(timesPerDay, dayNames);
       case FrequencyType.everyNDays:
         if (intervalDays == 1) {
-          return 'Every day';
+          return localizations.everyDay;
         } else {
-          return 'Every $intervalDays days';
+          return localizations.everyIntervalDays(intervalDays!);
         }
       case FrequencyType.asNeeded:
-        return 'As needed';
+        return localizations.asNeeded;
     }
   }
 

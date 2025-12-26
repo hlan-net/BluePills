@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/models/medication_log.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
 
 class TodayMedicationsWidget extends StatelessWidget {
   final List<Medication> medications;
@@ -18,6 +19,7 @@ class TodayMedicationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: Padding(
@@ -29,18 +31,18 @@ class TodayMedicationsWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Today's Medications",
+                  localizations.todaysMedications,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 ElevatedButton(
                   onPressed: onTakeAll,
-                  child: const Text('Take All'),
+                  child: Text(localizations.takeAll),
                 ),
               ],
             ),
             const SizedBox(height: 8.0),
             if (medications.isEmpty)
-              const Text('No medications scheduled for today.')
+              Text(localizations.noMedicationsScheduledForToday)
             else
               ListView.builder(
                 shrinkWrap: true,

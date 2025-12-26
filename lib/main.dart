@@ -501,7 +501,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                   MaterialBanner(
                     padding: const EdgeInsets.all(16),
                     content: Text(
-                      '${criticallyLowStockMeds.length} medication(s) are critically low on stock!',
+                      localizations.criticallyLowStock(criticallyLowStockMeds.length),
                       style: const TextStyle(color: Colors.white),
                     ),
                     backgroundColor: Colors.red,
@@ -510,7 +510,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                         onPressed: () {
                           ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
                         },
-                        child: const Text('DISMISS', style: TextStyle(color: Colors.white)),
+                        child: Text(localizations.dismiss, style: const TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),
