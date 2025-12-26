@@ -376,4 +376,81 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get syncModeSyncOnlyDescription =>
       'Nur auf BlueSky speichern (erfordert Internetverbindung)';
+
+  // Low Stock & Dashboard
+  @override
+  String criticallyLowStock(int count) =>
+      '$count Medikament(e) haben einen kritisch niedrigen Bestand!';
+
+  @override
+  String get dismiss => 'SCHLIESSEN';
+
+  @override
+  String get takeAll => 'Alle einnehmen';
+
+  @override
+  String get noMedicationsScheduledForToday =>
+      'Keine Medikamente für heute geplant.';
+
+  // Adherence Screen
+  @override
+  String get medicationAdherence => 'Medikamentenadhärenz';
+
+  @override
+  String get noDataAvailable => 'Keine Daten verfügbar.';
+
+  @override
+  String get noMedicationLogsYet => 'Noch keine Medikamentenprotokolle.';
+
+  @override
+  String get adherenceStatistics => 'Adhärenzstatistik';
+
+  @override
+  String get last7Days => 'Letzte 7 Tage';
+
+  @override
+  String get last30Days => 'Letzte 30 Tage';
+
+  // Frequency Selector & Patterns
+  @override
+  String get daily => 'Täglich';
+
+  @override
+  String get specificDays => 'Spezifische Tage';
+
+  @override
+  String get everyNDays => 'Alle N Tage';
+
+  @override
+  String get selectDays => 'Tage auswählen:';
+
+  @override
+  String get every => 'Alle';
+
+  @override
+  String get day => 'Tag';
+
+  @override
+  String get days => 'Tage';
+
+  @override
+  String get timesPerDay => 'Mal pro Tag:';
+
+  @override
+  String timesDaily(int times) =>
+      times == 1 ? 'Einmal täglich' : '$times Mal täglich';
+
+  @override
+  String onDays(String days) => 'Am $days';
+
+  @override
+  String timesOnDays(int times, String days) =>
+      times == 1 ? 'Am $days' : '$times Mal am $days';
+
+  @override
+  String everyIntervalDays(int days) =>
+      days == 1 ? 'Jeden Tag' : 'Alle $days Tage';
+
+  @override
+  String get everyDay => 'Jeden Tag';
 }

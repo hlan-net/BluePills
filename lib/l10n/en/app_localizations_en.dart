@@ -361,4 +361,81 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get syncModeSyncOnlyDescription =>
       'Store only on BlueSky (requires internet connection)';
+
+  // Low Stock & Dashboard
+  @override
+  String criticallyLowStock(int count) =>
+      '$count medication(s) are critically low on stock!';
+
+  @override
+  String get dismiss => 'DISMISS';
+
+  @override
+  String get takeAll => 'Take All';
+
+  @override
+  String get noMedicationsScheduledForToday =>
+      'No medications scheduled for today.';
+
+  // Adherence Screen
+  @override
+  String get medicationAdherence => 'Medication Adherence';
+
+  @override
+  String get noDataAvailable => 'No data available.';
+
+  @override
+  String get noMedicationLogsYet => 'No medication logs yet.';
+
+  @override
+  String get adherenceStatistics => 'Adherence Statistics';
+
+  @override
+  String get last7Days => 'Last 7 Days';
+
+  @override
+  String get last30Days => 'Last 30 Days';
+
+  // Frequency Selector & Patterns
+  @override
+  String get daily => 'Daily';
+
+  @override
+  String get specificDays => 'Specific Days';
+
+  @override
+  String get everyNDays => 'Every N Days';
+
+  @override
+  String get selectDays => 'Select days:';
+
+  @override
+  String get every => 'Every';
+
+  @override
+  String get day => 'day';
+
+  @override
+  String get days => 'days';
+
+  @override
+  String get timesPerDay => 'Times per day:';
+
+  @override
+  String timesDaily(int times) =>
+      times == 1 ? 'Once daily' : '$times times daily';
+
+  @override
+  String onDays(String days) => 'On $days';
+
+  @override
+  String timesOnDays(int times, String days) =>
+      times == 1 ? 'On $days' : '$times times on $days';
+
+  @override
+  String everyIntervalDays(int days) =>
+      days == 1 ? 'Every day' : 'Every $days days';
+
+  @override
+  String get everyDay => 'Every day';
 }

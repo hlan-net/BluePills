@@ -1,4 +1,5 @@
 import 'package:bluepills/models/frequency.dart';
+import 'package:bluepills/models/medication_log.dart';
 import 'frequency_pattern.dart';
 
 /// Represents a medication entry in the BluePills application.
@@ -194,5 +195,78 @@ class Medication {
   void markAsUpdated() {
     updatedAt = DateTime.now();
     needsSync = true;
+  }
+
+  /// Determines if the medication should be taken today based on its schedule.
+  ///
+  /// This method checks the `frequencyPattern` first. If it exists, it uses
+  /// the `shouldTakeOnDate` logic. Otherwise, it falls back to the simple
+  /// `frequency` enum.
+  bool shouldTakeToday() {
+    final today = DateTime.now();
+
+    if (frequencyPattern != null) {
+      return frequencyPattern!.shouldTakeOnDate(today, createdAt);
+    }
+
+    switch (frequency) {
+      case Frequency.onceDaily:
+      case Frequency.twiceDaily:
+      case Frequency.threeTimesDaily:
+        return true;
+      case Frequency.asNeeded:
+        return false;
+    }
+  }
+
+  /// Checks if the medication has been taken today.
+  ///
+  /// This method iterates through a list of [MedicationLog]s and checks if any
+  /// of them have a timestamp from the current day.
+  bool isTakenToday(List<MedicationLog> logs) {
+    final today = DateTime.now();
+    return logs.any(
+      (log) => log.medicationId == id && _isSameDay(log.timestamp, today),
+    );
+  }
+
+  /// Helper to check if two DateTimes are on the same calendar day.
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  /// Calculates the estimated number of days the current supply will last.
+  int getDaysOfSupply() {
+    if (frequencyPattern == null) {
+      return 9999; // Represents an indefinite supply
+    }
+
+    final pattern = frequencyPattern!;
+    if (pattern.type == FrequencyType.asNeeded || pattern.timesPerDay <= 0) {
+      return 9999;
+    }
+
+    switch (pattern.type) {
+      case FrequencyType.daily:
+        return (quantity / pattern.timesPerDay).floor();
+      case FrequencyType.specificDays:
+        if (pattern.daysOfWeek.isEmpty) {
+          return 9999;
+        }
+        final dosesPerWeek = pattern.daysOfWeek.length * pattern.timesPerDay;
+        final weeksOfSupply = (quantity / dosesPerWeek).floor();
+        final remainingDoses = quantity % dosesPerWeek;
+        // Approximate remaining days
+        final remainingDays = (remainingDoses / pattern.timesPerDay).ceil();
+        return (weeksOfSupply * 7) + remainingDays;
+      case FrequencyType.everyNDays:
+        if (pattern.intervalDays == null || pattern.intervalDays! <= 0) {
+          return 9999;
+        }
+        final cycles = (quantity / pattern.timesPerDay).floor();
+        return cycles * pattern.intervalDays!;
+      case FrequencyType.asNeeded:
+        return 9999;
+    }
   }
 }

@@ -177,4 +177,33 @@ abstract class AppLocalizations {
   String get syncModeLocalOnlyDescription;
   String get syncModeSyncEnabledDescription;
   String get syncModeSyncOnlyDescription;
+
+  // Low Stock & Dashboard
+  String criticallyLowStock(int count);
+  String get dismiss;
+  String get takeAll;
+  String get noMedicationsScheduledForToday;
+
+  // Adherence Screen
+  String get medicationAdherence;
+  String get noDataAvailable;
+  String get noMedicationLogsYet;
+  String get adherenceStatistics;
+  String get last7Days;
+  String get last30Days;
+
+  // Frequency Selector & Patterns
+  String get daily;
+  String get specificDays;
+  String get everyNDays;
+  String get selectDays;
+  String get every;
+  String get day;
+  String get days;
+  String get timesPerDay;
+  String timesDaily(int times);
+  String onDays(String days);
+  String timesOnDays(int times, String days);
+  String everyIntervalDays(int days);
+  String get everyDay;
 }

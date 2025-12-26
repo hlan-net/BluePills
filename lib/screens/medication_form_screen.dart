@@ -141,6 +141,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             'Medication Reminder',
             'Time to take your ${newMedication.name}!',
             newMedication.reminderTime,
+            frequencyPattern: newMedication.frequencyPattern,
           );
         } catch (e) {
           debugPrint('Failed to schedule notification: $e');
@@ -314,7 +315,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                           const SizedBox(height: 8),
                           if (_selectedFrequencyPattern != null)
                             Text(
-                              _selectedFrequencyPattern!.toReadableString(),
+                              _selectedFrequencyPattern!.toReadableString(
+                                localizations,
+                              ),
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(
                                     color: Theme.of(
