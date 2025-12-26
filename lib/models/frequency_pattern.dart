@@ -144,7 +144,9 @@ class FrequencyPattern {
         if (intervalDays == null || intervalDays! <= 0) {
           return false; // Or handle as an error
         }
-        final difference = date.difference(createdAt).inDays;
+        final startOfCreateDate = DateTime(createdAt.year, createdAt.month, createdAt.day);
+        final startOfCheckDate = DateTime(date.year, date.month, date.day);
+        final difference = startOfCheckDate.difference(startOfCreateDate).inDays;
         return difference % intervalDays! == 0;
       case FrequencyType.asNeeded:
         return false;
