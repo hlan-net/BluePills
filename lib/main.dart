@@ -28,6 +28,8 @@ import 'package:bluepills/l10n/app_localizations_delegate.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/services/sync_service.dart';
 import 'package:bluepills/services/backup_service.dart';
+import 'package:bluepills/widgets/today_medications_widget.dart';
+import 'package:bluepills/screens/adherence_screen.dart';
 
 import 'package:bluepills/notifications/notification_helper.dart';
 
@@ -175,6 +177,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   bool _isSpeedDialOpen = false;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  bool _showOnlyLowStock = false;
 
   String _getFrequencyText(
     Frequency frequency,
@@ -234,6 +237,46 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       _isSpeedDialOpen = false;
       _animationController.reverse();
     });
+  }
+
+  Future<void> _takeMedication(Medication med) async {
+    final localizations = AppLocalizations.of(context)!;
+    if (med.quantity > 0) {
+      final updatedMedication = med.copyWith(quantity: med.quantity - 1);
+      await DatabaseHelper().updateMedication(updatedMedication);
+      await DatabaseHelper().insertMedicationLog(
+        MedicationLog(medicationId: med.id!, timestamp: DateTime.now()),
+      );
+      _refreshMedicationList();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.markedAsTaken(med.name)),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.noMedicationLeftInStock(med.name)),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
+  }
+
+  Future<void> _takeAllMedications() async {
+    final medications = await _medications;
+    final logs = await DatabaseHelper().getMedicationLogsForToday();
+    final todaysMedications = medications
+        .where((m) => m.shouldTakeToday())
+        .toList();
+    for (final med in todaysMedications) {
+      if (!med.isTakenToday(logs)) {
+        await _takeMedication(med);
+      }
+    }
   }
 
   Future<void> _addNewMedication() async {
@@ -341,6 +384,29 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         title: Text(localizations.myMedications),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
+          // Low stock filter button
+          IconButton(
+            icon: Icon(
+              _showOnlyLowStock ? Icons.filter_list_off : Icons.filter_list,
+            ),
+            onPressed: () {
+              setState(() {
+                _showOnlyLowStock = !_showOnlyLowStock;
+              });
+            },
+          ),
+          // Adherence screen button
+          IconButton(
+            icon: const Icon(Icons.calendar_today),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AdherenceScreen(),
+                ),
+              );
+            },
+          ),
           // Sync status indicator
           if (configService.isSyncEnabled)
             IconButton(
@@ -412,258 +478,202 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               ),
             );
           } else {
-            final medications = snapshot.data!;
-            return ListView(
+            var displayMedications = snapshot.data!; // Original unfiltered list
+
+            // Filter for low stock if needed
+            if (_showOnlyLowStock) {
+              displayMedications = displayMedications
+                  .where((med) => med.getDaysOfSupply() < 7)
+                  .toList();
+            }
+
+            // Identify critically low stock for banner
+            final criticallyLowStockMeds = displayMedications
+                .where((med) => med.getDaysOfSupply() < 3)
+                .toList();
+
+            return Column(
               children: [
-                // Today's Medications Section
-                if (medications.isNotEmpty)
-                  FutureBuilder<List<MedicationLog>>(
-                    future: DatabaseHelper().getMedicationLogsForToday(),
-                    builder: (context, logsSnapshot) {
-                      if (!logsSnapshot.hasData) {
-                        return const SizedBox.shrink();
-                      }
-
-                      final logsToday = logsSnapshot.data!;
-                      final takenCount = logsToday.length;
-                      final totalCount = medications.length;
-
-                      return Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.all(16),
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    localizations.todaysMedications,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge
-                                        ?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: takenCount == totalCount
-                                          ? Colors.green
-                                          : Colors.orange,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      localizations.takenOf(
-                                        takenCount,
-                                        totalCount,
-                                      ),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                if (criticallyLowStockMeds.isNotEmpty)
+                  MaterialBanner(
+                    padding: const EdgeInsets.all(16),
+                    content: Text(
+                      localizations.criticallyLowStock(
+                        criticallyLowStockMeds.length,
+                      ),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.red,
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).hideCurrentMaterialBanner();
+                        },
+                        child: Text(
+                          localizations.dismiss,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      // Today's Medications Section
+                      FutureBuilder<List<MedicationLog>>(
+                        future: DatabaseHelper().getMedicationLogsForToday(),
+                        builder: (context, logsSnapshot) {
+                          if (!logsSnapshot.hasData) {
+                            return const SizedBox.shrink();
+                          }
+                          final logsToday = logsSnapshot.data!;
+                          final todaysMedicationsForWidget = snapshot
+                              .data! // Use original unfiltered list
+                              .where((m) => m.shouldTakeToday())
+                              .toList();
+                          if (todaysMedicationsForWidget.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return TodayMedicationsWidget(
+                            medications: todaysMedicationsForWidget,
+                            logs: logsToday,
+                            onTakeMedication: _takeMedication,
+                            onTakeAll: _takeAllMedications,
+                          );
+                        },
+                      ),
+                      // All Medications List
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                        child: Text(
+                          localizations.allMedications,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      ...List.generate(displayMedications.length, (index) {
+                        final medication = displayMedications[index];
+                        return Card(
+                          elevation: 4,
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 16,
+                          ),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              child: const Icon(
+                                Icons.medical_services,
+                                color: Colors.white,
                               ),
-                              const SizedBox(height: 12),
-                              ...medications.map((med) {
-                                final isTaken = logsToday.any(
-                                  (log) => log.medicationId == med.id,
-                                );
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 4,
+                            ),
+                            title: Text(
+                              medication.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}',
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (medication.getDaysOfSupply() < 3)
+                                  const Icon(Icons.error, color: Colors.red)
+                                else if (medication.getDaysOfSupply() < 7)
+                                  const Icon(
+                                    Icons.warning,
+                                    color: Colors.amber,
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        isTaken
-                                            ? Icons.check_circle
-                                            : Icons.schedule,
-                                        color: isTaken
-                                            ? Colors.green
-                                            : Colors.orange,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          med.name,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            decoration: isTaken
-                                                ? TextDecoration.lineThrough
-                                                : null,
-                                          ),
+                                IconButton(
+                                  icon: const Icon(Icons.check),
+                                  onPressed: () async {
+                                    if (medication.quantity > 0) {
+                                      final updatedMedication = medication
+                                          .copyWith(
+                                            quantity: medication.quantity - 1,
+                                          );
+                                      await DatabaseHelper().updateMedication(
+                                        updatedMedication,
+                                      );
+                                      await DatabaseHelper()
+                                          .insertMedicationLog(
+                                            MedicationLog(
+                                              medicationId: medication.id!,
+                                              timestamp: DateTime.now(),
+                                            ),
+                                          );
+                                      _refreshMedicationList();
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    final confirm = await showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: Text(
+                                          localizations.deleteMedication,
                                         ),
-                                      ),
-                                      if (!isTaken)
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.check,
-                                            color: Colors.green,
-                                          ),
-                                          onPressed: () async {
-                                            if (med.quantity > 0) {
-                                              final updatedMedication = med
-                                                  .copyWith(
-                                                    quantity: med.quantity - 1,
-                                                  );
-                                              await DatabaseHelper()
-                                                  .updateMedication(
-                                                    updatedMedication,
-                                                  );
-                                              await DatabaseHelper()
-                                                  .insertMedicationLog(
-                                                    MedicationLog(
-                                                      medicationId: med.id!,
-                                                      timestamp: DateTime.now(),
-                                                    ),
-                                                  );
-                                              _refreshMedicationList();
-                                              if (!context.mounted) return;
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    localizations.markedAsTaken(
-                                                      med.name,
-                                                    ),
-                                                  ),
-                                                  backgroundColor: Colors.green,
-                                                  duration: const Duration(
-                                                    seconds: 2,
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          },
+                                        content: Text(
+                                          localizations
+                                              .areYouSureYouWantToDeleteThisMedication,
                                         ),
-                                    ],
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.of(
+                                              context,
+                                            ).pop(false),
+                                            child: Text(localizations.cancel),
+                                          ),
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(true),
+                                            child: Text(localizations.delete),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                    if (confirm == true) {
+                                      await DatabaseHelper().deleteMedication(
+                                        medication.id!,
+                                      );
+                                      _refreshMedicationList();
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                            onTap: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MedicationDetailsScreen(
+                                    medication: medication,
                                   ),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                // All Medications List
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                  child: Text(
-                    localizations.allMedications,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                ...List.generate(medications.length, (index) {
-                  final medication = medications[index];
-                  return Card(
-                    elevation: 4,
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        child: const Icon(
-                          Icons.medical_services,
-                          color: Colors.white,
-                        ),
-                      ),
-                      title: Text(
-                        medication.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}',
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.check),
-                            onPressed: () async {
-                              if (medication.quantity > 0) {
-                                final updatedMedication = medication.copyWith(
-                                  quantity: medication.quantity - 1,
-                                );
-                                await DatabaseHelper().updateMedication(
-                                  updatedMedication,
-                                );
-                                await DatabaseHelper().insertMedicationLog(
-                                  MedicationLog(
-                                    medicationId: medication.id!,
-                                    timestamp: DateTime.now(),
-                                  ),
-                                );
-                                _refreshMedicationList();
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () async {
-                              final confirm = await showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: Text(localizations.deleteMedication),
-                                  content: Text(
-                                    localizations
-                                        .areYouSureYouWantToDeleteThisMedication,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                      child: Text(localizations.cancel),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
-                                      child: Text(localizations.delete),
-                                    ),
-                                  ],
                                 ),
                               );
-                              if (confirm == true) {
-                                await DatabaseHelper().deleteMedication(
-                                  medication.id!,
-                                );
+                              if (result == true) {
                                 _refreshMedicationList();
                               }
                             },
                           ),
-                        ],
-                      ),
-                      onTap: () async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                MedicationDetailsScreen(medication: medication),
-                          ),
                         );
-                        if (result == true) {
-                          _refreshMedicationList();
-                        }
-                      },
-                    ),
-                  );
-                }),
+                      }),
+                    ],
+                  ),
+                ),
               ],
             );
           }

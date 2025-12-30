@@ -225,6 +225,15 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
     });
   }
 
+  @override
+  Future<List<MedicationLog>> getAllLogs() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('medication_logs');
+    return List.generate(maps.length, (i) {
+      return MedicationLog.fromMap(maps[i]);
+    });
+  }
+
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();

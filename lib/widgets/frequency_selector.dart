@@ -6,6 +6,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:bluepills/models/frequency_pattern.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
 
 /// A widget that allows users to select frequency patterns for medications.
 class FrequencySelector extends StatefulWidget {
@@ -67,6 +68,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -75,7 +77,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
           spacing: 8,
           children: [
             ChoiceChip(
-              label: const Text('Daily'),
+              label: Text(localizations.daily),
               selected: _selectedType == FrequencyType.daily,
               onSelected: (selected) {
                 if (selected) {
@@ -87,7 +89,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
               },
             ),
             ChoiceChip(
-              label: const Text('Specific Days'),
+              label: Text(localizations.specificDays),
               selected: _selectedType == FrequencyType.specificDays,
               onSelected: (selected) {
                 if (selected) {
@@ -102,7 +104,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
               },
             ),
             ChoiceChip(
-              label: const Text('Every N Days'),
+              label: Text(localizations.everyNDays),
               selected: _selectedType == FrequencyType.everyNDays,
               onSelected: (selected) {
                 if (selected) {
@@ -114,7 +116,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
               },
             ),
             ChoiceChip(
-              label: const Text('As Needed'),
+              label: Text(localizations.asNeeded),
               selected: _selectedType == FrequencyType.asNeeded,
               onSelected: (selected) {
                 if (selected) {
@@ -131,9 +133,9 @@ class _FrequencySelectorState extends State<FrequencySelector> {
 
         // Day selector for specificDays
         if (_selectedType == FrequencyType.specificDays) ...[
-          const Text(
-            'Select days:',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            localizations.selectDays,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -253,7 +255,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
         if (_selectedType == FrequencyType.everyNDays) ...[
           Row(
             children: [
-              const Text('Every'),
+              Text(localizations.every),
               const SizedBox(width: 8),
               SizedBox(
                 width: 80,
@@ -277,7 +279,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(_intervalDays == 1 ? 'day' : 'days'),
+              Text(_intervalDays == 1 ? localizations.day : localizations.days),
             ],
           ),
           const SizedBox(height: 16),
@@ -287,7 +289,7 @@ class _FrequencySelectorState extends State<FrequencySelector> {
         if (_selectedType != FrequencyType.asNeeded) ...[
           Row(
             children: [
-              const Text('Times per day:'),
+              Text(localizations.timesPerDay),
               const SizedBox(width: 8),
               SizedBox(
                 width: 80,

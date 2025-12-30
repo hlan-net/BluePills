@@ -368,4 +368,79 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get syncModeSyncOnlyDescription =>
       'Tallenna vain BlueSkyyn (vaatii internetyhteyden)';
+
+  // Low Stock & Dashboard
+  @override
+  String criticallyLowStock(int count) => '$count lääkettä on loppumassa!';
+
+  @override
+  String get dismiss => 'SULJE';
+
+  @override
+  String get takeAll => 'Ota kaikki';
+
+  @override
+  String get noMedicationsScheduledForToday => 'Ei lääkkeitä tälle päivälle.';
+
+  // Adherence Screen
+  @override
+  String get medicationAdherence => 'Lääkityksen noudattaminen';
+
+  @override
+  String get noDataAvailable => 'Ei tietoja saatavilla.';
+
+  @override
+  String get noMedicationLogsYet => 'Ei lääkitysmerkintöjä vielä.';
+
+  @override
+  String get adherenceStatistics => 'Noudattamistilastot';
+
+  @override
+  String get last7Days => 'Viimeiset 7 päivää';
+
+  @override
+  String get last30Days => 'Viimeiset 30 päivää';
+
+  // Frequency Selector & Patterns
+  @override
+  String get daily => 'Päivittäin';
+
+  @override
+  String get specificDays => 'Tietyt päivät';
+
+  @override
+  String get everyNDays => 'Joka N. päivä';
+
+  @override
+  String get selectDays => 'Valitse päivät:';
+
+  @override
+  String get every => 'Joka';
+
+  @override
+  String get day => 'päivä';
+
+  @override
+  String get days => 'päivää';
+
+  @override
+  String get timesPerDay => 'Kertaa päivässä:';
+
+  @override
+  String timesDaily(int times) =>
+      times == 1 ? 'Kerran päivässä' : '$times kertaa päivässä';
+
+  @override
+  String onDays(String days) => days;
+
+  @override
+  String timesOnDays(int times, String days) =>
+      times == 1 ? days : '$times kertaa $days';
+
+  @override
+  String everyIntervalDays(int days) =>
+      days == 1 ? 'Joka päivä' : 'Joka $days. päivä';
+
+  @override
+  String get everyDay => 'Joka päivä';
 }

@@ -3,43 +3,43 @@
 ## 🔴 Critical / Next Sprint
 
 ### Today's Medications Dashboard (US-001) - 2-3 days
-- [ ] Create `shouldTakeToday()` method in Medication model
-- [ ] Create `isTakenToday()` check against medication logs  
-- [ ] Design TodayMedicationsWidget
-- [ ] Add "Today's Medications" section to home screen
-- [ ] Show taken vs. due status with icons (✓ Taken, ⏰ Due, ⚠️ Missed)
-- [ ] Add "Take All" quick action button
-- [ ] Update main screen layout to prioritize today's meds
-- [ ] Test with multiple medications scheduled for today
+- [x] Create `shouldTakeToday()` method in Medication model
+- [x] Create `isTakenToday()` check against medication logs  
+- [x] Design TodayMedicationsWidget
+- [x] Add "Today's Medications" section to home screen
+- [x] Show taken vs. due status with icons (✓ Taken, ⏰ Due, ⚠️ Missed)
+- [x] Add "Take All" quick action button
+- [x] Update main screen layout to prioritize today's meds
+- [x] Test with multiple medications scheduled for today
 
 ### Enhanced Prescription Patterns (US-001) - 3-4 days
-- [ ] Add `scheduleDays` field to Medication model (JSON or bit flags)
-- [ ] Create database migration for new field
+- [x] Add `scheduleDays` field to Medication model (JSON or bit flags)
+- [x] Create database migration for new field
 - [ ] Design day selector UI (Mon, Tue, Wed, Thu, Fri, Sat, Sun buttons)
 - [ ] Implement day selector in MedicationFormScreen
 - [ ] Add pattern summary text display (e.g., "Mon, Tue, Wed, Thu, Fri")
-- [ ] Update `shouldTakeToday()` to use schedule pattern
-- [ ] Save and load schedule pattern from database
+- [x] Update `shouldTakeToday()` to use schedule pattern
+- [x] Save and load schedule pattern from database
 - [ ] Test weekday-only pattern (Adenuric use case)
 - [ ] Test multiple selected days pattern
 
 ### Low Stock Warnings (US-001) - 1 day
-- [ ] Implement `getDaysOfSupply()` calculation
-- [ ] Consider schedule frequency in calculation
-- [ ] Add warning badges to medication cards (⚠️ < 7 days, 🔴 < 3 days)
-- [ ] Create low-stock filter/section on home screen
-- [ ] Add banner notification for critical low stock
-- [ ] Test with different frequencies and quantities
+- [x] Implement `getDaysOfSupply()` calculation
+- [x] Consider schedule frequency in calculation
+- [x] Add warning badges to medication cards (⚠️ < 7 days, 🔴 < 3 days)
+- [x] Create low-stock filter/section on home screen
+- [x] Add banner notification for critical low stock
+- [x] Test with different frequencies and quantities
 
 ### Basic Reminders (US-001) - 2-3 days
-- [ ] Add `reminderTime` field to Medication model
-- [ ] Create database migration
-- [ ] Add time picker to medication form
-- [ ] Schedule notifications using NotificationHelper
-- [ ] Handle daily reminder scheduling based on pattern
+- [x] Add `reminderTime` field to Medication model
+- [x] Create database migration
+- [x] Add time picker to medication form
+- [x] Schedule notifications using NotificationHelper
+- [x] Handle daily reminder scheduling based on pattern
 - [ ] Implement "Take" action in notification
 - [ ] Implement "Snooze" action (15 min, 30 min, 1 hour)
-- [ ] Handle notification when app is closed
+- [x] Handle notification when app is closed
 - [ ] Reschedule for next occurrence
 - [ ] Test reminder on actual device
 
@@ -93,9 +93,9 @@
 ## 🟢 Nice to Have / Phase 3
 
 ### Adherence Tracking (US-001, US-004)
-- [ ] Design calendar view UI
-- [ ] Show taken/missed doses on calendar
-- [ ] Calculate adherence percentage (7 days, 30 days, all time)
+- [x] Design calendar view UI
+- [x] Show taken/missed doses on calendar
+- [x] Calculate adherence percentage (7 days, 30 days, all time)
 - [ ] Show adherence trends over time
 - [ ] Add missed dose logging (retroactive)
 - [ ] Export adherence data to CSV
@@ -192,7 +192,7 @@
 - [ ] Add PWA support
 
 ### Desktop (Linux/Windows/macOS)
-- [ ] Test desktop versions
+- [x] Test desktop versions
 - [ ] Optimize UI for desktop (larger screens)
 - [ ] Add keyboard shortcuts
 - [ ] Package for distribution
@@ -224,60 +224,6 @@
 
 ---
 
-## 🎨 UI/UX Improvements
-
-### Visual Design
-- [ ] Create consistent color scheme
-- [ ] Design app icon
-- [ ] Create medication type icons
-- [ ] Improve button styling
-- [ ] Add animations and transitions
-- [ ] Create empty states for all screens
-- [ ] Design error states
-
-### Accessibility
-- [ ] Add screen reader support
-- [ ] Ensure proper contrast ratios
-- [ ] Add text scaling support
-- [ ] Test with TalkBack/VoiceOver
-- [ ] Add alternative text for images
-- [ ] Implement keyboard navigation
-
-### Localization
-- [ ] Complete Finnish translations
-- [ ] Add Swedish translations (optional)
-- [ ] Test RTL languages support
-- [ ] Localize date/time formats
-- [ ] Localize number formats
-
----
-
-## 🔮 Future Features (Post-MVP)
-
-### Advanced Features
-- [ ] Medication interaction checking
-- [ ] Photo/barcode scanning for entry
-- [ ] Voice commands for logging
-- [ ] Wearable device integration
-- [ ] Integration with health apps (Apple Health, Google Fit)
-- [ ] Prescription refill reminders based on usage patterns
-- [ ] Medication price tracking
-- [ ] Kanta Integration for Prescription Import
-
-### Analytics & Insights (Privacy-Focused)
-- [ ] Medication adherence insights
-- [ ] Best time to take medications analysis
-- [ ] Usage patterns visualization
-- [ ] Health trend correlation (optional)
-
-### Sync & Backup (Optional)
-- [ ] BlueSky sync implementation
-- [ ] Local backup/restore
-- [ ] Cloud backup (optional, encrypted)
-- [ ] Device-to-device sync
-
----
-
 ## ✅ Completed (Reference)
 
 - [x] Basic medication entry (name, dosage, quantity)
@@ -290,6 +236,10 @@
 - [x] Database setup (SQLite)
 - [x] Notification infrastructure
 - [x] Basic inventory tracking
+- [x] Today's Medications Dashboard
+- [x] Low Stock Warnings
+- [x] Adherence Calendar & Statistics
+- [x] Enhanced Reminder Scheduling (Timezones & Patterns)
 
 ---
 
@@ -298,12 +248,10 @@
 **Sprint Goal:** Enable Matti's daily medication routine
 
 **In Progress:**
-- [ ] Today's Medications Dashboard
-- [ ] Enhanced Prescription Patterns
+- [ ] Enhanced Prescription Patterns (Day Selector UI)
 
 **Up Next:**
-- [ ] Low Stock Warnings
-- [ ] Basic Reminders
+- [ ] Notification Actions (Take/Snooze)
 
 **Blocked:**
 - None
@@ -319,4 +267,4 @@
 - Prioritize based on user stories (US-001, US-002)
 - Focus on Matti's needs first, then Jukka's
 
-Last Updated: 2025-10-12
+Last Updated: 2025-12-26

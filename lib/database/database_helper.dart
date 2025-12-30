@@ -91,6 +91,11 @@ class DatabaseHelper {
     return await _adapter.insertMedicationLog(log);
   }
 
+  /// Retrieves all medication logs for a specific medication ID.
+  Future<List<MedicationLog>> getMedicationLogs(int medicationId) async {
+    return await _adapter.getMedicationLogs(medicationId);
+  }
+
   /// Retrieves a single medication by its ID.
   Future<Medication?> getMedication(int id) async {
     return await _adapter.getMedication(id);
@@ -99,6 +104,11 @@ class DatabaseHelper {
   /// Retrieves all medication logs for today.
   Future<List<MedicationLog>> getMedicationLogsForToday() async {
     return await _adapter.getMedicationLogsForToday();
+  }
+
+  /// Retrieves all medication logs from the database.
+  Future<List<MedicationLog>> getAllLogs() async {
+    return await _adapter.getAllLogs();
   }
 
   /// Returns the file path of the database, or null if not applicable.
