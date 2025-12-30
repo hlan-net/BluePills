@@ -56,7 +56,10 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
   /// Calculates adherence percentage for a given time period.
   ///
   /// Compares the number of doses taken against expected doses based on
-  /// medication frequency patterns. Returns a percentage from 0 to 100.
+  /// medication frequency patterns.
+  ///
+  /// [duration] The time period to calculate adherence for.
+  /// Returns a percentage from 0 to 100.
   double _calculateAdherence(Duration duration) {
     final now = DateTime.now();
     final startDate = now.subtract(duration);
@@ -189,6 +192,10 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
   ///
   /// Shows the title and percentage with color-coded indicators based on
   /// the adherence level (green for high, orange for medium, red for low).
+  ///
+  /// [title] The title text to display on the card.
+  /// [percentage] The adherence percentage to display.
+  /// Returns a Card widget with the formatted adherence information.
   Widget _buildAdherenceCard(String title, double percentage) {
     return Card(
       child: Padding(
@@ -211,6 +218,7 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
 
   /// Returns the appropriate color for the adherence percentage.
   ///
+  /// [percentage] The adherence percentage to evaluate.
   /// Returns green for 90%+, orange for 70-89%, and red for below 70%.
   Color _getAdherenceColor(double percentage) {
     if (percentage >= 90) {
