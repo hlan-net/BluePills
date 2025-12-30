@@ -1,3 +1,9 @@
+/// Adherence tracking screen for medication compliance monitoring.
+///
+/// This library provides the UI for viewing medication adherence statistics
+/// with calendar visualization and percentage calculations for different time periods.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:bluepills/database/database_helper.dart';
@@ -5,6 +11,10 @@ import 'package:bluepills/models/medication_log.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
 
+/// A stateful widget that displays the medication adherence tracking screen.
+///
+/// Shows a calendar with markers for days when medications were taken
+/// and displays adherence statistics for the last 7 and 30 days.
 class AdherenceScreen extends StatefulWidget {
   const AdherenceScreen({super.key});
 
@@ -12,6 +22,10 @@ class AdherenceScreen extends StatefulWidget {
   State<AdherenceScreen> createState() => _AdherenceScreenState();
 }
 
+/// State class for the adherence screen.
+///
+/// Manages calendar state, medication data, and adherence calculations
+/// for displaying compliance statistics and visual indicators.
 class _AdherenceScreenState extends State<AdherenceScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
@@ -26,6 +40,9 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
     _data = _fetchAllData();
   }
 
+  /// Fetches all medications and medication logs from the database.
+  ///
+  /// Returns a list containing medications and logs for adherence calculations.
   Future<List<dynamic>> _fetchAllData() async {
     final medications = await DatabaseHelper().getMedications();
     final logs = await DatabaseHelper().getAllLogs();
@@ -36,6 +53,10 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
     return [medications, logs];
   }
 
+  /// Calculates adherence percentage for a given time period.
+  ///
+  /// Compares the number of doses taken against expected doses based on
+  /// medication frequency patterns. Returns a percentage from 0 to 100.
   double _calculateAdherence(Duration duration) {
     final now = DateTime.now();
     final startDate = now.subtract(duration);
@@ -164,6 +185,10 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
     );
   }
 
+  /// Builds a card widget displaying adherence statistics.
+  ///
+  /// Shows the title and percentage with color-coded indicators based on
+  /// the adherence level (green for high, orange for medium, red for low).
   Widget _buildAdherenceCard(String title, double percentage) {
     return Card(
       child: Padding(
@@ -184,6 +209,9 @@ class _AdherenceScreenState extends State<AdherenceScreen> {
     );
   }
 
+  /// Returns the appropriate color for the adherence percentage.
+  ///
+  /// Returns green for 90%+, orange for 70-89%, and red for below 70%.
   Color _getAdherenceColor(double percentage) {
     if (percentage >= 90) {
       return Colors.green;
