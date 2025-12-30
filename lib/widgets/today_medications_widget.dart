@@ -1,12 +1,29 @@
+/// Widget for displaying today's scheduled medications.
+///
+/// This library provides a card widget that shows all medications scheduled for today,
+/// their status (taken/not taken), and actions to mark them as taken.
+library;
+
 import 'package:flutter/material.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/models/medication_log.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
 
+/// A widget that displays today's medications and their status.
+///
+/// Shows a list of medications scheduled for today with visual indicators
+/// for completion status and provides buttons to mark medications as taken.
 class TodayMedicationsWidget extends StatelessWidget {
+  /// The list of medications scheduled for today.
   final List<Medication> medications;
+
+  /// The list of medication logs to check if medications were taken.
   final List<MedicationLog> logs;
+
+  /// Callback invoked when a single medication is marked as taken.
   final ValueChanged<Medication> onTakeMedication;
+
+  /// Callback invoked when the "Take All" button is pressed.
   final VoidCallback onTakeAll;
 
   const TodayMedicationsWidget({
