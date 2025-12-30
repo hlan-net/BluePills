@@ -16,13 +16,13 @@ import 'package:bluepills/l10n/app_localizations.dart';
 class TodayMedicationsWidget extends StatelessWidget {
   /// The list of medications scheduled for today.
   final List<Medication> medications;
-  
+
   /// The list of medication logs to check if medications were taken.
   final List<MedicationLog> logs;
-  
+
   /// Callback invoked when a single medication is marked as taken.
   final ValueChanged<Medication> onTakeMedication;
-  
+
   /// Callback invoked when the "Take All" button is pressed.
   final VoidCallback onTakeAll;
 

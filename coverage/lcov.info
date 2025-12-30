@@ -422,7 +422,7 @@ LF:2
 LH:2
 end_of_record
 SF:lib/l10n/app_localizations_delegate.dart
-DA:24,0
+DA:24,1
 DA:26,2
 DA:28,6
 DA:31,2
@@ -438,7 +438,7 @@ DA:41,0
 DA:43,4
 DA:47,0
 LF:15
-LH:9
+LH:10
 end_of_record
 SF:lib/l10n/en/app_localizations_en.dart
 DA:13,0
