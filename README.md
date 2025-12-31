@@ -260,18 +260,6 @@ flutter test
 - ✅ Multi-platform builds
 - ✅ Security implementation
 
-### **🚧 In Progress (v1.4)**
-- 🚧 BlueSky authentication flow
-- 🚧 Real-time sync implementation
-- 🚧 Enhanced notification system
-- 🚧 iOS platform support
-
-### **📋 Planned (v1.5+)**
-- 📋 Advanced conflict resolution UI
-- 📋 Medication sharing capabilities
-- 📋 Healthcare provider integration
-- 📋 Advanced analytics dashboard
-
 ## 🏆 **Awards & Recognition**
 
 - 🌟 **MIT Licensed**: Industry-standard open source license
