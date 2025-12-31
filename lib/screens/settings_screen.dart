@@ -6,6 +6,7 @@ import 'package:bluepills/services/google_drive_service.dart';
 import 'package:bluepills/services/backup_service.dart';
 import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart';
 import 'package:flutter/material.dart';
+import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/models/app_config.dart';
 
@@ -83,6 +84,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     setState(() => _isLoading = true);
 
+    final localizations = AppLocalizations.of(context)!;
+
     try {
       await widget.configService.enableSync(
         blueskyHandle: _handleController.text.trim(),
@@ -91,8 +94,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('BlueSky sync enabled successfully!'),
+          SnackBar(
+            content: Text(localizations.blueskySyncEnabledSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -102,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to enable sync: $e'),
+            content: Text(localizations.failedToEnableSync(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -113,23 +116,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _disableSync() async {
+    final localizations = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Disable BlueSky Sync'),
-        content: const Text(
-          'This will disable synchronization with BlueSky. '
-          'Your data will remain stored locally. '
-          'Are you sure you want to continue?',
-        ),
+        title: Text(localizations.disableBlueSkySync),
+        content: Text(localizations.disableBlueSkySyncConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text(localizations.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Disable'),
+            child: Text(localizations.disable),
           ),
         ],
       ),
@@ -141,8 +141,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         await widget.configService.disableSync();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('BlueSky sync disabled'),
+            SnackBar(
+              content: Text(localizations.blueskySyncDisabled),
               backgroundColor: Colors.orange,
             ),
           );
@@ -152,7 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to disable sync: $e'),
+              content: Text(localizations.failedToDisableSync(e.toString())),
               backgroundColor: Colors.red,
             ),
           );
@@ -165,12 +165,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _importData() async {
     setState(() => _isLoading = true);
+    final localizations = AppLocalizations.of(context)!;
     try {
       await widget.importService.importMedications();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Data imported successfully!'),
+          SnackBar(
+            content: Text(localizations.dataImportedSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -179,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to import data: $e'),
+            content: Text(localizations.failedToImportData(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -191,12 +192,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _exportData() async {
     setState(() => _isLoading = true);
+    final localizations = AppLocalizations.of(context)!;
     try {
       await widget.exportService.exportMedications();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Data exported successfully!'),
+          SnackBar(
+            content: Text(localizations.dataExportedSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -205,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to export data: $e'),
+            content: Text(localizations.failedToExportData(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -235,12 +237,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _backupToDrive() async {
     setState(() => _isBackupLoading = true);
+    final localizations = AppLocalizations.of(context)!;
     try {
       await widget.backupService.backup();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Backup successful!'),
+          SnackBar(
+            content: Text(localizations.backupSuccessful),
             backgroundColor: Colors.green,
           ),
         );
@@ -249,7 +252,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Backup failed: $e'),
+            content: Text(localizations.backupFailed(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -261,20 +264,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _restoreFromDrive() async {
     setState(() => _isBackupLoading = true);
+    final localizations = AppLocalizations.of(context)!;
     try {
       final success = await widget.backupService.restore();
       if (mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Restore successful! Please restart the app.'),
+            SnackBar(
+              content: Text(localizations.restoreSuccessful),
               backgroundColor: Colors.green,
             ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No backup found.'),
+            SnackBar(
+              content: Text(localizations.noBackupFound),
               backgroundColor: Colors.orange,
             ),
           );
@@ -284,7 +288,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Restore failed: $e'),
+            content: Text(localizations.restoreFailed(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -297,10 +301,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final config = widget.configService.config;
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(localizations.settings),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
@@ -326,14 +331,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'BlueSky Synchronization',
+                            localizations.blueskySynchronization,
                             style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        config.syncMode.description,
+                        config.syncMode.description(localizations),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.grey[600],
                         ),
@@ -346,14 +351,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (!config.syncEnabled) ...[
                         TextFormField(
                           controller: _handleController,
-                          decoration: const InputDecoration(
-                            labelText: 'BlueSky Handle',
-                            hintText: 'your.handle.bsky.social',
-                            prefixIcon: Icon(Icons.person),
+                          decoration: InputDecoration(
+                            labelText: localizations.blueskyHandle,
+                            hintText: localizations.yourHandleBskySocial,
+                            prefixIcon: const Icon(Icons.person),
                           ),
                           validator: (value) {
                             if (value?.trim().isEmpty ?? true) {
-                              return 'Please enter your BlueSky handle';
+                              return localizations.pleaseEnterYourBlueskyHandle;
                             }
                             return null;
                           },
@@ -361,18 +366,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _pdsUrlController,
-                          decoration: const InputDecoration(
-                            labelText: 'Personal Data Server (PDS) URL',
-                            hintText: 'https://your-pds.example.com',
-                            prefixIcon: Icon(Icons.cloud),
+                          decoration: InputDecoration(
+                            labelText: localizations.personalDataServerPDSURL,
+                            hintText: localizations.yourPdsExampleCom,
+                            prefixIcon: const Icon(Icons.cloud),
                           ),
                           validator: (value) {
                             if (value?.trim().isEmpty ?? true) {
-                              return 'Please enter your PDS URL';
+                              return localizations.pleaseEnterYourPDSURL;
                             }
                             final uri = Uri.tryParse(value!);
                             if (uri == null || !uri.hasScheme) {
-                              return 'Please enter a valid URL';
+                              return localizations.pleaseEnterAValidURL;
                             }
                             return null;
                           },
@@ -393,8 +398,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 : const Icon(Icons.sync),
                             label: Text(
                               _isLoading
-                                  ? 'Enabling...'
-                                  : 'Enable BlueSky Sync',
+                                  ? localizations.enabling
+                                  : localizations.enableBlueSkySync,
                             ),
                           ),
                         ),
@@ -404,7 +409,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: ElevatedButton.icon(
                             onPressed: _isLoading ? null : _disableSync,
                             icon: const Icon(Icons.sync_disabled),
-                            label: const Text('Disable Sync'),
+                            label: Text(localizations.disableSync),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.orange,
                               foregroundColor: Colors.white,
@@ -426,22 +431,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.backup,
-                                color: _googleUser != null
-                                    ? Colors.green
-                                    : Colors.grey,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Google Drive Backup',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.headlineSmall,
-                              ),
-                            ],
+                          Flexible(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.backup,
+                                  color: _googleUser != null
+                                      ? Colors.green
+                                      : Colors.grey,
+                                ),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: Text(
+                                    localizations.googleDriveBackup,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.headlineSmall,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           Switch(
                             value: _googleUser != null,
@@ -458,13 +467,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (_googleUser != null) ...[
                         const SizedBox(height: 16),
                         Text(
-                          'Connected as: ${_googleUser!.idToken != null ? "User with ID Token" : "User (No ID Token)"}',
+                          localizations.connectedAs(
+                            _googleUser!.idToken != null
+                                ? "User with ID Token"
+                                : "User (No ID Token)",
+                          ),
                         ),
                         const SizedBox(height: 8),
                         SwitchListTile(
-                          title: const Text('Auto-restore from backup'),
-                          subtitle: const Text(
-                            'Restore newer backup on startup',
+                          title: Text(localizations.autoRestoreFromBackup),
+                          subtitle: Text(
+                            localizations.restoreNewerBackupOnStartup,
                           ),
                           value: config.autoRestoreEnabled,
                           onChanged: (value) async {
@@ -483,14 +496,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ? null
                                   : _backupToDrive,
                               icon: const Icon(Icons.cloud_upload),
-                              label: const Text('Backup Now'),
+                              label: Text(localizations.backupNow),
                             ),
                             ElevatedButton.icon(
                               onPressed: _isBackupLoading
                                   ? null
                                   : _restoreFromDrive,
                               icon: const Icon(Icons.cloud_download),
-                              label: const Text('Restore Now'),
+                              label: Text(localizations.restoreNow),
                             ),
                           ],
                         ),
@@ -502,7 +515,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ? null
                                 : _disconnectGoogle,
                             icon: const Icon(Icons.logout),
-                            label: const Text('Disconnect'),
+                            label: Text(localizations.disconnect),
                           ),
                         ),
                       ],
@@ -518,7 +531,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Data Management',
+                        localizations.dataManagement,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       const SizedBox(height: 16),
@@ -528,12 +541,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ElevatedButton.icon(
                             onPressed: _isLoading ? null : _importData,
                             icon: const Icon(Icons.file_upload),
-                            label: const Text('Import Data'),
+                            label: Text(localizations.importData),
                           ),
                           ElevatedButton.icon(
                             onPressed: _isLoading ? null : _exportData,
                             icon: const Icon(Icons.file_download),
-                            label: const Text('Export Data'),
+                            label: Text(localizations.exportData),
                           ),
                         ],
                       ),
@@ -549,33 +562,76 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'About BlueSky Integration',
+                        localizations.language,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        initialValue: config.languageCode ?? '',
+                        decoration: InputDecoration(
+                          labelText: localizations.appLanguage,
+                          prefixIcon: const Icon(Icons.language),
+                        ),
+                        items: [
+                          DropdownMenuItem(
+                            value: '',
+                            child: Text(localizations.deviceLanguage),
+                          ),
+                          ...AppLocalizations.supportedLocales.map((locale) {
+                            return DropdownMenuItem(
+                              value: locale.languageCode,
+                              child: Text(
+                                {
+                                  'en': localizations.english,
+                                  'fi': localizations.finnish,
+                                  'sv': localizations.swedish,
+                                  'de': localizations.german,
+                                  'es': localizations.spanish,
+                                }[locale.languageCode]!,
+                              ),
+                            );
+                          }),
+                        ],
+                        onChanged: (value) async {
+                          await widget.configService.updateConfig(
+                            config.copyWith(languageCode: value),
+                          );
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        localizations.aboutBlueSkyIntegration,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'BluePills uses the AT Protocol to sync your medication data '
-                        'with your personal BlueSky account. This allows you to access '
-                        'your medications from any device while maintaining full control '
-                        'over your data.',
-                      ),
+                      Text(localizations.aboutBlueSkyIntegrationDescription),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Your medication data will be stored securely on your chosen '
-                        'Personal Data Server (PDS) and synchronized across all your devices.',
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                      Text(
+                        localizations.aboutBlueSkyIntegrationDescription2,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(height: 16),
                       const Divider(),
                       const SizedBox(height: 8),
                       Text(
-                        'License & Legal',
+                        localizations.licenseAndLegal,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'BluePills is open source software licensed under the MIT License.',
-                        style: TextStyle(fontSize: 12),
+                      Text(
+                        localizations.mitLicense,
+                        style: const TextStyle(fontSize: 12),
                       ),
                       const SizedBox(height: 8),
                       Container(
@@ -585,20 +641,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.orange.shade200),
                         ),
-                        child: const Column(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Medical Disclaimer',
-                              style: TextStyle(
+                              localizations.medicalDisclaimer,
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orange,
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
-                              'This software is for informational purposes only and is not intended to replace professional medical advice, diagnosis, or treatment. Always consult healthcare professionals regarding your medications.',
-                              style: TextStyle(fontSize: 12),
+                              localizations.medicalDisclaimerDescription,
+                              style: const TextStyle(fontSize: 12),
                             ),
                           ],
                         ),

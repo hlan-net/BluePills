@@ -58,6 +58,9 @@ abstract class DatabaseAdapter {
   /// Returns a list of medication logs that were created today.
   Future<List<MedicationLog>> getMedicationLogsForToday();
 
+  /// Retrieves all medication log entries from the database.
+  Future<List<MedicationLog>> getAllLogs();
+
   /// Returns the file path of the database, or null if not applicable (e.g. Web).
   Future<String?> getDatabasePath();
 }

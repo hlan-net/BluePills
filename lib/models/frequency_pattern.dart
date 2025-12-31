@@ -1,3 +1,5 @@
+import 'package:bluepills/l10n/app_localizations.dart';
+
 /// Represents a frequency pattern for medication scheduling.
 ///
 /// This model supports complex medication schedules including:
@@ -108,29 +110,21 @@ class FrequencyPattern {
   }
 
   /// Returns a human-readable description of this frequency pattern
-  String toReadableString() {
+  String toReadableString(AppLocalizations localizations) {
     switch (type) {
       case FrequencyType.daily:
-        if (timesPerDay == 1) {
-          return 'Once daily';
-        } else {
-          return '$timesPerDay times daily';
-        }
+        return localizations.timesDaily(timesPerDay);
       case FrequencyType.specificDays:
         final dayNames = daysOfWeek.map((d) => _getDayName(d)).join(', ');
-        if (timesPerDay == 1) {
-          return 'On $dayNames';
-        } else {
-          return '$timesPerDay times on $dayNames';
-        }
+        return localizations.timesOnDays(timesPerDay, dayNames);
       case FrequencyType.everyNDays:
         if (intervalDays == 1) {
-          return 'Every day';
+          return localizations.everyDay;
         } else {
-          return 'Every $intervalDays days';
+          return localizations.everyIntervalDays(intervalDays!);
         }
       case FrequencyType.asNeeded:
-        return 'As needed';
+        return localizations.asNeeded;
     }
   }
 
@@ -140,15 +134,26 @@ class FrequencyPattern {
   }
 
   /// Checks if medication should be taken on a given date
-  bool shouldTakeOnDate(DateTime date) {
+  bool shouldTakeOnDate(DateTime date, DateTime createdAt) {
     switch (type) {
       case FrequencyType.daily:
         return true;
       case FrequencyType.specificDays:
         return daysOfWeek.contains(date.weekday);
       case FrequencyType.everyNDays:
-        // This would need a start date reference for proper calculation
-        return true; // Simplified for now
+        if (intervalDays == null || intervalDays! <= 0) {
+          return false; // Or handle as an error
+        }
+        final startOfCreateDate = DateTime(
+          createdAt.year,
+          createdAt.month,
+          createdAt.day,
+        );
+        final startOfCheckDate = DateTime(date.year, date.month, date.day);
+        final difference = startOfCheckDate
+            .difference(startOfCreateDate)
+            .inDays;
+        return difference % intervalDays! == 0;
       case FrequencyType.asNeeded:
         return false;
     }

@@ -4,7 +4,7 @@
 /// that uses SQLite for persistent storage through the sqflite package.
 library;
 
-import 'dart:io';
+import 'dart:io' show Directory, Platform;
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -33,8 +33,18 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
   }
 
   Future<String> _getDatabasePath() async {
-    // Use path_provider for all platforms to ensure robust path handling
-    // (including Sandbox support for Snap/Flatpak on Linux)
+    if (Platform.isLinux) {
+      final homeDir = Platform.environment['HOME'];
+      if (homeDir != null && homeDir.isNotEmpty) {
+        final appDir = Directory(join(homeDir, '.bluepills'));
+        if (!await appDir.exists()) {
+          await appDir.create(recursive: true);
+        }
+        return join(appDir.path, 'medications.db');
+      }
+    }
+
+    // Use path_provider for non-Linux platforms or as a fallback when HOME isn't set.
     final documentsDirectory = await getApplicationDocumentsDirectory();
     return join(documentsDirectory.path, 'medications.db');
   }
@@ -210,6 +220,15 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
       whereArgs: [todayStart.toIso8601String(), todayEnd.toIso8601String()],
     );
 
+    return List.generate(maps.length, (i) {
+      return MedicationLog.fromMap(maps[i]);
+    });
+  }
+
+  @override
+  Future<List<MedicationLog>> getAllLogs() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('medication_logs');
     return List.generate(maps.length, (i) {
       return MedicationLog.fromMap(maps[i]);
     });
