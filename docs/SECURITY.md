@@ -256,8 +256,8 @@ flutter clean && rm -rf build/
 
 ## 🔗 **Security Resources**
 
-- [GitHub Security Advisories](https://github.com/your-username/BluePills/security/advisories)
-- [Dependabot Alerts](https://github.com/your-username/BluePills/security/dependabot)
+- [GitHub Security Advisories](https://github.com/hlan-net/BluePills/security/advisories)
+- [Dependabot Alerts](https://github.com/hlan-net/BluePills/security/dependabot)
 - [Flutter Security Guide](https://docs.flutter.dev/deployment/obfuscate)
 - [Android App Signing](https://developer.android.com/studio/publish/app-signing)
 

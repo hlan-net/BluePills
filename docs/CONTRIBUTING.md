@@ -24,7 +24,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
 
 #### Getting Started
 1. **Fork the repository**
-2. **Clone your fork**: `git clone https://github.com/your-username/BluePills.git`
+2. **Clone your fork**: `git clone https://github.com/hlan-net/BluePills.git`
 3. **Set up development environment**: `./setup-automation.sh`
 4. **Create a feature branch**: `git checkout -b feature/your-feature-name`
 
@@ -117,7 +117,7 @@ All contributions must respect the privacy-first philosophy of BluePills:
 ### Quick Start
 ```bash
 # Clone and setup
-git clone https://github.com/your-username/BluePills.git
+git clone https://github.com/hlan-net/BluePills.git
 cd BluePills
 ./setup-automation.sh
 
@@ -145,9 +145,9 @@ Contributors will be recognized in:
 
 ## 🤔 Questions?
 
-- **General questions**: Use [GitHub Discussions](https://github.com/your-username/BluePills/discussions)
-- **Security issues**: Use [private security advisories](https://github.com/your-username/BluePills/security/advisories/new)
-- **Feature discussions**: Create a [feature request issue](https://github.com/your-username/BluePills/issues/new?template=feature_request.yml)
+- **General questions**: Use [GitHub Discussions](https://github.com/hlan-net/BluePills/discussions)
+- **Security issues**: Use [private security advisories](https://github.com/hlan-net/BluePills/security/advisories/new)
+- **Feature discussions**: Create a [feature request issue](https://github.com/hlan-net/BluePills/issues/new?template=feature_request.yml)
 
 ## 🎉 Thank You!
 

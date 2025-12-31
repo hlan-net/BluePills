@@ -1,7 +1,7 @@
 # BluePills 💊
 
-[![CI/CD](https://github.com/your-username/BluePills/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/BluePills/actions/workflows/ci.yml)
-[![Security](https://github.com/your-username/BluePills/actions/workflows/security.yml/badge.svg)](https://github.com/your-username/BluePills/security)
+[![CI/CD](https://github.com/hlan-net/BluePills/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/BluePills/actions/workflows/ci.yml)
+[![Security](https://github.com/hlan-net/BluePills/actions/workflows/security.yml/badge.svg)](https://github.com/your-username/BluePills/security)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Flutter-3.8+-blue.svg)](https://flutter.dev/)
 
@@ -52,7 +52,7 @@ A **privacy-focused medication management app** that gives users complete contro
 
 ### **Option 1: One-Click Setup** (Recommended)
 ```bash
-git clone https://github.com/your-username/BluePills.git
+git clone https://github.com/hlan-net/BluePills.git
 cd BluePills
 ./setup-automation.sh
 flutter run
@@ -61,7 +61,7 @@ flutter run
 ### **Option 2: Manual Setup**
 ```bash
 # Prerequisites: Flutter 3.8+
-git clone https://github.com/your-username/BluePills.git
+git clone https://github.com/hlan-net/BluePills.git
 cd BluePills
 
 # Install dependencies
@@ -78,16 +78,16 @@ flutter run
 
 ### **Android**
 - 🤖 **Google Play Store**: [Coming Soon - Internal Testing Available]
-- 📦 **Direct APK**: Download from [Releases](https://github.com/your-username/BluePills/releases)
+- 📦 **Direct APK**: Download from [Releases](https://github.com/hlan-net/BluePills/releases)
 
 ### **Web App**
-- 🌐 **Progressive Web App**: [https://your-username.github.io/BluePills](https://your-username.github.io/BluePills)
+- 🌐 **Progressive Web App**: [https://hlan-net.github.io/BluePills](https://your-username.github.io/BluePills)
 - ✅ **Works Offline**: Full functionality without internet
 
 ### **Desktop**
-- 🐧 **Linux**: Download from [Releases](https://github.com/your-username/BluePills/releases)
-- 🪟 **Windows**: Download from [Releases](https://github.com/your-username/BluePills/releases)
-- 🍎 **macOS**: Download from [Releases](https://github.com/your-username/BluePills/releases)
+- 🐧 **Linux**: Download from [Releases](https://github.com/hlan-net/BluePills/releases)
+- 🪟 **Windows**: Download from [Releases](https://github.com/hlan-net/BluePills/releases)
+- 🍎 **macOS**: Download from [Releases](https://github.com/hlan-net/BluePills/releases)
 
 ## 🎯 **Usage Guide**
 
@@ -208,7 +208,7 @@ We welcome contributions! See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidel
 ```bash
 # 1. Fork the repository
 # 2. Clone your fork
-git clone https://github.com/your-username/BluePills.git
+git clone https://github.com/hlan-net/BluePills.git
 cd BluePills
 
 # 3. Set up development environment
@@ -306,9 +306,9 @@ BluePills is open source software licensed under the [MIT License](LICENSE).
 
 ## 📞 **Support & Community**
 
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/BluePills/discussions)
-- 🐛 **Bug Reports**: [Issues](https://github.com/your-username/BluePills/issues)
-- 🔒 **Security**: [Security Advisories](https://github.com/your-username/BluePills/security/advisories)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/hlan-net/BluePills/discussions)
+- 🐛 **Bug Reports**: [Issues](https://github.com/hlan-net/BluePills/issues)
+- 🔒 **Security**: [Security Advisories](https://github.com/hlan-net/BluePills/security/advisories)
 - 📧 **Contact**: [your-email@example.com](mailto:your-email@example.com)
 
 ---
@@ -319,6 +319,6 @@ BluePills is open source software licensed under the [MIT License](LICENSE).
 
 **Made with ❤️ for privacy-conscious healthcare**
 
-[🌟 Star](https://github.com/your-username/BluePills/stargazers) • [🍴 Fork](https://github.com/your-username/BluePills/fork) • [📝 Contribute](docs/CONTRIBUTING.md) • [🔒 Security](docs/SECURITY.md)
+[🌟 Star](https://github.com/hlan-net/BluePills/stargazers) • [🍴 Fork](https://github.com/your-username/BluePills/fork) • [📝 Contribute](docs/CONTRIBUTING.md) • [🔒 Security](docs/SECURITY.md)
 
 </div>
