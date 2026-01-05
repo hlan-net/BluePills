@@ -13,11 +13,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
         InitializationSettings,
         DateTimeComponents,
         AndroidNotificationDetails,
-        AndroidNotificationChannel,
         AndroidScheduleMode,
         Importance,
         Priority,
-        UILocalNotificationDateInterpretation,
         AndroidFlutterLocalNotificationsPlugin;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -120,8 +118,6 @@ class NotificationHelper {
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: matchDateTimeComponents,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 }
