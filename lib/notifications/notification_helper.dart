@@ -13,7 +13,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
         InitializationSettings,
         DateTimeComponents,
         AndroidNotificationDetails,
-        AndroidScheduleMode;
+        AndroidNotificationChannel,
+        AndroidScheduleMode,
+        Importance,
+        Priority,
+        UILocalNotificationDateInterpretation,
+        AndroidFlutterLocalNotificationsPlugin;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:bluepills/models/frequency_pattern.dart'; // Import FrequencyPattern
@@ -37,6 +42,7 @@ class NotificationHelper {
   ///
   /// This method must be called before any other operations.
   /// Sets up notification icons and action names for Android and Linux.
+  /// Also requests notification permissions on Android 13+.
   Future<void> init() async {
     tz.initializeTimeZones();
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -49,6 +55,18 @@ class NotificationHelper {
           linux: initializationSettingsLinux,
         );
     await _notificationsPlugin.initialize(initializationSettings);
+    
+    // Request notification permissions for Android 13+ (API level 33+)
+    await _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+    
+    // Request exact alarm permissions for Android 12+ (API level 31+)
+    await _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestExactAlarmsPermission();
   }
 
   /// Schedules a notification to be displayed.
@@ -92,10 +110,16 @@ class NotificationHelper {
           'medication_reminders',
           'Medication Reminders',
           channelDescription: 'Reminders to take your medication',
+          importance: Importance.high,
+          priority: Priority.high,
+          enableVibration: true,
+          playSound: true,
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: matchDateTimeComponents,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 }
