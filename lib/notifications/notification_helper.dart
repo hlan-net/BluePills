@@ -55,17 +55,19 @@ class NotificationHelper {
           linux: initializationSettingsLinux,
         );
     await _notificationsPlugin.initialize(initializationSettings);
-    
+
     // Request notification permissions for Android 13+ (API level 33+)
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
-    
+
     // Request exact alarm permissions for Android 12+ (API level 31+)
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestExactAlarmsPermission();
   }
 
