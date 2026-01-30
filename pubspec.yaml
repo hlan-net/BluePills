@@ -68,7 +68,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   # Code generation for JSON serialization
   json_serializable: ^6.11.4
-  build_runner: ^2.10.1
+  build_runner: ^2.10.5
   mockito: ^5.4.4
   # App icon and splash screen generation
   flutter_launcher_icons: ^0.14.4
