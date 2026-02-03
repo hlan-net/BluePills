@@ -21,9 +21,15 @@ jobs:
   analyze:
     name: Code Analysis
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+      checks: write
     steps:
     - name: Checkout code
       uses: actions/checkout@v6
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for better SonarCloud analysis
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -61,6 +67,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: SonarCloud Quality Gate Check
+      uses: SonarSource/sonarqube-quality-gate-action@v1
+      timeout-minutes: 5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      continue-on-error: true
 
 
   # Security Scanning
