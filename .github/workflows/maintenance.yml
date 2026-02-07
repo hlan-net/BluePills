@@ -132,7 +132,7 @@ jobs:
       run: |
         echo "# Documentation Coverage" >> todo-report.md
         echo "" >> todo-report.md
-        find lib -name "*.dart" -exec grep -L "///" {} \; > undocumented.txt || true
+        find lib -name "*.dart" ! -name "*.g.dart" ! -name "*.freezed.dart" ! -name "*.mocks.dart" -exec grep -L "///" {} \; > undocumented.txt || true
         if [ -s undocumented.txt ]; then
           echo "## Files lacking documentation:" >> todo-report.md
           cat undocumented.txt >> todo-report.md
