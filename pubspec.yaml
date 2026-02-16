@@ -42,7 +42,7 @@ dependencies:
   sqflite_common_ffi: ^2.4.0+1
   shared_preferences: ^2.5.4
   localstorage: ^6.0.0
-  flutter_local_notifications: ^20.0.0
+  flutter_local_notifications: ^20.1.0
   # HTTP client for AT Protocol integration
   http: ^1.1.0
   # JSON annotation for serialization
