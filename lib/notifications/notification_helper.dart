@@ -52,7 +52,7 @@ class NotificationHelper {
           android: initializationSettingsAndroid,
           linux: initializationSettingsLinux,
         );
-    await _notificationsPlugin.initialize(initializationSettings);
+    await _notificationsPlugin.initialize(settings: initializationSettings);
 
     // Request notification permissions for Android 13+ (API level 33+)
     await _notificationsPlugin
@@ -101,11 +101,11 @@ class NotificationHelper {
     }
 
     await _notificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      const NotificationDetails(
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'medication_reminders',
           'Medication Reminders',
