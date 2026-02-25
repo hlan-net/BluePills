@@ -73,6 +73,15 @@ a:hover { text-decoration: underline; }
 }
 .roadmap-note a { font-weight: 600; }
 
+.nav-logo {
+  width: 28px; height: 28px; border-radius: 6px; object-fit: contain;
+}
+
+.phone-icon-img {
+  width: 80px; height: 80px; border-radius: 18px; object-fit: contain;
+  background: rgba(255,255,255,.15); padding: 8px;
+}
+
 /* ── Nav ── */
 nav {
   position: sticky; top: 0; z-index: 100;
