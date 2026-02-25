@@ -23,6 +23,56 @@ body {
 a { color: var(--primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+/* ── Status Banner ── */
+.status-banner {
+  background: #FFF8E1; color: #5D4037;
+  border-bottom: 1px solid #FFE082;
+  text-align: center; padding: .65rem 1.5rem;
+  font-size: .9rem;
+}
+.status-banner a { color: #E65100; font-weight: 600; }
+
+/* ── Roadmap ── */
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.roadmap-col {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+}
+
+.roadmap-col-title {
+  font-size: 1rem; font-weight: 700; margin-bottom: 1rem;
+  padding-bottom: .6rem; border-bottom: 2px solid;
+}
+
+.done-title  { color: #2E7D32; border-color: #A5D6A7; }
+.soon-title  { color: #E65100; border-color: #FFCC80; }
+.future-title { color: #1565C0; border-color: #90CAF9; }
+
+.roadmap-list {
+  list-style: none; display: flex; flex-direction: column; gap: .55rem;
+}
+.roadmap-list li {
+  font-size: .9rem; color: var(--muted);
+  padding-left: 1rem; position: relative;
+}
+.roadmap-list li::before {
+  content: '–'; position: absolute; left: 0; color: var(--border);
+}
+
+.roadmap-note {
+  text-align: center; color: var(--muted); font-size: .95rem;
+  margin-top: 1rem;
+}
+.roadmap-note a { font-weight: 600; }
+
 /* ── Nav ── */
 nav {
   position: sticky; top: 0; z-index: 100;
