@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BluePills – Privacy-First Medication Manager</title>
+  <meta name="description" content="BluePills is an open-source, privacy-first medication management app. Your health data stays on your device. Optional BlueSky sync. Free, cross-platform." />
+  <meta property="og:title" content="BluePills – Privacy-First Medication Manager" />
+  <meta property="og:description" content="Manage your medications privately. Local-first, open-source, optional BlueSky sync." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://hlan-net.github.io/BluePills/" />
+  <link rel="canonical" href="https://hlan-net.github.io/BluePills/" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a href="#" class="nav-brand">
+    <span>💊</span> BluePills
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#privacy">Privacy</a></li>
+    <li><a href="#platforms">Platforms</a></li>
+    <li><a href="https://github.com/hlan-net/BluePills" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="#download" class="nav-cta">Download</a></li>
+  </ul>
+  <div class="hamburger" aria-label="Toggle navigation" role="button" tabindex="0">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero" style="padding-top:5rem;padding-bottom:4rem;">
+  <div class="hero-text">
+    <span class="hero-badge">🔒 Privacy-First · Open Source</span>
+    <h1>Your medications,<br /><em>your data</em>.</h1>
+    <p>
+      BluePills is a free, open-source medication manager that keeps your health data
+      on your device. Sync to BlueSky only when <em>you</em> choose.
+    </p>
+    <div class="btn-group">
+      <a href="https://hlan-net.github.io/BluePills/app" class="btn btn-primary">🌐 Launch Web App</a>
+      <a href="https://github.com/hlan-net/BluePills/releases/latest" class="btn btn-outline" target="_blank" rel="noopener">📦 Download</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="phone-mockup">
+      <div class="phone-icon">💊</div>
+      <div class="pill-row">
+        <div class="pill-card">Aspirin · 8:00</div>
+        <div class="pill-card">Vitamin D</div>
+      </div>
+      <div class="pill-row">
+        <div class="pill-card">✅ Taken</div>
+        <div class="pill-card">⏰ 12:00</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section id="features" style="background:#fff;">
+  <div class="section-inner">
+    <p class="section-label">What you get</p>
+    <h2 class="section-title">Everything you need, nothing you don't</h2>
+    <p class="section-sub">Focused, straightforward medication management without accounts, ads, or data harvesting.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💊</div>
+        <h3>Medication Management</h3>
+        <p>Add, edit, and organize medications with custom dosages, schedules, and reminder notifications.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <h3>Smart Reminders</h3>
+        <p>Personalized notification schedules ensure you never miss a dose, even offline.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3>Optional BlueSky Sync</h3>
+        <p>Sync via the AT Protocol to your own Personal Data Server. Enable it only when you're ready.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📤</div>
+        <h3>Export &amp; Import</h3>
+        <p>Move your data between devices using standard JSON. No lock-in, ever.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>Multi-Language</h3>
+        <p>Available in English, Finnish, Swedish, German, and Spanish with more on the way.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📴</div>
+        <h3>Works Offline</h3>
+        <p>Local-first architecture means full functionality without an internet connection.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Privacy ── -->
+<section id="privacy" class="privacy-section">
+  <div class="section-inner">
+    <p class="section-label">Your data, your rules</p>
+    <h2 class="section-title">Privacy is not a feature — it's the foundation</h2>
+    <p class="section-sub">We built BluePills so your health data never has to leave your device.</p>
+
+    <div class="privacy-grid">
+      <div class="privacy-item">
+        <div class="icon">🚫</div>
+        <h3>Zero Analytics</h3>
+        <p>No tracking, no telemetry, no crash reporters sending data anywhere.</p>
+      </div>
+      <div class="privacy-item">
+        <div class="icon">📱</div>
+        <h3>Local Storage</h3>
+        <p>Data lives in SQLite on your device. Sync is always opt-in.</p>
+      </div>
+      <div class="privacy-item">
+        <div class="icon">🔓</div>
+        <h3>Open Source</h3>
+        <p>Every line of code is auditable on GitHub. No hidden surprises.</p>
+      </div>
+      <div class="privacy-item">
+        <div class="icon">🌐</div>
+        <h3>Decentralized</h3>
+        <p>When you sync, it goes to <em>your</em> BlueSky PDS — not our servers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Platforms ── -->
+<section id="platforms" class="platforms-section">
+  <div class="section-inner">
+    <p class="section-label">Cross-platform</p>
+    <h2 class="section-title">Available everywhere you are</h2>
+    <p class="section-sub">One codebase, every major platform.</p>
+
+    <div class="platforms-grid">
+      <div class="platform-card highlight">
+        <div class="icon">🌐</div>
+        <h3>Web / PWA</h3>
+        <p>Runs in browser, installs as app</p>
+      </div>
+      <div class="platform-card">
+        <div class="icon">🤖</div>
+        <h3>Android</h3>
+        <p>APK download from Releases</p>
+      </div>
+      <div class="platform-card">
+        <div class="icon">🐧</div>
+        <h3>Linux</h3>
+        <p>Native desktop build</p>
+      </div>
+      <div class="platform-card">
+        <div class="icon">🪟</div>
+        <h3>Windows</h3>
+        <p>Native desktop build</p>
+      </div>
+      <div class="platform-card">
+        <div class="icon">🍎</div>
+        <h3>macOS</h3>
+        <p>Native desktop build</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section id="download" class="cta-section">
+  <div class="section-inner">
+    <p class="section-label">Get started</p>
+    <h2 class="section-title">Ready to take control?</h2>
+    <p class="section-sub">Free forever. No account required. Start managing your medications privately today.</p>
+    <div class="btn-group">
+      <a href="https://hlan-net.github.io/BluePills/app" class="btn btn-primary">🌐 Launch Web App</a>
+      <a href="https://github.com/hlan-net/BluePills/releases/latest" class="btn btn-outline" target="_blank" rel="noopener">📦 Latest Release</a>
+      <a href="https://github.com/hlan-net/BluePills" class="btn btn-outline" target="_blank" rel="noopener">⭐ Star on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/hlan-net/BluePills" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/hlan-net/BluePills/releases" target="_blank" rel="noopener">Releases</a>
+    <a href="https://github.com/hlan-net/BluePills/blob/main/PRIVACY_POLICY.md" target="_blank" rel="noopener">Privacy Policy</a>
+    <a href="https://github.com/hlan-net/BluePills/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    <a href="https://github.com/hlan-net/BluePills/issues" target="_blank" rel="noopener">Report a Bug</a>
+  </div>
+  <p>© 2025 BluePills contributors · Open source under the <a href="https://github.com/hlan-net/BluePills/blob/main/LICENSE">MIT License</a></p>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
