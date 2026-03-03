@@ -34,6 +34,38 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
     _medication = widget.medication;
   }
 
+  List<Widget> _buildDaysOfSupplyInfo(AppLocalizations localizations) {
+    final days = _medication.getDaysOfSupply();
+    if (days >= 9999) return [];
+
+    Color? textColor;
+    FontWeight? fontWeight;
+    Widget? icon;
+
+    if (days < 3) {
+      textColor = Colors.red;
+      fontWeight = FontWeight.bold;
+      icon = const Icon(Icons.error, color: Colors.red, size: 20);
+    } else if (days < 7) {
+      textColor = Colors.orange;
+      fontWeight = FontWeight.bold;
+      icon = const Icon(Icons.warning, color: Colors.amber, size: 20);
+    }
+
+    return [
+      const SizedBox(height: 8),
+      Row(
+        children: [
+          if (icon != null) ...[icon, const SizedBox(width: 4)],
+          Text(
+            localizations.daysOfSupply(days),
+            style: TextStyle(color: textColor, fontWeight: fontWeight),
+          ),
+        ],
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -58,32 +90,7 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
               ),
               const SizedBox(height: 8),
               Text('${localizations.quantityLabel} ${_medication.quantity}'),
-              if (_medication.getDaysOfSupply() < 9999) ...[
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    if (_medication.getDaysOfSupply() < 3)
-                      const Icon(Icons.error, color: Colors.red, size: 20)
-                    else if (_medication.getDaysOfSupply() < 7)
-                      const Icon(Icons.warning, color: Colors.amber, size: 20),
-                    if (_medication.getDaysOfSupply() < 7)
-                      const SizedBox(width: 4),
-                    Text(
-                      localizations.daysOfSupply(_medication.getDaysOfSupply()),
-                      style: TextStyle(
-                        color: _medication.getDaysOfSupply() < 3
-                            ? Colors.red
-                            : _medication.getDaysOfSupply() < 7
-                            ? Colors.orange
-                            : null,
-                        fontWeight: _medication.getDaysOfSupply() < 7
-                            ? FontWeight.bold
-                            : null,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ..._buildDaysOfSupplyInfo(localizations),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {

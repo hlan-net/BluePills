@@ -290,11 +290,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     }
   }
 
-  Future<void> _addDose() async {
-    _closeSpeedDial();
-    // Show dialog to select medication and add dose
+  Future<Medication?> _selectMedication() async {
     final medications = await DatabaseHelper().getMedications();
-    if (!mounted) return;
+    if (!mounted) return null;
 
     final localizations = AppLocalizations.of(context)!;
 
@@ -302,10 +300,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(localizations.noMedicationsAvailable)),
       );
-      return;
+      return null;
     }
 
-    final selectedMed = await showDialog<Medication>(
+    return showDialog<Medication>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(localizations.selectMedication),
@@ -332,6 +330,11 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         ],
       ),
     );
+  }
+
+  Future<void> _addDose() async {
+    _closeSpeedDial();
+    final selectedMed = await _selectMedication();
 
     if (selectedMed != null && mounted) {
       if (selectedMed.quantity > 0) {
@@ -368,48 +371,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
   Future<void> _setReminder() async {
     _closeSpeedDial();
-    final medications = await DatabaseHelper().getMedications();
-    if (!mounted) return;
+    final selectedMed = await _selectMedication();
+    if (selectedMed == null || !mounted) return;
 
     final localizations = AppLocalizations.of(context)!;
-
-    if (medications.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(localizations.noMedicationsAvailable)),
-      );
-      return;
-    }
-
-    // Select medication
-    final selectedMed = await showDialog<Medication>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(localizations.selectMedication),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: medications.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: const Icon(Icons.medical_services),
-                title: Text(medications[index].name),
-                subtitle: Text(medications[index].dosage),
-                onTap: () => Navigator.pop(context, medications[index]),
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(localizations.cancel),
-          ),
-        ],
-      ),
-    );
-
-    if (selectedMed == null || !mounted) return;
 
     // Pick reminder time
     final pickedTime = await showTimePicker(
