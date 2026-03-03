@@ -100,11 +100,18 @@ class NotificationHelper {
       }
     }
 
+    // Ensure the scheduled time is in the future
+    var tzScheduledTime = tz.TZDateTime.from(scheduledTime, tz.local);
+    final now = tz.TZDateTime.now(tz.local);
+    if (tzScheduledTime.isBefore(now)) {
+      tzScheduledTime = tzScheduledTime.add(const Duration(days: 1));
+    }
+
     await _notificationsPlugin.zonedSchedule(
       id: id,
       title: title,
       body: body,
-      scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
+      scheduledDate: tzScheduledTime,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'medication_reminders',

@@ -184,6 +184,11 @@ abstract class AppLocalizations {
   String get takeAll;
   String get noMedicationsScheduledForToday;
 
+  // Stock & Reminders
+  String daysOfSupply(int days);
+  String get selectReminderTime;
+  String reminderSetFor(String medication, String time);
+
   // Adherence Screen
   String get medicationAdherence;
   String get noDataAvailable;
