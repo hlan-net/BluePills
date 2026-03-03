@@ -466,13 +466,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       if (_googleUser != null) ...[
                         const SizedBox(height: 16),
-                        Text(
-                          localizations.connectedAs(
-                            _googleUser!.idToken != null
-                                ? "User with ID Token"
-                                : "User (No ID Token)",
-                          ),
-                        ),
+                        Text(localizations.connectedAs("Google Drive")),
                         const SizedBox(height: 8),
                         SwitchListTile(
                           title: Text(localizations.autoRestoreFromBackup),

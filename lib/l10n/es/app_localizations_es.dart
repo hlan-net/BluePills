@@ -388,6 +388,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noMedicationsScheduledForToday =>
       'No hay medicamentos programados para hoy.';
 
+  // Stock & Reminders
+  @override
+  String daysOfSupply(int days) =>
+      days == 1 ? '1 día de suministro' : '$days días de suministro';
+
+  @override
+  String get selectReminderTime => 'Seleccionar hora de recordatorio';
+
+  @override
+  String reminderSetFor(String medication, String time) =>
+      'Recordatorio configurado para $medication a las $time';
+
   // Adherence Screen
   @override
   String get medicationAdherence => 'Adherencia a la medicación';
