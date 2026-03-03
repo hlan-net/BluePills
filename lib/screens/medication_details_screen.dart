@@ -58,6 +58,34 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
               ),
               const SizedBox(height: 8),
               Text('${localizations.quantityLabel} ${_medication.quantity}'),
+              if (_medication.getDaysOfSupply() < 9999) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    if (_medication.getDaysOfSupply() < 3)
+                      const Icon(Icons.error, color: Colors.red, size: 20)
+                    else if (_medication.getDaysOfSupply() < 7)
+                      const Icon(Icons.warning, color: Colors.amber, size: 20),
+                    if (_medication.getDaysOfSupply() < 7)
+                      const SizedBox(width: 4),
+                    Text(
+                      localizations.daysOfSupply(
+                        _medication.getDaysOfSupply(),
+                      ),
+                      style: TextStyle(
+                        color: _medication.getDaysOfSupply() < 3
+                            ? Colors.red
+                            : _medication.getDaysOfSupply() < 7
+                                ? Colors.orange
+                                : null,
+                        fontWeight: _medication.getDaysOfSupply() < 7
+                            ? FontWeight.bold
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () async {

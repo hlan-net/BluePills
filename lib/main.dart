@@ -368,9 +368,101 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
   Future<void> _setReminder() async {
     _closeSpeedDial();
+    final medications = await DatabaseHelper().getMedications();
+    if (!mounted) return;
+
     final localizations = AppLocalizations.of(context)!;
+
+    if (medications.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(localizations.noMedicationsAvailable)),
+      );
+      return;
+    }
+
+    // Select medication
+    final selectedMed = await showDialog<Medication>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(localizations.selectMedication),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: medications.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: const Icon(Icons.medical_services),
+                title: Text(medications[index].name),
+                subtitle: Text(medications[index].dosage),
+                onTap: () => Navigator.pop(context, medications[index]),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(localizations.cancel),
+          ),
+        ],
+      ),
+    );
+
+    if (selectedMed == null || !mounted) return;
+
+    // Pick reminder time
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(selectedMed.reminderTime),
+      helpText: localizations.selectReminderTime,
+    );
+
+    if (pickedTime == null || !mounted) return;
+
+    // Build the scheduled DateTime
+    final now = DateTime.now();
+    var scheduledTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+    // If the time has already passed today, schedule for tomorrow
+    if (scheduledTime.isBefore(now)) {
+      scheduledTime = scheduledTime.add(const Duration(days: 1));
+    }
+
+    // Update medication reminder time
+    final updatedMed = selectedMed.copyWith(reminderTime: scheduledTime);
+    await DatabaseHelper().updateMedication(updatedMed);
+
+    // Schedule the notification
+    try {
+      await NotificationHelper().scheduleNotification(
+        selectedMed.id!,
+        selectedMed.name,
+        '${localizations.reminderTime}: ${selectedMed.dosage}',
+        scheduledTime,
+        frequencyPattern: selectedMed.frequencyPattern,
+      );
+    } catch (e) {
+      debugPrint('Error scheduling notification: $e');
+    }
+
+    _refreshMedicationList();
+    if (!mounted) return;
+
+    final timeStr =
+        '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(localizations.setReminderFeatureComingSoon)),
+      SnackBar(
+        content: Text(
+          localizations.reminderSetFor(selectedMed.name, timeStr),
+        ),
+        backgroundColor: Colors.green,
+      ),
     );
   }
 
@@ -580,7 +672,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                               ),
                             ),
                             subtitle: Text(
-                              '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}',
+                              '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}'
+                              '${medication.getDaysOfSupply() < 9999 ? ' (${localizations.daysOfSupply(medication.getDaysOfSupply())})' : ''}',
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
