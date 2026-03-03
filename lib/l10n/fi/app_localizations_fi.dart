@@ -382,6 +382,18 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get noMedicationsScheduledForToday => 'Ei lääkkeitä tälle päivälle.';
 
+  // Stock & Reminders
+  @override
+  String daysOfSupply(int days) =>
+      days == 1 ? '1 päivän varasto' : '$days päivän varasto';
+
+  @override
+  String get selectReminderTime => 'Valitse muistutusaika';
+
+  @override
+  String reminderSetFor(String medication, String time) =>
+      'Muistutus asetettu lääkkeelle $medication klo $time';
+
   // Adherence Screen
   @override
   String get medicationAdherence => 'Lääkityksen noudattaminen';

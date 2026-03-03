@@ -219,15 +219,14 @@ class Medication {
     }
   }
 
-  /// Checks if the medication has been taken today.
+  /// Checks if all required doses have been taken today.
   ///
-  /// This method iterates through a list of [MedicationLog]s and checks if any
-  /// of them have a timestamp from the current day.
+  /// For multi-dose medications (e.g., twiceDaily), returns true only when
+  /// the required number of doses have been logged today.
   bool isTakenToday(List<MedicationLog> logs) {
-    final today = DateTime.now();
-    return logs.any(
-      (log) => log.medicationId == id && _isSameDay(log.timestamp, today),
-    );
+    final required = requiredDosesPerDay;
+    if (required <= 0) return false;
+    return dosesTakenToday(logs) >= required;
   }
 
   /// Helper to check if two DateTimes are on the same calendar day.
@@ -235,10 +234,54 @@ class Medication {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
+  /// Returns the number of doses required per day based on frequency.
+  int get requiredDosesPerDay {
+    if (frequencyPattern != null) {
+      return frequencyPattern!.timesPerDay;
+    }
+    switch (frequency) {
+      case Frequency.onceDaily:
+        return 1;
+      case Frequency.twiceDaily:
+        return 2;
+      case Frequency.threeTimesDaily:
+        return 3;
+      case Frequency.asNeeded:
+        return 0;
+    }
+  }
+
+  /// Returns the number of doses still needed today.
+  int dosesRemainingToday(List<MedicationLog> logs) {
+    final required = requiredDosesPerDay;
+    if (required <= 0) return 0;
+    return (required - dosesTakenToday(logs)).clamp(0, required);
+  }
+
+  /// Returns how many doses have been taken today.
+  int dosesTakenToday(List<MedicationLog> logs) {
+    final today = DateTime.now();
+    return logs
+        .where(
+          (log) => log.medicationId == id && _isSameDay(log.timestamp, today),
+        )
+        .length;
+  }
+
   /// Calculates the estimated number of days the current supply will last.
   int getDaysOfSupply() {
     if (frequencyPattern == null) {
-      return 9999; // Represents an indefinite supply
+      // Fall back to simple Frequency enum
+      switch (frequency) {
+        case Frequency.onceDaily:
+          return quantity;
+        case Frequency.twiceDaily:
+          return (quantity / 2).floor();
+        case Frequency.threeTimesDaily:
+          return (quantity / 3).floor();
+        case Frequency.asNeeded:
+          return 9999;
+      }
     }
 
     final pattern = frequencyPattern!;
