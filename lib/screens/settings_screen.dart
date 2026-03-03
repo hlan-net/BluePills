@@ -468,7 +468,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         const SizedBox(height: 16),
                         Text(
                           localizations.connectedAs(
-                            _googleUser!.email ?? _googleUser!.displayName ?? "Unknown User",
+                            _googleUser!.email ??
+                                _googleUser!.displayName ??
+                                "Unknown User",
                           ),
                         ),
                         const SizedBox(height: 8),
