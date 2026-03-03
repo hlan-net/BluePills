@@ -384,6 +384,18 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noMedicationsScheduledForToday =>
       'Inga mediciner schemalagda för idag.';
 
+  // Stock & Reminders
+  @override
+  String daysOfSupply(int days) =>
+      days == 1 ? '1 dags förråd' : '$days dagars förråd';
+
+  @override
+  String get selectReminderTime => 'Välj påminnelsetid';
+
+  @override
+  String reminderSetFor(String medication, String time) =>
+      'Påminnelse inställd för $medication kl $time';
+
   // Adherence Screen
   @override
   String get medicationAdherence => 'Medicinföljsamhet';

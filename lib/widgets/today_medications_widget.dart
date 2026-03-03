@@ -37,6 +37,18 @@ class TodayMedicationsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
+
+    // Calculate overall progress
+    int totalDoses = 0;
+    int takenDoses = 0;
+    for (final med in medications) {
+      final required = med.requiredDosesPerDay;
+      final taken = med.dosesTakenToday(logs);
+      totalDoses += required;
+      takenDoses += taken.clamp(0, required);
+    }
+    final progress = totalDoses > 0 ? takenDoses / totalDoses : 0.0;
+
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: Padding(
@@ -58,6 +70,30 @@ class TodayMedicationsWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8.0),
+            // Progress indicator
+            if (medications.isNotEmpty && totalDoses > 0) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: Colors.grey[300],
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        progress >= 1.0 ? Colors.green : Colors.blue,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    localizations.takenOf(takenDoses, totalDoses),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8.0),
+            ],
             if (medications.isEmpty)
               Text(localizations.noMedicationsScheduledForToday)
             else
@@ -68,12 +104,16 @@ class TodayMedicationsWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final medication = medications[index];
                   final isTaken = medication.isTakenToday(logs);
+                  final taken = medication.dosesTakenToday(logs);
+                  final required = medication.requiredDosesPerDay;
                   return ListTile(
                     leading: isTaken
                         ? const Icon(Icons.check_circle, color: Colors.green)
                         : const Icon(Icons.radio_button_unchecked),
                     title: Text(medication.name),
-                    subtitle: Text(medication.dosage),
+                    subtitle: Text(
+                      '${medication.dosage} - ${taken.clamp(0, required)}/$required',
+                    ),
                     trailing: isTaken
                         ? null
                         : IconButton(
