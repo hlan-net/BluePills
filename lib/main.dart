@@ -335,37 +335,35 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   Future<void> _addDose() async {
     _closeSpeedDial();
     final selectedMed = await _selectMedication();
+    if (selectedMed == null || !mounted) return;
 
-    if (selectedMed != null && mounted) {
-      if (selectedMed.quantity > 0) {
-        final updatedMedication = selectedMed.copyWith(
-          quantity: selectedMed.quantity - 1,
-        );
-        await DatabaseHelper().updateMedication(updatedMedication);
-        await DatabaseHelper().insertMedicationLog(
-          MedicationLog(
-            medicationId: selectedMed.id!,
-            timestamp: DateTime.now(),
+    final localizations = AppLocalizations.of(context)!;
+
+    if (selectedMed.quantity > 0) {
+      final updatedMedication = selectedMed.copyWith(
+        quantity: selectedMed.quantity - 1,
+      );
+      await DatabaseHelper().updateMedication(updatedMedication);
+      await DatabaseHelper().insertMedicationLog(
+        MedicationLog(medicationId: selectedMed.id!, timestamp: DateTime.now()),
+      );
+      _refreshMedicationList();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.loggedDoseFor(selectedMed.name)),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            localizations.noMedicationLeftInStock(selectedMed.name),
           ),
-        );
-        _refreshMedicationList();
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations.loggedDoseFor(selectedMed.name)),
-            backgroundColor: Colors.green,
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              localizations.noMedicationLeftInStock(selectedMed.name),
-            ),
-            backgroundColor: Colors.orange,
-          ),
-        );
-      }
+          backgroundColor: Colors.orange,
+        ),
+      );
     }
   }
 
