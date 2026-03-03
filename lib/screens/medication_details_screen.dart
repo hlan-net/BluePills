@@ -69,15 +69,13 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
                     if (_medication.getDaysOfSupply() < 7)
                       const SizedBox(width: 4),
                     Text(
-                      localizations.daysOfSupply(
-                        _medication.getDaysOfSupply(),
-                      ),
+                      localizations.daysOfSupply(_medication.getDaysOfSupply()),
                       style: TextStyle(
                         color: _medication.getDaysOfSupply() < 3
                             ? Colors.red
                             : _medication.getDaysOfSupply() < 7
-                                ? Colors.orange
-                                : null,
+                            ? Colors.orange
+                            : null,
                         fontWeight: _medication.getDaysOfSupply() < 7
                             ? FontWeight.bold
                             : null,

@@ -458,9 +458,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          localizations.reminderSetFor(selectedMed.name, timeStr),
-        ),
+        content: Text(localizations.reminderSetFor(selectedMed.name, timeStr)),
         backgroundColor: Colors.green,
       ),
     );
