@@ -384,7 +384,8 @@ class AppLocalizationsFi extends AppLocalizations {
 
   // Stock & Reminders
   @override
-  String daysOfSupply(int days) => '$days päivän varasto';
+  String daysOfSupply(int days) =>
+      days == 1 ? '1 päivän varasto' : '$days päivän varasto';
 
   @override
   String get selectReminderTime => 'Valitse muistutusaika';

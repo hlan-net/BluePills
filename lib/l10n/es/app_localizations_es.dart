@@ -390,7 +390,8 @@ class AppLocalizationsEs extends AppLocalizations {
 
   // Stock & Reminders
   @override
-  String daysOfSupply(int days) => '$days días de suministro';
+  String daysOfSupply(int days) =>
+      days == 1 ? '1 día de suministro' : '$days días de suministro';
 
   @override
   String get selectReminderTime => 'Seleccionar hora de recordatorio';

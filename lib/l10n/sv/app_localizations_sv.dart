@@ -386,7 +386,8 @@ class AppLocalizationsSv extends AppLocalizations {
 
   // Stock & Reminders
   @override
-  String daysOfSupply(int days) => '$days dagars förråd';
+  String daysOfSupply(int days) =>
+      days == 1 ? '1 dags förråd' : '$days dagars förråd';
 
   @override
   String get selectReminderTime => 'Välj påminnelsetid';

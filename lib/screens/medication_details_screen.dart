@@ -47,7 +47,7 @@ class _MedicationDetailsScreenState extends State<MedicationDetailsScreen> {
       fontWeight = FontWeight.bold;
       icon = const Icon(Icons.error, color: Colors.red, size: 20);
     } else if (days < 7) {
-      textColor = Colors.orange;
+      textColor = Colors.amber;
       fontWeight = FontWeight.bold;
       icon = const Icon(Icons.warning, color: Colors.amber, size: 20);
     }

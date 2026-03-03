@@ -253,15 +253,9 @@ class Medication {
 
   /// Returns the number of doses still needed today.
   int dosesRemainingToday(List<MedicationLog> logs) {
-    final today = DateTime.now();
-    final takenToday = logs
-        .where(
-          (log) => log.medicationId == id && _isSameDay(log.timestamp, today),
-        )
-        .length;
     final required = requiredDosesPerDay;
     if (required <= 0) return 0;
-    return (required - takenToday).clamp(0, required);
+    return (required - dosesTakenToday(logs)).clamp(0, required);
   }
 
   /// Returns how many doses have been taken today.

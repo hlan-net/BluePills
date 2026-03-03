@@ -383,19 +383,16 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
     if (pickedTime == null || !mounted) return;
 
-    // Build the scheduled DateTime
+    // Build the scheduled DateTime (today's date with picked time).
+    // NotificationHelper handles bumping past times to the next day.
     final now = DateTime.now();
-    var scheduledTime = DateTime(
+    final scheduledTime = DateTime(
       now.year,
       now.month,
       now.day,
       pickedTime.hour,
       pickedTime.minute,
     );
-    // If the time has already passed today, schedule for tomorrow
-    if (scheduledTime.isBefore(now)) {
-      scheduledTime = scheduledTime.add(const Duration(days: 1));
-    }
 
     // Update medication reminder time
     final updatedMed = selectedMed.copyWith(reminderTime: scheduledTime);
@@ -414,8 +411,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       debugPrint('Error scheduling notification: $e');
     }
 
-    _refreshMedicationList();
     if (!mounted) return;
+    _refreshMedicationList();
 
     final timeStr =
         '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
