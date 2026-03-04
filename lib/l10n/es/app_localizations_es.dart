@@ -51,7 +51,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pleaseEnterTheQuantity => 'Por favor, introduzca la cantidad';
 
   @override
-  String get pleaseEnterAValidNumber => 'Por favor, introduzca un número válido';
+  String get pleaseEnterAValidNumber =>
+      'Por favor, introduzca un número válido';
 
   @override
   String get pleaseEnterFrequency => 'Por favor, introduzca la frecuencia';
@@ -284,7 +285,8 @@ class AppLocalizationsEs extends AppLocalizations {
       'Por favor, introduce tu nombre de usuario de BlueSky';
 
   @override
-  String get personalDataServerPDSURL => 'URL del servidor de datos personales (PDS)';
+  String get personalDataServerPDSURL =>
+      'URL del servidor de datos personales (PDS)';
 
   @override
   String get yourPdsExampleCom => 'pds.ejemplo.com';
@@ -394,7 +396,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String restoreFailed(String error) => 'Error en la restauración: $error';
 
   @override
-  String get autoRestoreFromBackup => 'Restauración automática desde copia de seguridad';
+  String get autoRestoreFromBackup =>
+      'Restauración automática desde copia de seguridad';
 
   @override
   String get restoreNewerBackupOnStartup =>
@@ -501,7 +504,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get saveStock => 'Guardar stock';
 
   @override
-  String addStockFor(String medicationName) => 'Añadir stock para: $medicationName';
+  String addStockFor(String medicationName) =>
+      'Añadir stock para: $medicationName';
 
   @override
   String get dailyMedications => 'Medicamentos diarios';
@@ -538,16 +542,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String syncFailed(String error) => 'Sincronización fallida: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'Sincronización BlueSky habilitada con éxito';
+  String get blueskySyncEnabledSuccessfully =>
+      'Sincronización BlueSky habilitada con éxito';
 
   @override
-  String failedToEnableSync(String error) => 'Error al habilitar la sincronización: $error';
+  String failedToEnableSync(String error) =>
+      'Error al habilitar la sincronización: $error';
 
   @override
   String get blueskySyncDisabled => 'Sincronización BlueSky deshabilitada';
 
   @override
-  String failedToDisableSync(String error) => 'Error al deshabilitar la sincronización: $error';
+  String failedToDisableSync(String error) =>
+      'Error al deshabilitar la sincronización: $error';
 
   @override
   String criticallyLowStock(int count) => 'Stock críticamente bajo ($count)';
@@ -638,16 +645,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get intervalDaysLabel => 'días de intervalo';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Por favor seleccione un patrón de frecuencia';
+  String get pleaseSelectAFrequencyPattern =>
+      'Por favor seleccione un patrón de frecuencia';
 
   @override
-  String get pleaseSelectAtLeastOneDay => 'Por favor seleccione al menos un día';
+  String get pleaseSelectAtLeastOneDay =>
+      'Por favor seleccione al menos un día';
 
   @override
   String get useAdvancedFrequency => 'Usar frecuencia avanzada';
 
   @override
-  String get selectSpecificDaysAndPatterns => 'Seleccionar días y patrones específicos';
+  String get selectSpecificDaysAndPatterns =>
+      'Seleccionar días y patrones específicos';
 
   @override
   String get useSimpleTextFrequency => 'Usar frecuencia de texto simple';

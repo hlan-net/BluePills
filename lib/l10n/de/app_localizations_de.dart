@@ -283,7 +283,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get yourHandleBskySocial => 'ihrhandle.bsky.social';
 
   @override
-  String get pleaseEnterYourBlueskyHandle => 'Bitte BlueSky-Benutzernamen eingeben';
+  String get pleaseEnterYourBlueskyHandle =>
+      'Bitte BlueSky-Benutzernamen eingeben';
 
   @override
   String get personalDataServerPDSURL => 'Personal Data Server (PDS) URL';
@@ -393,7 +394,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get restoreSuccessful => 'Wiederherstellung erfolgreich';
 
   @override
-  String restoreFailed(String error) => 'Wiederherstellung fehlgeschlagen: $error';
+  String restoreFailed(String error) =>
+      'Wiederherstellung fehlgeschlagen: $error';
 
   @override
   String get autoRestoreFromBackup => 'Autom. Wiederherstellung aus Sicherung';
@@ -409,7 +411,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dataExportedTo => 'Daten exportiert nach';
 
   @override
-  String failedToExportData(String error) => 'Datenexport fehlgeschlagen: $error';
+  String failedToExportData(String error) =>
+      'Datenexport fehlgeschlagen: $error';
 
   @override
   String get dataExportedSuccessfully => 'Daten erfolgreich exportiert';
@@ -418,7 +421,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dataImportedSuccessfully => 'Daten erfolgreich importiert';
 
   @override
-  String failedToImportData(String error) => 'Datenimport fehlgeschlagen: $error';
+  String failedToImportData(String error) =>
+      'Datenimport fehlgeschlagen: $error';
 
   @override
   String get exportData => 'Daten exportieren';
@@ -472,7 +476,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get medicationReminders => 'Medikamentenerinnerungen';
 
   @override
-  String get remindersToTakeYourMedication => 'Erinnerungen an Ihre Medikamenteneinnahme';
+  String get remindersToTakeYourMedication =>
+      'Erinnerungen an Ihre Medikamenteneinnahme';
 
   @override
   String get timeToTakeYour => 'Zeit für die Einnahme von';
@@ -502,7 +507,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get saveStock => 'Vorrat speichern';
 
   @override
-  String addStockFor(String medicationName) => 'Vorrat hinzufügen für: $medicationName';
+  String addStockFor(String medicationName) =>
+      'Vorrat hinzufügen für: $medicationName';
 
   @override
   String get dailyMedications => 'Tägliche Medikamente';
@@ -526,8 +532,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get expiresLabel => 'Läuft ab:';
 
   @override
-  String get selectExpirationDateOptional =>
-      'Verfallsdatum wählen (Optional)';
+  String get selectExpirationDateOptional => 'Verfallsdatum wählen (Optional)';
 
   @override
   String get clearExpirationDate => 'Verfallsdatum löschen';
@@ -539,16 +544,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String syncFailed(String error) => 'Synchronisierung fehlgeschlagen: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky-Synchronisierung aktiviert';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky-Synchronisierung aktiviert';
 
   @override
-  String failedToEnableSync(String error) => 'Synchronisierung fehlgeschlagen: $error';
+  String failedToEnableSync(String error) =>
+      'Synchronisierung fehlgeschlagen: $error';
 
   @override
   String get blueskySyncDisabled => 'BlueSky-Synchronisierung deaktiviert';
 
   @override
-  String failedToDisableSync(String error) => 'Deaktivierung fehlgeschlagen: $error';
+  String failedToDisableSync(String error) =>
+      'Deaktivierung fehlgeschlagen: $error';
 
   @override
   String criticallyLowStock(int count) => 'Kritisch niedriger Bestand ($count)';
@@ -678,8 +686,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lastTaken => 'Zuletzt eingenommen';
 
   @override
-  String lastTakenDaysAgo(int days) =>
-      days == 0 ? 'Zuletzt eingenommen: Heute' : 'Zuletzt eingenommen: vor $days Tagen';
+  String lastTakenDaysAgo(int days) => days == 0
+      ? 'Zuletzt eingenommen: Heute'
+      : 'Zuletzt eingenommen: vor $days Tagen';
 
   @override
   String get selectLocation => 'Ort wählen';

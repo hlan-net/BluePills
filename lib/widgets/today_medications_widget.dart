@@ -39,8 +39,9 @@ class TodayMedicationsWidget extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
 
     // Filter for scheduled today or as-needed
-    final todaysMedications =
-        medications.where((m) => m.shouldTakeToday() || m.isAsNeeded).toList();
+    final todaysMedications = medications
+        .where((m) => m.shouldTakeToday() || m.isAsNeeded)
+        .toList();
 
     // Sort: Scheduled first, then as-needed
     todaysMedications.sort((a, b) {
@@ -66,9 +67,9 @@ class TodayMedicationsWidget extends StatelessWidget {
               children: [
                 Text(
                   localizations.todaysMedications,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 if (!allTaken)
                   TextButton(
@@ -98,44 +99,41 @@ class TodayMedicationsWidget extends StatelessWidget {
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: CircleAvatar(
-                      backgroundColor:
-                          medication.isAsNeeded
-                              ? Colors.blue.withValues(alpha: 0.1)
-                              : (isTaken ? Colors.green : Colors.orange),
+                      backgroundColor: medication.isAsNeeded
+                          ? Colors.blue.withValues(alpha: 0.1)
+                          : (isTaken ? Colors.green : Colors.orange),
                       child: Icon(
                         medication.isAsNeeded
                             ? Icons.medical_information
                             : (isTaken ? Icons.check : Icons.medication),
-                        color:
-                            medication.isAsNeeded
-                                ? Colors.blue
-                                : Colors.white,
+                        color: medication.isAsNeeded
+                            ? Colors.blue
+                            : Colors.white,
                       ),
                     ),
                     title: Text(
                       medication.name,
                       style: TextStyle(
-                        fontWeight:
-                            isTaken ? FontWeight.normal : FontWeight.bold,
-                        decoration:
-                            isTaken ? TextDecoration.lineThrough : null,
+                        fontWeight: isTaken
+                            ? FontWeight.normal
+                            : FontWeight.bold,
+                        decoration: isTaken ? TextDecoration.lineThrough : null,
                       ),
                     ),
                     subtitle: Text(
                       medication.isAsNeeded
                           ? localizations.asNeeded
                           : localizations.takenOf(
-                            medication.requiredDosesPerDay - dosesRemaining,
-                            medication.requiredDosesPerDay,
-                          ),
-                    ),
-                    trailing:
-                        isTaken
-                            ? const Icon(Icons.check_circle, color: Colors.green)
-                            : IconButton(
-                              icon: const Icon(Icons.check),
-                              onPressed: () => onTakeMedication(medication),
+                              medication.requiredDosesPerDay - dosesRemaining,
+                              medication.requiredDosesPerDay,
                             ),
+                    ),
+                    trailing: isTaken
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : IconButton(
+                            icon: const Icon(Icons.check),
+                            onPressed: () => onTakeMedication(medication),
+                          ),
                   );
                 },
               ),

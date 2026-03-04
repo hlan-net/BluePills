@@ -68,7 +68,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get saveAndAddMore => 'Tallenna ja lisää toinen';
 
   @override
-  String get medicationSavedAddAnother => 'Lääke tallennettu. Lisätäänkö toinen?';
+  String get medicationSavedAddAnother =>
+      'Lääke tallennettu. Lisätäänkö toinen?';
 
   @override
   String failedToSaveMedication(String error) =>
@@ -81,7 +82,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noMedicationsYet => 'Ei vielä lääkkeitä.';
 
   @override
-  String get tapThePlusButtonToAdd => 'Napauta +-painiketta lisätäksesi lääkkeen.';
+  String get tapThePlusButtonToAdd =>
+      'Napauta +-painiketta lisätäksesi lääkkeen.';
 
   @override
   String get selectLanguage => 'Valitse kieli';
@@ -145,7 +147,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String markedAsTaken(String name) => '$name merkitty otetuksi';
 
   @override
-  String noMedicationLeftInStock(String name) => 'Varastossa ei ole lääkettä $name';
+  String noMedicationLeftInStock(String name) =>
+      'Varastossa ei ole lääkettä $name';
 
   @override
   String get setReminderFeatureComingSoon =>
@@ -405,7 +408,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dataExportedTo => 'Tiedot viety kohteeseen';
 
   @override
-  String failedToExportData(String error) => 'Tietojen vienti epäonnistui: $error';
+  String failedToExportData(String error) =>
+      'Tietojen vienti epäonnistui: $error';
 
   @override
   String get dataExportedSuccessfully => 'Tiedot viety onnistuneesti';
@@ -414,7 +418,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get dataImportedSuccessfully => 'Tiedot tuotu onnistuneesti';
 
   @override
-  String failedToImportData(String error) => 'Tietojen tuonti epäonnistui: $error';
+  String failedToImportData(String error) =>
+      'Tietojen tuonti epäonnistui: $error';
 
   @override
   String get exportData => 'Vie tiedot';
@@ -498,7 +503,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get saveStock => 'Tallenna varasto';
 
   @override
-  String addStockFor(String medicationName) => 'Lisää varastoa: $medicationName';
+  String addStockFor(String medicationName) =>
+      'Lisää varastoa: $medicationName';
 
   @override
   String get dailyMedications => 'Päivittäiset lääkkeet';
@@ -535,16 +541,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String syncFailed(String error) => 'Synkronointi epäonnistui: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky-synkronointi otettu käyttöön';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky-synkronointi otettu käyttöön';
 
   @override
-  String failedToEnableSync(String error) => 'Synkronoinnin käyttöönotto epäonnistui: $error';
+  String failedToEnableSync(String error) =>
+      'Synkronoinnin käyttöönotto epäonnistui: $error';
 
   @override
   String get blueskySyncDisabled => 'BlueSky-synkronointi poistettu käytöstä';
 
   @override
-  String failedToDisableSync(String error) => 'Synkronoinnin poisto epäonnistui: $error';
+  String failedToDisableSync(String error) =>
+      'Synkronoinnin poisto epäonnistui: $error';
 
   @override
   String criticallyLowStock(int count) => 'Erittäin vähäinen varasto ($count)';
@@ -674,8 +683,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get lastTaken => 'Viimeksi otettu';
 
   @override
-  String lastTakenDaysAgo(int days) =>
-      days == 0 ? 'Viimeksi otettu: Tänään' : 'Viimeksi otettu: $days päivää sitten';
+  String lastTakenDaysAgo(int days) => days == 0
+      ? 'Viimeksi otettu: Tänään'
+      : 'Viimeksi otettu: $days päivää sitten';
 
   @override
   String get selectLocation => 'Valitse paikka';

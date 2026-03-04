@@ -7,8 +7,10 @@ import 'dart:async' as _i4;
 
 import 'package:bluepills/database/database_adapter.dart' as _i3;
 import 'package:bluepills/models/app_config.dart' as _i2;
+import 'package:bluepills/models/frequency_pattern.dart' as _i10;
 import 'package:bluepills/models/medication.dart' as _i5;
 import 'package:bluepills/models/medication_log.dart' as _i6;
+import 'package:bluepills/notifications/notification_helper.dart' as _i9;
 import 'package:bluepills/services/config_service.dart' as _i7;
 import 'package:bluepills/services/sync_service.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
@@ -294,6 +296,82 @@ class MockSyncService extends _i1.Mock implements _i8.SyncService {
   _i4.Future<void> performBackgroundSync() =>
       (super.noSuchMethod(
             Invocation.method(#performBackgroundSync, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [NotificationHelper].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockNotificationHelper extends _i1.Mock
+    implements _i9.NotificationHelper {
+  MockNotificationHelper() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<void> init() =>
+      (super.noSuchMethod(
+            Invocation.method(#init, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> scheduleNotification({
+    required int? id,
+    required String? title,
+    required String? body,
+    required DateTime? scheduledTime,
+    _i10.FrequencyPattern? frequencyPattern,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#scheduleNotification, [], {
+              #id: id,
+              #title: title,
+              #body: body,
+              #scheduledTime: scheduledTime,
+              #frequencyPattern: frequencyPattern,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> scheduleExpirationNotifications(_i5.Medication? med) =>
+      (super.noSuchMethod(
+            Invocation.method(#scheduleExpirationNotifications, [med]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> cancelNotification(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelNotification, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> cancelAllNotifications() =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelAllNotifications, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> cancelExpirationNotifications(int? medicationId) =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelExpirationNotifications, [medicationId]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

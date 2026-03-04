@@ -396,12 +396,13 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SettingsScreen()),
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
             ).then((_) {
               if (mounted) setState(() {});
             }); // Refresh when returning from settings
           },
-        ),      ],
+        ),
+      ],
     );
   }
 
@@ -543,19 +544,66 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           return const SizedBox.shrink();
         }
         final logsToday = logsSnapshot.data!;
-        final todaysMedications = medications
-            .where((m) => m.shouldTakeToday() || m.isAsNeeded)
+        final todaysScheduled = medications
+            .where((m) => m.shouldTakeToday())
             .toList();
-        if (todaysMedications.isEmpty) {
+        final asNeeded = medications.where((m) => m.isAsNeeded).toList();
+
+        if (todaysScheduled.isEmpty && asNeeded.isEmpty) {
           return const SizedBox.shrink();
         }
-        return TodayMedicationsWidget(
-          medications: todaysMedications,
-          logs: logsToday,
-          onTakeMedication: _takeMedication,
-          onTakeAll: _takeAllMedications,
+
+        return Column(
+          children: [
+            if (todaysScheduled.isNotEmpty)
+              TodayMedicationsWidget(
+                medications: todaysScheduled,
+                logs: logsToday,
+                onTakeMedication: _takeMedication,
+                onTakeAll: _takeAllMedications,
+              ),
+            if (asNeeded.isNotEmpty)
+              _buildAsNeededSection(context, asNeeded, logsToday),
+          ],
         );
       },
+    );
+  }
+
+  Widget _buildAsNeededSection(
+    BuildContext context,
+    List<Medication> asNeeded,
+    List<MedicationLog> logsToday,
+  ) {
+    final localizations = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Text(
+            localizations.asNeeded,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        ...asNeeded.map(
+          (med) => Card(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+            child: ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Colors.blue,
+                child: Icon(Icons.medical_information, color: Colors.white),
+              ),
+              title: Text(med.name),
+              subtitle: Text(med.dosage),
+              trailing: IconButton(
+                icon: const Icon(Icons.add_circle_outline),
+                onPressed: () => _takeMedication(med),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -682,8 +730,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               color: _getExpirationColor(daysUntilExpiration),
               fontWeight:
                   (daysUntilExpiration != null && daysUntilExpiration < 7)
-                      ? FontWeight.bold
-                      : FontWeight.normal,
+                  ? FontWeight.bold
+                  : FontWeight.normal,
             ),
           ),
         ],

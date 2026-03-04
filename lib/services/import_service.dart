@@ -10,6 +10,17 @@ import 'package:flutter/foundation.dart';
 /// previously exported using [ExportService]. It allows users to restore their
 /// medication data or transfer it between devices.
 class ImportService {
+  static ImportService _instance = ImportService._internal();
+
+  /// Returns the singleton instance of the ImportService.
+  factory ImportService() => _instance;
+
+  /// Sets the singleton instance of the ImportService (used for testing).
+  @visibleForTesting
+  static set instance(ImportService service) => _instance = service;
+
+  ImportService._internal();
+
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   /// Imports medications from a JSON file selected by the user.

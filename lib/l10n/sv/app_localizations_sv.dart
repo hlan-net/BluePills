@@ -68,7 +68,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get saveAndAddMore => 'Spara och lägg till fler';
 
   @override
-  String get medicationSavedAddAnother => 'Medicinen sparad. Lägg till en till?';
+  String get medicationSavedAddAnother =>
+      'Medicinen sparad. Lägg till en till?';
 
   @override
   String failedToSaveMedication(String error) =>
@@ -149,8 +150,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String noMedicationLeftInStock(String name) => 'Slut på $name i lager';
 
   @override
-  String get setReminderFeatureComingSoon =>
-      'Påminnelsefunktion kommer snart';
+  String get setReminderFeatureComingSoon => 'Påminnelsefunktion kommer snart';
 
   @override
   String get selectMedication => 'Välj medicin';
@@ -280,7 +280,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get yourHandleBskySocial => 'dittnamn.bsky.social';
 
   @override
-  String get pleaseEnterYourBlueskyHandle => 'Vänligen fyll i ditt BlueSky-användarnamn';
+  String get pleaseEnterYourBlueskyHandle =>
+      'Vänligen fyll i ditt BlueSky-användarnamn';
 
   @override
   String get personalDataServerPDSURL => 'Personal Data Server (PDS) URL';
@@ -394,7 +395,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String restoreFailed(String error) => 'Återställningen misslyckades: $error';
 
   @override
-  String get autoRestoreFromBackup => 'Automatisk återställning från säkerhetskopia';
+  String get autoRestoreFromBackup =>
+      'Automatisk återställning från säkerhetskopia';
 
   @override
   String get restoreNewerBackupOnStartup =>
@@ -407,7 +409,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get dataExportedTo => 'Data exporterad till';
 
   @override
-  String failedToExportData(String error) => 'Dataexporten misslyckades: $error';
+  String failedToExportData(String error) =>
+      'Dataexporten misslyckades: $error';
 
   @override
   String get dataExportedSuccessfully => 'Data exporterad framgångsrikt';
@@ -416,7 +419,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get dataImportedSuccessfully => 'Data importerad framgångsrikt';
 
   @override
-  String failedToImportData(String error) => 'Dataimporten misslyckades: $error';
+  String failedToImportData(String error) =>
+      'Dataimporten misslyckades: $error';
 
   @override
   String get exportData => 'Exportera data';
@@ -470,7 +474,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get medicationReminders => 'Medicin-påminnelser';
 
   @override
-  String get remindersToTakeYourMedication => 'Påminnelser om att ta din medicin';
+  String get remindersToTakeYourMedication =>
+      'Påminnelser om att ta din medicin';
 
   @override
   String get timeToTakeYour => 'Dags att ta din';
@@ -500,7 +505,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get saveStock => 'Spara lager';
 
   @override
-  String addStockFor(String medicationName) => 'Fyll på lager för: $medicationName';
+  String addStockFor(String medicationName) =>
+      'Fyll på lager för: $medicationName';
 
   @override
   String get dailyMedications => 'Dagliga mediciner';
@@ -536,16 +542,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String syncFailed(String error) => 'Synkroniseringen misslyckades: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky-synkronisering aktiverad';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky-synkronisering aktiverad';
 
   @override
-  String failedToEnableSync(String error) => 'Det gick inte att aktivera synkronisering: $error';
+  String failedToEnableSync(String error) =>
+      'Det gick inte att aktivera synkronisering: $error';
 
   @override
   String get blueskySyncDisabled => 'BlueSky-synkronisering inaktiverad';
 
   @override
-  String failedToDisableSync(String error) => 'Det gick inte att inaktivera synkronisering: $error';
+  String failedToDisableSync(String error) =>
+      'Det gick inte att inaktivera synkronisering: $error';
 
   @override
   String criticallyLowStock(int count) => 'Kritiskt lågt lager ($count)';
@@ -636,7 +645,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get intervalDaysLabel => 'dagars intervall';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Vänligen välj ett frekvensmönster';
+  String get pleaseSelectAFrequencyPattern =>
+      'Vänligen välj ett frekvensmönster';
 
   @override
   String get pleaseSelectAtLeastOneDay => 'Vänligen välj minst en dag';
@@ -645,7 +655,8 @@ class AppLocalizationsSv extends AppLocalizations {
   String get useAdvancedFrequency => 'Använd avancerad frekvens';
 
   @override
-  String get selectSpecificDaysAndPatterns => 'Välj specifika dagar och mönster';
+  String get selectSpecificDaysAndPatterns =>
+      'Välj specifika dagar och mönster';
 
   @override
   String get useSimpleTextFrequency => 'Använd enkel textfrekvens';

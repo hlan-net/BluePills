@@ -394,8 +394,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoRestoreFromBackup => 'Auto restore from backup';
 
   @override
-  String get restoreNewerBackupOnStartup =>
-      'Restore newer backup on startup';
+  String get restoreNewerBackupOnStartup => 'Restore newer backup on startup';
 
   @override
   String get noBackupFound => 'No backup found';
@@ -535,7 +534,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String syncFailed(String error) => 'Sync failed: $error';
 
   @override
-  String get blueskySyncEnabledSuccessfully => 'BlueSky sync enabled successfully';
+  String get blueskySyncEnabledSuccessfully =>
+      'BlueSky sync enabled successfully';
 
   @override
   String failedToEnableSync(String error) => 'Failed to enable sync: $error';
@@ -635,7 +635,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intervalDaysLabel => 'days interval';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Please select a frequency pattern';
+  String get pleaseSelectAFrequencyPattern =>
+      'Please select a frequency pattern';
 
   @override
   String get pleaseSelectAtLeastOneDay => 'Please select at least one day';
@@ -644,7 +645,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useAdvancedFrequency => 'Use Advanced Frequency';
 
   @override
-  String get selectSpecificDaysAndPatterns => 'Select specific days and patterns';
+  String get selectSpecificDaysAndPatterns =>
+      'Select specific days and patterns';
 
   @override
   String get useSimpleTextFrequency => 'Use simple text frequency';

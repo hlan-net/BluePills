@@ -99,24 +99,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final localizations = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(localizations.disableBlueSkySync),
-            content: Text(localizations.disableBlueSkySyncConfirmation),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text(localizations.cancel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text(
-                  localizations.disable,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(localizations.disableBlueSkySync),
+        content: Text(localizations.disableBlueSkySyncConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(localizations.cancel),
           ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              localizations.disable,
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
     );
 
     if (confirmed == true) {
@@ -261,75 +260,73 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader(localizations.blueskySynchronization),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child:
-                config.syncEnabled
-                    ? Card(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      child: ListTile(
-                        leading: const Icon(Icons.sync, color: Colors.green),
-                        title: Text(localizations.status),
-                        subtitle: Text(localizations.loggedIn),
-                        trailing: TextButton(
-                          onPressed: _disableSync,
-                          child: Text(localizations.logout),
-                        ),
-                      ),
-                    )
-                    : Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: _handleController,
-                            decoration: InputDecoration(
-                              labelText: localizations.blueSkyHandle,
-                              hintText: localizations.yourHandleBskySocial,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return localizations
-                                    .pleaseEnterYourBlueskyHandle;
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              labelText: localizations.appPassword,
-                            ),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your app password';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _pdsController,
-                            decoration: InputDecoration(
-                              labelText: localizations.personalDataServerPDSURL,
-                              hintText: localizations.yourPdsExampleCom,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return localizations.pleaseEnterYourPDSURL;
-                              }
-                              if (!value.startsWith('http')) {
-                                return localizations.pleaseEnterAValidURL;
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _saveSyncSettings,
-                            child: Text(localizations.login),
-                          ),
-                        ],
+            child: config.syncEnabled
+                ? Card(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    child: ListTile(
+                      leading: const Icon(Icons.sync, color: Colors.green),
+                      title: Text(localizations.status),
+                      subtitle: Text(localizations.loggedIn),
+                      trailing: TextButton(
+                        onPressed: _disableSync,
+                        child: Text(localizations.logout),
                       ),
                     ),
+                  )
+                : Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _handleController,
+                          decoration: InputDecoration(
+                            labelText: localizations.blueSkyHandle,
+                            hintText: localizations.yourHandleBskySocial,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return localizations.pleaseEnterYourBlueskyHandle;
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            labelText: localizations.appPassword,
+                          ),
+                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your app password';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          controller: _pdsController,
+                          decoration: InputDecoration(
+                            labelText: localizations.personalDataServerPDSURL,
+                            hintText: localizations.yourPdsExampleCom,
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return localizations.pleaseEnterYourPDSURL;
+                            }
+                            if (!value.startsWith('http')) {
+                              return localizations.pleaseEnterAValidURL;
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _saveSyncSettings,
+                          child: Text(localizations.login),
+                        ),
+                      ],
+                    ),
+                  ),
           ),
           if (config.syncEnabled)
             ListTile(
@@ -438,22 +435,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               decoration: InputDecoration(
                 labelText: localizations.selectLanguage,
               ),
-              items:
-                  AppLocalizations.supportedLocales.map((locale) {
-                    return DropdownMenuItem<String>(
-                      value: locale.languageCode,
-                      child: Text(
-                        {
-                              'en': localizations.english,
-                              'fi': localizations.finnish,
-                              'sv': localizations.swedish,
-                              'de': localizations.german,
-                              'es': localizations.spanish,
-                            }[locale.languageCode] ??
-                            locale.languageCode,
-                      ),
-                    );
-                  }).toList(),
+              items: AppLocalizations.supportedLocales.map((locale) {
+                return DropdownMenuItem<String>(
+                  value: locale.languageCode,
+                  child: Text(
+                    {
+                          'en': localizations.english,
+                          'fi': localizations.finnish,
+                          'sv': localizations.swedish,
+                          'de': localizations.german,
+                          'es': localizations.spanish,
+                        }[locale.languageCode] ??
+                        locale.languageCode,
+                  ),
+                );
+              }).toList(),
               onChanged: (value) {
                 if (value != null) {
                   _configService.updateLanguage(value);

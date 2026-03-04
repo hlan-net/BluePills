@@ -15,10 +15,14 @@ import 'package:bluepills/database/database_helper.dart';
 
 /// Singleton service for managing local notifications.
 class NotificationHelper {
-  static final NotificationHelper _instance = NotificationHelper._internal();
+  static NotificationHelper _instance = NotificationHelper._internal();
 
   /// Returns the singleton instance of the NotificationHelper.
   factory NotificationHelper() => _instance;
+
+  /// Sets the singleton instance of the NotificationHelper (used for testing).
+  @visibleForTesting
+  static set instance(NotificationHelper helper) => _instance = helper;
 
   NotificationHelper._internal();
 
@@ -142,7 +146,7 @@ class NotificationHelper {
       title: title,
       body: body,
       scheduledDate: tzScheduledTime,
-      notificationDetails: NotificationDetails(
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'medication_reminders',
           'Medication Reminders',
@@ -152,13 +156,13 @@ class NotificationHelper {
           enableVibration: true,
           playSound: true,
           actions: <AndroidNotificationAction>[
-            const AndroidNotificationAction(
-              actionTake,
+            AndroidNotificationAction(
+              'action_take',
               'Take',
               showsUserInterface: false,
             ),
-            const AndroidNotificationAction(
-              actionSnooze,
+            AndroidNotificationAction(
+              'action_snooze',
               'Snooze (15m)',
               showsUserInterface: false,
             ),
@@ -263,8 +267,14 @@ class NotificationHelper {
 
   /// Cancels expiration notifications for a medication.
   Future<void> cancelExpirationNotifications(int medicationId) async {
-    await _notificationsPlugin.cancel(id: expirationIdOffset + medicationId * 10 + 1);
-    await _notificationsPlugin.cancel(id: expirationIdOffset + medicationId * 10 + 2);
-    await _notificationsPlugin.cancel(id: expirationIdOffset + medicationId * 10 + 3);
+    await _notificationsPlugin.cancel(
+      id: expirationIdOffset + medicationId * 10 + 1,
+    );
+    await _notificationsPlugin.cancel(
+      id: expirationIdOffset + medicationId * 10 + 2,
+    );
+    await _notificationsPlugin.cancel(
+      id: expirationIdOffset + medicationId * 10 + 3,
+    );
   }
 }

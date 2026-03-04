@@ -75,8 +75,8 @@ class Medication {
     this.expirationDate,
     this.storageLocation,
     this.isAsNeeded = false,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+  }) : createdAt = createdAt ?? DateTime.now(),
+       updatedAt = updatedAt ?? DateTime.now();
 
   /// Converts this medication to a Map suitable for database storage.
   Map<String, dynamic> toMap() {
@@ -119,25 +119,27 @@ class Medication {
     if (map['frequencyPatternType'] != null) {
       pattern = FrequencyPattern(
         type: FrequencyType.values[parseInt(map['frequencyPatternType'])],
-        daysOfWeek: map['frequencyPatternDaysOfWeek'] != null &&
+        daysOfWeek:
+            map['frequencyPatternDaysOfWeek'] != null &&
                 map['frequencyPatternDaysOfWeek'].toString().isNotEmpty
             ? map['frequencyPatternDaysOfWeek']
-                .toString()
-                .split(',')
-                .map((e) => parseInt(e))
-                .toList()
+                  .toString()
+                  .split(',')
+                  .map((e) => parseInt(e))
+                  .toList()
             : [],
         intervalDays: map['frequencyPatternIntervalDays'] != null
             ? parseInt(map['frequencyPatternIntervalDays'])
             : null,
         timesPerDay: parseInt(map['frequencyPatternTimesPerDay'], 1),
-        specificTimes: map['frequencyPatternSpecificTimes'] != null &&
+        specificTimes:
+            map['frequencyPatternSpecificTimes'] != null &&
                 map['frequencyPatternSpecificTimes'].toString().isNotEmpty
             ? map['frequencyPatternSpecificTimes']
-                .toString()
-                .split(',')
-                .map((e) => DateTime.parse(e))
-                .toList()
+                  .toString()
+                  .split(',')
+                  .map((e) => DateTime.parse(e))
+                  .toList()
             : [],
       );
     }
@@ -153,9 +155,11 @@ class Medication {
           ? DateTime.parse(map['reminderTime'])
           : DateTime.now(),
       remoteId: map['remoteId'],
-      lastSynced:
-          map['lastSynced'] != null ? DateTime.parse(map['lastSynced']) : null,
-      needsSync: map['needsSync'] == 1 ||
+      lastSynced: map['lastSynced'] != null
+          ? DateTime.parse(map['lastSynced'])
+          : null,
+      needsSync:
+          map['needsSync'] == 1 ||
           map['needsSync'] == '1', // Handle potential string "1"
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])

@@ -36,8 +36,12 @@ class GoogleAuthClient extends http.BaseClient {
 class GoogleDriveService {
   static const _scopes = [drive.DriveApi.driveAppdataScope];
 
-  static final GoogleDriveService _instance = GoogleDriveService._internal();
+  static GoogleDriveService _instance = GoogleDriveService._internal();
   factory GoogleDriveService() => _instance;
+
+  /// Sets the singleton instance of the GoogleDriveService (used for testing).
+  @visibleForTesting
+  static set instance(GoogleDriveService service) => _instance = service;
 
   final GoogleSignIn _googleSignIn;
   final BehaviorSubject<GoogleSignInCredentials?> _currentCredentials;

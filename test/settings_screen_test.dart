@@ -2,6 +2,7 @@ import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/l10n/app_localizations_delegate.dart';
 import 'package:bluepills/models/app_config.dart';
 import 'package:bluepills/screens/settings_screen.dart';
+import 'package:bluepills/services/backup_service.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/services/export_service.dart';
 import 'package:bluepills/services/google_drive_service.dart';
@@ -18,6 +19,7 @@ import 'settings_screen_test.mocks.dart';
 @GenerateMocks([
   ConfigService,
   SyncService,
+  BackupService,
   GoogleDriveService,
   ExportService,
   ImportService,
@@ -39,6 +41,9 @@ void main() {
     // Use dependency injection through static instances
     ConfigService.instance = mockConfigService;
     SyncService.instance = mockSyncService;
+    GoogleDriveService.instance = mockGoogleDriveService;
+    ExportService.instance = mockExportService;
+    ImportService.instance = mockImportService;
 
     when(mockConfigService.config).thenReturn(const AppConfig());
     when(mockGoogleDriveService.isAuthenticated()).thenAnswer((_) async => false);
@@ -68,11 +73,17 @@ void main() {
   });
 
   testWidgets('Language selection works', (WidgetTester tester) async {
+    // Set a larger surface size to ensure everything is visible
+    tester.view.physicalSize = const Size(1200, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
     await tester.pumpWidget(createSettingsScreen());
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     // Find the language dropdown
-    final dropdown = find.byType(DropdownButtonFormField<String>);
+    final dropdown = find.byWidgetPredicate((widget) => widget is DropdownButtonFormField);
+    await tester.ensureVisible(dropdown);
     expect(dropdown, findsOneWidget);
 
     // Tap the dropdown to open it
@@ -91,7 +102,9 @@ void main() {
     await tester.pumpWidget(createSettingsScreen());
     await tester.pump();
 
-    await tester.tap(find.text('Connect to Google Drive'));
+    final connectButton = find.text('Connect to Google Drive');
+    await tester.ensureVisible(connectButton);
+    await tester.tap(connectButton);
     await tester.pump();
 
     verify(mockGoogleDriveService.authenticate()).called(1);
@@ -101,7 +114,9 @@ void main() {
     await tester.pumpWidget(createSettingsScreen());
     await tester.pump();
 
-    await tester.tap(find.text('Export Data'));
+    final exportButton = find.text('Export Data');
+    await tester.ensureVisible(exportButton);
+    await tester.tap(exportButton);
     await tester.pump();
 
     verify(mockExportService.exportMedications()).called(1);
@@ -111,7 +126,9 @@ void main() {
     await tester.pumpWidget(createSettingsScreen());
     await tester.pump();
 
-    await tester.tap(find.text('Import Data'));
+    final importButton = find.text('Import Data');
+    await tester.ensureVisible(importButton);
+    await tester.tap(importButton);
     await tester.pump();
 
     verify(mockImportService.importMedications()).called(1);

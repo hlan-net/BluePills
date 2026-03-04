@@ -155,16 +155,14 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           dosage: _dosageController.text,
           quantity: int.tryParse(_quantityController.text) ?? 0,
           frequency: _selectedFrequency,
-          frequencyPattern:
-              (_useAdvancedFrequency && !_isAsNeeded)
-                  ? _selectedFrequencyPattern
-                  : null,
+          frequencyPattern: (_useAdvancedFrequency && !_isAsNeeded)
+              ? _selectedFrequencyPattern
+              : null,
           reminderTime: _selectedReminderTime,
           expirationDate: _selectedExpirationDate,
-          storageLocation:
-              _storageLocationController.text.isNotEmpty
-                  ? _storageLocationController.text
-                  : null,
+          storageLocation: _storageLocationController.text.isNotEmpty
+              ? _storageLocationController.text
+              : null,
           isAsNeeded: _isAsNeeded,
         );
 
@@ -358,8 +356,8 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                     onSelected: (String value) {
                       _storageLocationController.text = value;
                     },
-                    itemBuilder:
-                        (BuildContext context) => <PopupMenuEntry<String>>[
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
                           PopupMenuItem<String>(
                             value: localizations.medicineCabinet,
                             child: Text(localizations.medicineCabinet),
@@ -435,28 +433,27 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   Widget _buildSimpleFrequencyDropdown(AppLocalizations localizations) {
     return DropdownButtonFormField<Frequency>(
       initialValue: _selectedFrequency,
-      items:
-          Frequency.values.map((Frequency frequency) {
-            String frequencyText;
-            switch (frequency) {
-              case Frequency.onceDaily:
-                frequencyText = localizations.onceDaily;
-                break;
-              case Frequency.twiceDaily:
-                frequencyText = localizations.twiceDaily;
-                break;
-              case Frequency.threeTimesDaily:
-                frequencyText = localizations.threeTimesDaily;
-                break;
-              case Frequency.asNeeded:
-                frequencyText = localizations.asNeeded;
-                break;
-            }
-            return DropdownMenuItem<Frequency>(
-              value: frequency,
-              child: Text(frequencyText),
-            );
-          }).toList(),
+      items: Frequency.values.map((Frequency frequency) {
+        String frequencyText;
+        switch (frequency) {
+          case Frequency.onceDaily:
+            frequencyText = localizations.onceDaily;
+            break;
+          case Frequency.twiceDaily:
+            frequencyText = localizations.twiceDaily;
+            break;
+          case Frequency.threeTimesDaily:
+            frequencyText = localizations.threeTimesDaily;
+            break;
+          case Frequency.asNeeded:
+            frequencyText = localizations.asNeeded;
+            break;
+        }
+        return DropdownMenuItem<Frequency>(
+          value: frequency,
+          child: Text(frequencyText),
+        );
+      }).toList(),
       onChanged: (Frequency? newValue) {
         setState(() {
           _selectedFrequency = newValue!;
