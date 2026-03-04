@@ -47,3 +47,6 @@ app.*.map.json
 /android/app/release
 # Gemini settings
 .gemini/
+
+# Yarn used for CLI Agents not for the project
+.yarnrc.yml
