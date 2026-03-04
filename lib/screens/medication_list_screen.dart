@@ -214,9 +214,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       final localizations = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            localizations.noMedicationLeftInStock(selectedMed.name),
-          ),
+          content: Text(localizations.noMedicationLeftInStock(selectedMed.name)),
           backgroundColor: Colors.orange,
         ),
       );
@@ -660,137 +658,26 @@ class _MedicationListScreenState extends State<MedicationListScreen>
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              // Set Reminder option
-              ScaleTransition(
-                scale: _animation,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          localizations.setReminder,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      FloatingActionButton(
-                        heroTag: 'reminder',
-                        mini: true,
-                        onPressed: _setReminder,
-                        backgroundColor: Colors.orange,
-                        child: const Icon(Icons.alarm),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildSpeedDialOption(
+                label: localizations.setReminder,
+                icon: Icons.alarm,
+                color: Colors.orange,
+                onPressed: _setReminder,
+                heroTag: 'reminder',
               ),
-              // Add Dose option
-              ScaleTransition(
-                scale: _animation,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          localizations.logDose,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      FloatingActionButton(
-                        heroTag: 'dose',
-                        mini: true,
-                        onPressed: _addDose,
-                        backgroundColor: Colors.green,
-                        child: const Icon(Icons.check_circle),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildSpeedDialOption(
+                label: localizations.logDose,
+                icon: Icons.check_circle,
+                color: Colors.green,
+                onPressed: _addDose,
+                heroTag: 'dose',
               ),
-              // Add Medication option
-              ScaleTransition(
-                scale: _animation,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          localizations.newMedication,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      FloatingActionButton(
-                        heroTag: 'medication',
-                        mini: true,
-                        onPressed: _addNewMedication,
-                        backgroundColor: Colors.blue,
-                        child: const Icon(Icons.medical_services),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildSpeedDialOption(
+                label: localizations.newMedication,
+                icon: Icons.medical_services,
+                color: Colors.blue,
+                onPressed: _addNewMedication,
+                heroTag: 'medication',
               ),
               const SizedBox(height: 8),
               // Main FAB
@@ -807,6 +694,58 @@ class _MedicationListScreenState extends State<MedicationListScreen>
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSpeedDialOption({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+    required String heroTag,
+  }) {
+    return ScaleTransition(
+      scale: _animation,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            FloatingActionButton(
+              heroTag: heroTag,
+              mini: true,
+              onPressed: onPressed,
+              backgroundColor: color,
+              child: Icon(icon),
+            ),
+          ],
+        ),
       ),
     );
   }
