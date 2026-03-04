@@ -474,8 +474,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get expiresLabel => 'Går ut:';
 
   @override
-  String get selectExpirationDateOptional =>
-      'Välj utgångsdatum (valfritt)';
+  String get selectExpirationDateOptional => 'Välj utgångsdatum (valfritt)';
 
   @override
   String get clearExpirationDate => 'Rensa utgångsdatum';

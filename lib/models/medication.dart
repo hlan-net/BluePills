@@ -194,10 +194,9 @@ class Medication {
       needsSync: needsSync ?? this.needsSync,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      expirationDate:
-          expirationDate == _sentinel
-              ? this.expirationDate
-              : expirationDate as DateTime?,
+      expirationDate: expirationDate == _sentinel
+          ? this.expirationDate
+          : expirationDate as DateTime?,
     );
   }
 

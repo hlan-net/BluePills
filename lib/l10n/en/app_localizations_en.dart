@@ -467,7 +467,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expiresLabel => 'Expires:';
 
   @override
-  String get selectExpirationDateOptional => 'Select Expiration Date (Optional)';
+  String get selectExpirationDateOptional =>
+      'Select Expiration Date (Optional)';
 
   @override
   String get clearExpirationDate => 'Clear Expiration Date';

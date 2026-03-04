@@ -84,9 +84,7 @@ void main() {
 
       final otherDay = today.weekday == 7 ? 1 : today.weekday + 1;
       final medOther = _createMedication(
-        frequencyPattern: FrequencyPattern.specificDays(
-          daysOfWeek: [otherDay],
-        ),
+        frequencyPattern: FrequencyPattern.specificDays(daysOfWeek: [otherDay]),
       );
       expect(medOther.shouldTakeToday(), false);
     });
