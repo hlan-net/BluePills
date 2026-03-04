@@ -465,4 +465,32 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get everyDay => 'Jeden Tag';
+
+  @override
+  String get showLowStock => 'Geringer Lagerbestand anzeigen';
+
+  @override
+  String get showExpiringSoon => 'Bald ablaufend anzeigen';
+
+  @override
+  String get expirationDate => 'Verfallsdatum';
+
+  @override
+  String get expirationDateLabel => 'Verfallsdatum';
+
+  @override
+  String get expiresLabel => 'Läuft ab:';
+
+  @override
+  String get selectExpirationDateOptional =>
+      'Verfallsdatum wählen (Optional)';
+
+  @override
+  String get clearExpirationDate => 'Verfallsdatum löschen';
+
+  @override
+  String get syncCompletedSuccessfully => 'Synchronisierung erfolgreich';
+
+  @override
+  String syncFailed(String error) => 'Synchronisierung fehlgeschlagen: $error';
 }

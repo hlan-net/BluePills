@@ -91,11 +91,22 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   }
 
   Future<void> _selectExpirationDate(BuildContext context) async {
+    final DateTime now = DateTime.now();
+    final DateTime firstDate = now.subtract(const Duration(days: 365));
+    final DateTime lastDate = now.add(const Duration(days: 3650)); // 10 years
+
+    DateTime initialDate = _selectedExpirationDate ?? now;
+    if (initialDate.isBefore(firstDate)) {
+      initialDate = firstDate;
+    } else if (initialDate.isAfter(lastDate)) {
+      initialDate = lastDate;
+    }
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedExpirationDate ?? DateTime.now(),
-      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-      lastDate: DateTime.now().add(const Duration(days: 3650)), // 10 years
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
     );
     if (picked != null) {
       setState(() {
@@ -360,10 +371,25 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 ListTile(
                   title: Text(
                     _selectedExpirationDate == null
-                        ? 'Select Expiration Date (Optional)'
-                        : 'Expiration Date: ${_selectedExpirationDate!.year}-${_selectedExpirationDate!.month.toString().padLeft(2, '0')}-${_selectedExpirationDate!.day.toString().padLeft(2, '0')}',
+                        ? localizations.selectExpirationDateOptional
+                        : '${localizations.expirationDateLabel}: ${MaterialLocalizations.of(context).formatMediumDate(_selectedExpirationDate!)}',
                   ),
-                  trailing: const Icon(Icons.calendar_today),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.calendar_today),
+                      if (_selectedExpirationDate != null)
+                        IconButton(
+                          icon: const Icon(Icons.clear),
+                          tooltip: localizations.clearExpirationDate,
+                          onPressed: () {
+                            setState(() {
+                              _selectedExpirationDate = null;
+                            });
+                          },
+                        ),
+                    ],
+                  ),
                   onTap: () => _selectExpirationDate(context),
                 ),
                 ListTile(

@@ -211,4 +211,15 @@ abstract class AppLocalizations {
   String timesOnDays(int times, String days);
   String everyIntervalDays(int days);
   String get everyDay;
+
+  // New keys for expiration tracking and UI improvements
+  String get showLowStock;
+  String get showExpiringSoon;
+  String get expirationDate;
+  String get expirationDateLabel;
+  String get expiresLabel;
+  String get selectExpirationDateOptional;
+  String get clearExpirationDate;
+  String get syncCompletedSuccessfully;
+  String syncFailed(String error);
 }

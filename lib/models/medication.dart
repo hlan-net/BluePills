@@ -179,7 +179,7 @@ class Medication {
     bool? needsSync,
     DateTime? createdAt,
     DateTime? updatedAt,
-    DateTime? expirationDate,
+    Object? expirationDate = _sentinel,
   }) {
     return Medication(
       id: id ?? this.id,
@@ -194,9 +194,14 @@ class Medication {
       needsSync: needsSync ?? this.needsSync,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      expirationDate: expirationDate ?? this.expirationDate,
+      expirationDate:
+          expirationDate == _sentinel
+              ? this.expirationDate
+              : expirationDate as DateTime?,
     );
   }
+
+  static const Object _sentinel = Object();
 
   /// Marks this medication as updated and needing synchronization.
   ///
