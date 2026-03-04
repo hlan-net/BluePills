@@ -195,13 +195,17 @@ class MockConfigService extends _i1.Mock implements _i7.ConfigService {
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> enableSync({
-    required String? blueskyHandle,
-    required String? pdsUrl,
+  _i4.Future<void> updateSyncConfig({
+    required bool? syncEnabled,
+    String? blueskyHandle,
+    String? appPassword,
+    String? pdsUrl,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#enableSync, [], {
+            Invocation.method(#updateSyncConfig, [], {
+              #syncEnabled: syncEnabled,
               #blueskyHandle: blueskyHandle,
+              #appPassword: appPassword,
               #pdsUrl: pdsUrl,
             }),
             returnValue: _i4.Future<void>.value(),
@@ -210,9 +214,9 @@ class MockConfigService extends _i1.Mock implements _i7.ConfigService {
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> disableSync() =>
+  _i4.Future<void> updateLanguage(String? languageCode) =>
       (super.noSuchMethod(
-            Invocation.method(#disableSync, []),
+            Invocation.method(#updateLanguage, [languageCode]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
@@ -222,6 +226,15 @@ class MockConfigService extends _i1.Mock implements _i7.ConfigService {
   _i4.Future<void> updateLastSyncTime([DateTime? time]) =>
       (super.noSuchMethod(
             Invocation.method(#updateLastSyncTime, [time]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateLastBackupTime([DateTime? time]) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLastBackupTime, [time]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )

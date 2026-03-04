@@ -4,9 +4,9 @@ import 'package:bluepills/models/app_config.dart';
 import 'package:bluepills/screens/settings_screen.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/services/export_service.dart';
-import 'package:bluepills/services/import_service.dart';
 import 'package:bluepills/services/google_drive_service.dart';
-import 'package:bluepills/services/backup_service.dart';
+import 'package:bluepills/services/import_service.dart';
+import 'package:bluepills/services/sync_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,84 +17,103 @@ import 'settings_screen_test.mocks.dart';
 
 @GenerateMocks([
   ConfigService,
+  SyncService,
+  GoogleDriveService,
   ExportService,
   ImportService,
-  GoogleDriveService,
-  BackupService,
 ])
 void main() {
   late MockConfigService mockConfigService;
+  late MockSyncService mockSyncService;
+  late MockGoogleDriveService mockGoogleDriveService;
   late MockExportService mockExportService;
   late MockImportService mockImportService;
-  late MockGoogleDriveService mockDriveService;
-  late MockBackupService mockBackupService;
 
   setUp(() {
     mockConfigService = MockConfigService();
+    mockSyncService = MockSyncService();
+    mockGoogleDriveService = MockGoogleDriveService();
     mockExportService = MockExportService();
     mockImportService = MockImportService();
-    mockDriveService = MockGoogleDriveService();
-    mockBackupService = MockBackupService();
 
-    when(
-      mockConfigService.config,
-    ).thenReturn(AppConfig(syncEnabled: false, syncMode: SyncMode.localOnly));
+    // Use dependency injection through static instances
+    ConfigService.instance = mockConfigService;
+    SyncService.instance = mockSyncService;
 
-    when(
-      mockDriveService.onCurrentUserChanged,
-    ).thenAnswer((_) => Stream.value(null));
-    when(mockDriveService.signInSilently()).thenAnswer((_) async => null);
+    when(mockConfigService.config).thenReturn(const AppConfig());
+    when(mockGoogleDriveService.isAuthenticated()).thenAnswer((_) async => false);
+    when(mockGoogleDriveService.getUserEmail()).thenAnswer((_) async => null);
   });
 
-  testWidgets(
-    'Settings screen shows import and export buttons and they can be tapped',
-    (WidgetTester tester) async {
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: const [
-            AppLocalizationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: SettingsScreen(
-            configService: mockConfigService,
-            exportService: mockExportService,
-            importService: mockImportService,
-            driveService: mockDriveService,
-            backupService: mockBackupService,
-          ),
-        ),
-      );
+  Widget createSettingsScreen() {
+    return MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: const SettingsScreen(),
+    );
+  }
 
-      // Verify that the import and export buttons are displayed.
-      // Note: They might be off-screen, so we need to scroll to them.
-      await tester.drag(
-        find.byType(SingleChildScrollView),
-        const Offset(0, -500),
-      );
-      await tester.pump();
+  testWidgets('Settings screen displays correctly', (WidgetTester tester) async {
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.pump();
 
-      expect(find.text('Import Data'), findsOneWidget);
-      expect(find.text('Export Data'), findsOneWidget);
+    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('BlueSky Synchronization'), findsOneWidget);
+    expect(find.text('Google Drive Backup'), findsOneWidget);
+  });
 
-      // Tap the export button.
-      when(mockExportService.exportMedications()).thenAnswer((_) async {});
-      await tester.tap(find.text('Export Data'));
-      await tester.pump();
+  testWidgets('Language selection works', (WidgetTester tester) async {
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.pump();
 
-      // Verify that the export service is called.
-      verify(mockExportService.exportMedications()).called(1);
+    // Find the language dropdown
+    final dropdown = find.byType(DropdownButtonFormField<String>);
+    expect(dropdown, findsOneWidget);
 
-      // Tap the import button.
-      when(mockImportService.importMedications()).thenAnswer((_) async {});
-      await tester.tap(find.text('Import Data'));
-      await tester.pump();
+    // Tap the dropdown to open it
+    await tester.tap(dropdown);
+    await tester.pumpAndSettle();
 
-      // Verify that the import service is called.
-      verify(mockImportService.importMedications()).called(1);
-    },
-  );
+    // Select Finnish
+    await tester.tap(find.text('Finnish').last);
+    await tester.pumpAndSettle();
+
+    // Verify that the config service is called
+    verify(mockConfigService.updateLanguage('fi')).called(1);
+  });
+
+  testWidgets('Google Drive connect works', (WidgetTester tester) async {
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.pump();
+
+    await tester.tap(find.text('Connect to Google Drive'));
+    await tester.pump();
+
+    verify(mockGoogleDriveService.authenticate()).called(1);
+  });
+
+  testWidgets('Export data works', (WidgetTester tester) async {
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.pump();
+
+    await tester.tap(find.text('Export Data'));
+    await tester.pump();
+
+    verify(mockExportService.exportMedications()).called(1);
+  });
+
+  testWidgets('Import data works', (WidgetTester tester) async {
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.pump();
+
+    await tester.tap(find.text('Import Data'));
+    await tester.pump();
+
+    verify(mockImportService.importMedications()).called(1);
+  });
 }

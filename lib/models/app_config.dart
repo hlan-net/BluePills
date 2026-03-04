@@ -10,10 +10,6 @@ import 'package:bluepills/l10n/app_localizations.dart';
 part 'app_config.g.dart';
 
 /// Application configuration containing sync and BlueSky integration settings.
-///
-/// This class stores the user's preferences for data synchronization with
-/// BlueSky using the AT Protocol. It supports JSON serialization for
-/// persistent storage.
 @JsonSerializable()
 class AppConfig {
   /// Whether synchronization with BlueSky is enabled.
@@ -28,6 +24,9 @@ class AppConfig {
   /// The timestamp of the last successful sync operation.
   final DateTime? lastSyncTime;
 
+  /// The timestamp of the last successful backup operation.
+  final DateTime? lastBackupTime;
+
   /// The current synchronization mode.
   final SyncMode syncMode;
 
@@ -38,13 +37,12 @@ class AppConfig {
   final String? languageCode;
 
   /// Creates a new [AppConfig] instance with default values.
-  ///
-  /// By default, sync is disabled and the sync mode is set to [SyncMode.localOnly].
   const AppConfig({
     this.syncEnabled = false,
     this.blueskyHandle,
     this.pdsUrl,
     this.lastSyncTime,
+    this.lastBackupTime,
     this.syncMode = SyncMode.localOnly,
     this.autoRestoreEnabled = true,
     this.languageCode,
@@ -58,14 +56,12 @@ class AppConfig {
   Map<String, dynamic> toJson() => _$AppConfigToJson(this);
 
   /// Creates a copy of this configuration with optional field updates.
-  ///
-  /// Any field that is provided will replace the existing value.
-  /// Fields that are not provided will retain their current values.
   AppConfig copyWith({
     bool? syncEnabled,
     String? blueskyHandle,
     String? pdsUrl,
     DateTime? lastSyncTime,
+    DateTime? lastBackupTime,
     SyncMode? syncMode,
     bool? autoRestoreEnabled,
     String? languageCode,
@@ -75,6 +71,7 @@ class AppConfig {
       blueskyHandle: blueskyHandle ?? this.blueskyHandle,
       pdsUrl: pdsUrl ?? this.pdsUrl,
       lastSyncTime: lastSyncTime ?? this.lastSyncTime,
+      lastBackupTime: lastBackupTime ?? this.lastBackupTime,
       syncMode: syncMode ?? this.syncMode,
       autoRestoreEnabled: autoRestoreEnabled ?? this.autoRestoreEnabled,
       languageCode: languageCode ?? this.languageCode,
@@ -83,10 +80,6 @@ class AppConfig {
 }
 
 /// Defines the different modes for data synchronization.
-///
-/// - [localOnly]: Store data only on the local device (no sync)
-/// - [syncEnabled]: Store data locally and synchronize with BlueSky
-/// - [syncOnly]: Store data only on BlueSky (requires internet connection)
 enum SyncMode { localOnly, syncEnabled, syncOnly }
 
 /// Extension methods for [SyncMode] to provide user-friendly display strings.

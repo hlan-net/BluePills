@@ -38,11 +38,13 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   late TextEditingController _nameController;
   late TextEditingController _dosageController;
   late TextEditingController _quantityController;
+  late TextEditingController _storageLocationController;
   late Frequency _selectedFrequency;
   late DateTime _selectedReminderTime;
   DateTime? _selectedExpirationDate;
   FrequencyPattern? _selectedFrequencyPattern;
   bool _useAdvancedFrequency = false;
+  bool _isAsNeeded = false;
   bool _wasSaved = false;
 
   @override
@@ -57,11 +59,15 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     _quantityController = TextEditingController(
       text: widget.medication?.quantity.toString() ?? '0',
     );
+    _storageLocationController = TextEditingController(
+      text: widget.medication?.storageLocation ?? '',
+    );
     _selectedFrequency = widget.medication?.frequency ?? Frequency.onceDaily;
     _selectedReminderTime = widget.medication?.reminderTime ?? DateTime.now();
     _selectedExpirationDate = widget.medication?.expirationDate;
     _selectedFrequencyPattern = widget.medication?.frequencyPattern;
     _useAdvancedFrequency = widget.medication?.frequencyPattern != null;
+    _isAsNeeded = widget.medication?.isAsNeeded ?? false;
   }
 
   @override
@@ -69,6 +75,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     _nameController.dispose();
     _dosageController.dispose();
     _quantityController.dispose();
+    _storageLocationController.dispose();
     super.dispose();
   }
 
@@ -119,7 +126,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     if (_formKey.currentState!.validate()) {
       final localizations = AppLocalizations.of(context)!;
       // Validate frequency pattern if using advanced mode
-      if (_useAdvancedFrequency) {
+      if (_useAdvancedFrequency && !_isAsNeeded) {
         if (_selectedFrequencyPattern == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -148,11 +155,17 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           dosage: _dosageController.text,
           quantity: int.tryParse(_quantityController.text) ?? 0,
           frequency: _selectedFrequency,
-          frequencyPattern: _useAdvancedFrequency
-              ? _selectedFrequencyPattern
-              : null,
+          frequencyPattern:
+              (_useAdvancedFrequency && !_isAsNeeded)
+                  ? _selectedFrequencyPattern
+                  : null,
           reminderTime: _selectedReminderTime,
           expirationDate: _selectedExpirationDate,
+          storageLocation:
+              _storageLocationController.text.isNotEmpty
+                  ? _storageLocationController.text
+                  : null,
+          isAsNeeded: _isAsNeeded,
         );
 
         if (widget.medication == null) {
@@ -162,17 +175,47 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           await DatabaseHelper().updateMedication(newMedication);
         }
 
-        // Try to schedule notification, but don't fail if it doesn't work
-        try {
-          await NotificationHelper().scheduleNotification(
-            newMedication.id!,
-            'Medication Reminder',
-            'Time to take your ${newMedication.name}!',
-            newMedication.reminderTime,
-            frequencyPattern: newMedication.frequencyPattern,
-          );
-        } catch (e) {
-          debugPrint('Failed to schedule notification: $e');
+        // --- Notification Management ---
+        final notificationHelper = NotificationHelper();
+
+        // 1. Handle Reminders
+        if (!newMedication.isAsNeeded) {
+          try {
+            await notificationHelper.scheduleNotification(
+              id: newMedication.id!,
+              title: 'Medication Reminder',
+              body: 'Time to take your ${newMedication.name}!',
+              scheduledTime: newMedication.reminderTime,
+              frequencyPattern: newMedication.frequencyPattern,
+            );
+          } catch (e) {
+            debugPrint('Failed to schedule reminder: $e');
+          }
+        } else {
+          try {
+            await notificationHelper.cancelNotification(newMedication.id!);
+          } catch (e) {
+            debugPrint('Failed to cancel reminder: $e');
+          }
+        }
+
+        // 2. Handle Expiration Notifications
+        if (newMedication.expirationDate != null) {
+          try {
+            await notificationHelper.scheduleExpirationNotifications(
+              newMedication,
+            );
+          } catch (e) {
+            debugPrint('Failed to schedule expiration notifications: $e');
+          }
+        } else {
+          try {
+            await notificationHelper.cancelExpirationNotifications(
+              newMedication.id!,
+            );
+          } catch (e) {
+            debugPrint('Failed to cancel expiration notifications: $e');
+          }
         }
 
         if (mounted) {
@@ -180,8 +223,12 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             // Clear the form for next entry
             _nameController.clear();
             _dosageController.clear();
+            _quantityController.clear();
+            _storageLocationController.clear();
             _selectedReminderTime = DateTime.now();
             _selectedExpirationDate = null;
+            _isAsNeeded = false;
+            _useAdvancedFrequency = false;
             setState(() {});
 
             // Show success message
@@ -240,7 +287,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
               children: <Widget>[
                 _buildBasicInfoFields(localizations),
                 const SizedBox(height: 16),
-                _buildFrequencySection(localizations),
+                _buildStorageAndPrnSection(localizations),
+                const SizedBox(height: 16),
+                if (!_isAsNeeded) _buildFrequencySection(localizations),
                 const SizedBox(height: 16),
                 _buildDateTimePickers(context, localizations),
                 const SizedBox(height: 20),
@@ -258,9 +307,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
       children: [
         TextFormField(
           controller: _nameController,
-          decoration: InputDecoration(
-            labelText: localizations.medicationName,
-          ),
+          decoration: InputDecoration(labelText: localizations.medicationName),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return localizations.pleaseEnterMedicationName;
@@ -280,9 +327,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         ),
         TextFormField(
           controller: _quantityController,
-          decoration: InputDecoration(
-            labelText: localizations.quantity,
-          ),
+          decoration: InputDecoration(labelText: localizations.quantity),
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -292,6 +337,69 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
               return localizations.pleaseEnterAValidNumber;
             }
             return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStorageAndPrnSection(AppLocalizations localizations) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _storageLocationController,
+                decoration: InputDecoration(
+                  labelText: localizations.storageLocationLabel,
+                  suffixIcon: PopupMenuButton<String>(
+                    icon: const Icon(Icons.arrow_drop_down),
+                    onSelected: (String value) {
+                      _storageLocationController.text = value;
+                    },
+                    itemBuilder:
+                        (BuildContext context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem<String>(
+                            value: localizations.medicineCabinet,
+                            child: Text(localizations.medicineCabinet),
+                          ),
+                          PopupMenuItem<String>(
+                            value: localizations.bedroom,
+                            child: Text(localizations.bedroom),
+                          ),
+                          PopupMenuItem<String>(
+                            value: localizations.kitchen,
+                            child: Text(localizations.kitchen),
+                          ),
+                          PopupMenuItem<String>(
+                            value: localizations.car,
+                            child: Text(localizations.car),
+                          ),
+                          PopupMenuItem<String>(
+                            value: localizations.office,
+                            child: Text(localizations.office),
+                          ),
+                          PopupMenuItem<String>(
+                            value: localizations.purseBag,
+                            child: Text(localizations.purseBag),
+                          ),
+                        ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SwitchListTile(
+          title: Text(localizations.asNeededLabel),
+          subtitle: Text(localizations.asNeededDescription),
+          value: _isAsNeeded,
+          onChanged: (value) {
+            setState(() {
+              _isAsNeeded = value;
+            });
           },
         ),
       ],
@@ -327,35 +435,34 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   Widget _buildSimpleFrequencyDropdown(AppLocalizations localizations) {
     return DropdownButtonFormField<Frequency>(
       initialValue: _selectedFrequency,
-      items: Frequency.values.map((Frequency frequency) {
-        String frequencyText;
-        switch (frequency) {
-          case Frequency.onceDaily:
-            frequencyText = localizations.onceDaily;
-            break;
-          case Frequency.twiceDaily:
-            frequencyText = localizations.twiceDaily;
-            break;
-          case Frequency.threeTimesDaily:
-            frequencyText = localizations.threeTimesDaily;
-            break;
-          case Frequency.asNeeded:
-            frequencyText = localizations.asNeeded;
-            break;
-        }
-        return DropdownMenuItem<Frequency>(
-          value: frequency,
-          child: Text(frequencyText),
-        );
-      }).toList(),
+      items:
+          Frequency.values.map((Frequency frequency) {
+            String frequencyText;
+            switch (frequency) {
+              case Frequency.onceDaily:
+                frequencyText = localizations.onceDaily;
+                break;
+              case Frequency.twiceDaily:
+                frequencyText = localizations.twiceDaily;
+                break;
+              case Frequency.threeTimesDaily:
+                frequencyText = localizations.threeTimesDaily;
+                break;
+              case Frequency.asNeeded:
+                frequencyText = localizations.asNeeded;
+                break;
+            }
+            return DropdownMenuItem<Frequency>(
+              value: frequency,
+              child: Text(frequencyText),
+            );
+          }).toList(),
       onChanged: (Frequency? newValue) {
         setState(() {
           _selectedFrequency = newValue!;
         });
       },
-      decoration: InputDecoration(
-        labelText: localizations.frequency,
-      ),
+      decoration: InputDecoration(labelText: localizations.frequency),
     );
   }
 
@@ -375,9 +482,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
               Text(
                 _selectedFrequencyPattern!.toReadableString(localizations),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             const SizedBox(height: 16),
             FrequencySelector(
@@ -394,7 +501,10 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     );
   }
 
-  Widget _buildDateTimePickers(BuildContext context, AppLocalizations localizations) {
+  Widget _buildDateTimePickers(
+    BuildContext context,
+    AppLocalizations localizations,
+  ) {
     return Column(
       children: [
         ListTile(
@@ -421,13 +531,14 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           ),
           onTap: () => _selectExpirationDate(context),
         ),
-        ListTile(
-          title: Text(
-            '${localizations.reminderTime}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
+        if (!_isAsNeeded)
+          ListTile(
+            title: Text(
+              '${localizations.reminderTime}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
+            ),
+            trailing: const Icon(Icons.access_time),
+            onTap: () => _selectTime(context),
           ),
-          trailing: const Icon(Icons.access_time),
-          onTap: () => _selectTime(context),
-        ),
       ],
     );
   }

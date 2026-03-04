@@ -7,62 +7,84 @@ library;
 import '../app_localizations.dart';
 
 /// Finnish implementation of [AppLocalizations].
-///
-/// Provides all localized strings in Finnish (Suomi) for the BluePills application.
 class AppLocalizationsFi extends AppLocalizations {
-  @override
-  String get appTitle => 'SinisetPillerit';
+  const AppLocalizationsFi();
 
   @override
-  String get myMedications => 'Minun lääkkeeni';
+  String get appTitle => 'BluePills';
 
   @override
-  String get noMedicationsYet => 'Lääkkeitä ei ole vielä lisätty.';
+  String get dosageLabel => 'Annostus:';
+
+  @override
+  String get frequencyLabel => 'Taajuus:';
+
+  @override
+  String get quantityLabel => 'Määrä:';
+
+  @override
+  String daysOfSupply(int days) => '$days päivän annokset';
 
   @override
   String get addMedication => 'Lisää lääke';
 
   @override
-  String get editMedication => 'Muokkaa lääkettä';
+  String get medicationName => 'Lääkkeen nimi';
 
   @override
-  String get medicationName => 'Lääkkeen nimi';
+  String get pleaseEnterMedicationName => 'Anna lääkkeen nimi';
 
   @override
   String get dosage => 'Annostus';
 
   @override
-  String get frequency => 'Taajuus';
-
-  @override
-  String get reminderTime => 'Muistutusaika';
+  String get pleaseEnterDosage => 'Anna annostus';
 
   @override
   String get saveMedication => 'Tallenna lääke';
 
   @override
-  String get pleaseEnterMedicationName => 'Syötä lääkkeen nimi';
+  String get quantity => 'Määrä';
 
   @override
-  String get pleaseEnterDosage => 'Syötä annostus';
+  String get pleaseEnterTheQuantity => 'Anna määrä';
 
   @override
-  String get pleaseEnterFrequency => 'Syötä taajuus';
+  String get pleaseEnterAValidNumber => 'Anna kelvollinen luku';
 
   @override
-  String get error => 'Virhe';
+  String get pleaseEnterFrequency => 'Anna taajuus';
 
   @override
-  String get settings => 'Asetukset';
+  String get frequency => 'Taajuus';
 
   @override
-  String get language => 'Kieli';
+  String get selectReminderTime => 'Valitse muistutusaika';
 
   @override
-  String get appLanguage => 'Sovelluksen kieli';
+  String get save => 'Tallenna';
 
   @override
-  String get deviceLanguage => 'Laitteen kieli';
+  String get saveAndAddMore => 'Tallenna ja lisää toinen';
+
+  @override
+  String get medicationSavedAddAnother => 'Lääke tallennettu. Lisätäänkö toinen?';
+
+  @override
+  String failedToSaveMedication(String error) =>
+      'Lääkkeen tallennus epäonnistui: $error';
+
+  @override
+  String get myMedications => 'Omat lääkkeet';
+
+  @override
+  String get noMedicationsYet => 'Ei vielä lääkkeitä.';
+
+  @override
+  String get tapThePlusButtonToAdd => 'Napauta +-painiketta lisätäksesi lääkkeen.';
+
+  @override
+  String get selectLanguage => 'Valitse kieli';
 
   @override
   String get english => 'Englanti';
@@ -80,332 +102,103 @@ class AppLocalizationsFi extends AppLocalizations {
   String get spanish => 'Espanja';
 
   @override
-  String get noMedicationsAvailable =>
-      'Lääkkeitä ei ole saatavilla. Lisää ensin lääke.';
+  String get appLanguage => 'Sovelluksen kieli';
 
   @override
-  String get selectMedication => 'Valitse lääke';
+  String get deviceLanguage => 'Laitteen kieli';
 
   @override
-  String get cancel => 'Peruuta';
+  String get language => 'Kieli';
 
   @override
-  String loggedDoseFor(String medicationName) =>
-      'Annos kirjattu lääkkeelle $medicationName';
+  String get theme => 'Teema';
 
   @override
-  String noMedicationLeftInStock(String medicationName) =>
-      '$medicationName on loppu varastosta';
+  String get followSystem => 'Seuraa järjestelmää';
 
   @override
-  String get setReminderFeatureComingSoon =>
-      'Aseta muistutus -ominaisuus - tulossa pian!';
+  String get light => 'Vaalea';
 
   @override
-  String get tapThePlusButtonToAdd =>
-      'Napauta + -painiketta lisätäksesi ensimmäisen lääkkeesi';
+  String get dark => 'Tumma';
 
   @override
-  String get todaysMedications => "Tämän päivän lääkkeet";
-
-  @override
-  String takenOf(int taken, int total) => '$taken/$total otettu';
-
-  @override
-  String markedAsTaken(String medicationName) =>
-      '✓ $medicationName merkitty otetuksi';
-
-  @override
-  String get allMedications => 'Kaikki lääkkeet';
-
-  @override
-  String get deleteMedication => 'Poista lääke?';
+  String get deleteMedication => 'Poista lääke';
 
   @override
   String get areYouSureYouWantToDeleteThisMedication =>
       'Haluatko varmasti poistaa tämän lääkkeen?';
 
   @override
+  String get cancel => 'Peruuta';
+
+  @override
   String get delete => 'Poista';
 
   @override
-  String get setReminder => 'Aseta muistutus';
-
-  @override
-  String get logDose => 'Kirjaa annos';
-
-  @override
-  String get newMedication => 'Uusi lääke';
+  String get error => 'Virhe';
 
   @override
   String get add => 'Lisää';
 
   @override
-  String get pleaseSelectAFrequencyPattern => 'Valitse toistokuvio';
+  String markedAsTaken(String name) => '$name merkitty otetuksi';
 
   @override
-  String get pleaseSelectAtLeastOneDay => 'Valitse vähintään yksi päivä';
+  String noMedicationLeftInStock(String name) => 'Varastossa ei ole lääkettä $name';
 
   @override
-  String get medicationSavedAddAnother => 'Lääke tallennettu! Lisää toinen.';
+  String get setReminderFeatureComingSoon =>
+      'Muistutusominaisuus on tulossa pian';
 
   @override
-  String failedToSaveMedication(String error) =>
-      'Lääkkeen tallentaminen epäonnistui: $error';
+  String get selectMedication => 'Valitse lääke';
 
   @override
-  String get quantity => 'Määrä';
+  String get todaysMedications => 'Tämän päivän lääkkeet';
 
   @override
-  String get pleaseEnterTheQuantity => 'Syötä määrä';
-
-  @override
-  String get pleaseEnterAValidNumber => 'Syötä kelvollinen numero';
-
-  @override
-  String get useAdvancedFrequency => 'Käytä edistynyttä toistuvuutta';
-
-  @override
-  String get selectSpecificDaysAndPatterns => 'Valitse tietyt päivät ja kuviot';
-
-  @override
-  String get useSimpleTextFrequency =>
-      'Käytä yksinkertaista tekstitoistuvuutta';
-
-  @override
-  String get frequencyPattern => 'Toistokuvio';
-
-  @override
-  String get save => 'Tallenna';
-
-  @override
-  String get saveAndAddMore => 'Tallenna ja lisää lisää';
-
-  @override
-  String get onceDaily => 'Kerran päivässä';
-
-  @override
-  String get twiceDaily => 'Kahdesti päivässä';
-
-  @override
-  String get threeTimesDaily => 'Kolmesti päivässä';
-
-  @override
-  String get asNeeded => 'Tarvittaessa';
-
-  @override
-  String get dosageLabel => 'Annostus:';
-
-  @override
-  String get frequencyLabel => 'Taajuus:';
-
-  @override
-  String get quantityLabel => 'Määrä:';
-
-  @override
-  String get addStock => 'Lisää varastoon';
-
-  @override
-  String addStockFor(String medicationName) =>
-      'Lisää varastoon lääkettä $medicationName';
-
-  @override
-  String get saveStock => 'Tallenna varasto';
-
-  @override
-  String get blueskySynchronization => 'BlueSky-synkronointi';
-
-  @override
-  String get blueskyHandle => 'BlueSky-kahva';
-
-  @override
-  String get yourHandleBskySocial => 'sinun.kahva.bsky.social';
-
-  @override
-  String get pleaseEnterYourBlueskyHandle => 'Anna BlueSky-kahvasi';
-
-  @override
-  String get personalDataServerPDSURL =>
-      'Henkilökohtaisen datapalvelimen (PDS) URL-osoite';
-
-  @override
-  String get yourPdsExampleCom => 'https://sinun-pds.esimerkki.com';
-
-  @override
-  String get pleaseEnterYourPDSURL => 'Anna PDS-URL-osoitteesi';
-
-  @override
-  String get pleaseEnterAValidURL => 'Anna kelvollinen URL-osoite';
-
-  @override
-  String get enabling => 'Käytössä...';
-
-  @override
-  String get enableBlueSkySync => 'Ota BlueSky-synkronointi käyttöön';
-
-  @override
-  String get disableSync => 'Poista synkronointi käytöstä';
-
-  @override
-  String get disableBlueSkySync => 'Poista BlueSky-synkronointi käytöstä';
-
-  @override
-  String get disableBlueSkySyncConfirmation =>
-      'Tämä poistaa synkronoinnin BlueSkyn kanssa. Tietosi säilyvät paikallisesti. Haluatko varmasti jatkaa?';
-
-  @override
-  String get disable => 'Poista käytöstä';
-
-  @override
-  String get blueskySyncDisabled => 'BlueSky-synkronointi poistettu käytöstä';
-
-  @override
-  String failedToDisableSync(String error) =>
-      'Synkronoinnin poistaminen käytöstä epäonnistui: $error';
-
-  @override
-  String get blueskySyncEnabledSuccessfully =>
-      'BlueSky-synkronointi otettu käyttöön onnistuneesti!';
-
-  @override
-  String failedToEnableSync(String error) =>
-      'Synkronoinnin käyttöönotto epäonnistui: $error';
-
-  @override
-  String get googleDriveBackup => 'Google Drive -varmuuskopio';
-
-  @override
-  String connectedAs(String userId) => 'Yhdistetty nimellä: $userId';
-
-  @override
-  String get autoRestoreFromBackup => 'Automaattinen palautus varmuuskopiosta';
-
-  @override
-  String get restoreNewerBackupOnStartup =>
-      'Palauta uudempi varmuuskopio käynnistyksen yhteydessä';
-
-  @override
-  String get backupNow => 'Varmuuskopioi nyt';
-
-  @override
-  String get restoreNow => 'Palauta nyt';
-
-  @override
-  String get disconnect => 'Katkaise yhteys';
-
-  @override
-  String get backupSuccessful => 'Varmuuskopiointi onnistui!';
-
-  @override
-  String backupFailed(String error) => 'Varmuuskopiointi epäonnistui: $error';
-
-  @override
-  String get restoreSuccessful =>
-      'Palautus onnistui! Käynnistä sovellus uudelleen.';
-
-  @override
-  String get noBackupFound => 'Varmuuskopiota ei löytynyt.';
-
-  @override
-  String restoreFailed(String error) => 'Palautus epäonnistui: $error';
-
-  @override
-  String get dataManagement => 'Tietojen hallinta';
-
-  @override
-  String get importData => 'Tuo tiedot';
-
-  @override
-  String get exportData => 'Vie tiedot';
-
-  @override
-  String get dataImportedSuccessfully => 'Tiedot tuotu onnistuneesti!';
-
-  @override
-  String failedToImportData(String error) =>
-      'Tietojen tuonti epäonnistui: $error';
-
-  @override
-  String get dataExportedSuccessfully => 'Tiedot viety onnistuneesti!';
-
-  @override
-  String failedToExportData(String error) =>
-      'Tietojen vienti epäonnistui: $error';
-
-  @override
-  String get aboutBlueSkyIntegration => 'Tietoja BlueSky-integraatiosta';
-
-  @override
-  String get aboutBlueSkyIntegrationDescription =>
-      'BluePills käyttää AT-protokollaa lääkitystietojesi synkronoimiseen henkilökohtaisen BlueSky-tilisi kanssa. Tämä antaa sinulle pääsyn lääkkeisiisi miltä tahansa laitteelta säilyttäen samalla täyden hallinnan tiedoistasi.';
-
-  @override
-  String get aboutBlueSkyIntegrationDescription2 =>
-      'Lääkitystietosi tallennetaan turvallisesti valitsemallesi henkilökohtaiselle datapalvelimelle (PDS) ja synkronoidaan kaikkien laitteidesi välillä.';
-
-  @override
-  String get licenseAndLegal => 'Lisenssi ja lakiasiat';
-
-  @override
-  String get mitLicense =>
-      'BluePills on avoimen lähdekoodin ohjelmisto, joka on lisensoitu MIT-lisenssillä.';
-
-  @override
-  String get medicalDisclaimer => 'Lääketieteellinen vastuuvapauslauseke';
-
-  @override
-  String get medicalDisclaimerDescription =>
-      'Tämä ohjelmisto on tarkoitettu vain tiedoksi, eikä sitä ole tarkoitettu korvaamaan ammattimaista lääketieteellistä neuvontaa, diagnoosia tai hoitoa. Keskustele aina terveydenhuollon ammattilaisten kanssa lääkkeistäsi.';
-
-  @override
-  String get syncModeLocalOnlyDescription =>
-      'Tallenna tiedot vain tähän laitteeseen paikallisesti';
-
-  @override
-  String get syncModeSyncEnabledDescription =>
-      'Tallenna paikallisesti ja synkronoi BlueSkyn kanssa';
-
-  @override
-  String get syncModeSyncOnlyDescription =>
-      'Tallenna vain BlueSkyyn (vaatii internetyhteyden)';
-
-  // Low Stock & Dashboard
-  @override
-  String criticallyLowStock(int count) => '$count lääkettä on loppumassa!';
-
-  @override
-  String get dismiss => 'SULJE';
+  String takenOf(int taken, int total) => 'Otettu $taken / $total';
 
   @override
   String get takeAll => 'Ota kaikki';
 
   @override
-  String get noMedicationsScheduledForToday => 'Ei lääkkeitä tälle päivälle.';
-
-  // Stock & Reminders
-  @override
-  String daysOfSupply(int days) =>
-      days == 1 ? '1 päivän varasto' : '$days päivän varasto';
+  String get noMedicationsScheduledForToday =>
+      'Ei tälle päivälle ajastettuja lääkkeitä.';
 
   @override
-  String get selectReminderTime => 'Valitse muistutusaika';
+  String get settings => 'Asetukset';
 
   @override
-  String reminderSetFor(String medication, String time) =>
-      'Muistutus asetettu lääkkeelle $medication klo $time';
-
-  // Adherence Screen
-  @override
-  String get medicationAdherence => 'Lääkityksen noudattaminen';
+  String get about => 'Tietoja';
 
   @override
-  String get noDataAvailable => 'Ei tietoja saatavilla.';
+  String get version => 'Versio';
 
   @override
-  String get noMedicationLogsYet => 'Ei lääkitysmerkintöjä vielä.';
+  String get privacyPolicy => 'Tietosuojaseloste';
 
   @override
-  String get adherenceStatistics => 'Noudattamistilastot';
+  String get medicationLogs => 'Lääkeloki';
+
+  @override
+  String get noLogsYet => 'Ei vielä merkintöjä.';
+
+  @override
+  String get time => 'Aika';
+
+  @override
+  String get medicationAdherence => 'Lääkkeiden ottoaste';
+
+  @override
+  String get noDataAvailable => 'Ei tietoja saatavilla';
+
+  @override
+  String get noMedicationLogsYet => 'Ei vielä lokimerkintöjä';
+
+  @override
+  String get adherenceStatistics => 'Tilastot';
 
   @override
   String get last7Days => 'Viimeiset 7 päivää';
@@ -413,18 +206,32 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get last30Days => 'Viimeiset 30 päivää';
 
-  // Frequency Selector & Patterns
+  @override
+  String get overallAdherence => 'Kokonaisaste';
+
+  @override
+  String get dosesTaken => 'Otettu';
+
+  @override
+  String get dosesMissed => 'Väliin jäänyt';
+
+  @override
+  String get weeklyView => 'Viikkonäkymä';
+
+  @override
+  String get monthlyView => 'Kuukausinäkymä';
+
   @override
   String get daily => 'Päivittäin';
 
   @override
-  String get specificDays => 'Tietyt päivät';
+  String get specificDays => 'Tiettyinä päivinä';
 
   @override
-  String get everyNDays => 'Joka N. päivä';
+  String get everyNDays => 'N päivän välein';
 
   @override
-  String get selectDays => 'Valitse päivät:';
+  String get selectDays => 'Valitse päivät';
 
   @override
   String get every => 'Joka';
@@ -436,7 +243,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get days => 'päivää';
 
   @override
-  String get timesPerDay => 'Kertaa päivässä:';
+  String get timesPerDay => 'kertaa päivässä';
 
   @override
   String timesDaily(int times) =>
@@ -455,6 +262,249 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get everyDay => 'Joka päivä';
+
+  @override
+  String get synchronization => 'Synkronointi';
+
+  @override
+  String get blueskySynchronization => 'BlueSky-synkronointi';
+
+  @override
+  String get enableBlueSkySync => 'Ota käyttöön BlueSky-synkronointi';
+
+  @override
+  String get blueSkyHandle => 'BlueSky-tunnus';
+
+  @override
+  String get yourHandleBskySocial => 'tunnuksesi.bsky.social';
+
+  @override
+  String get pleaseEnterYourBlueskyHandle => 'Anna BlueSky-tunnuksesi';
+
+  @override
+  String get personalDataServerPDSURL => 'Personal Data Server (PDS) URL';
+
+  @override
+  String get yourPdsExampleCom => 'pds.esimerkki.com';
+
+  @override
+  String get pleaseEnterYourPDSURL => 'Anna PDS URL';
+
+  @override
+  String get pleaseEnterAValidURL => 'Anna kelvollinen URL';
+
+  @override
+  String get enabling => 'Otetaan käyttöön...';
+
+  @override
+  String get appPassword => 'Sovellussalasana';
+
+  @override
+  String get disableSync => 'Poista synkronointi';
+
+  @override
+  String get disableBlueSkySync => 'Poista BlueSky-synkronointi';
+
+  @override
+  String get disableBlueSkySyncConfirmation =>
+      'Haluatko varmasti poistaa BlueSky-synkronoinnin käytöstä?';
+
+  @override
+  String get disable => 'Poista käytöstä';
+
+  @override
+  String get status => 'Tila';
+
+  @override
+  String get syncDisabled => 'Synkronointi pois käytöstä';
+
+  @override
+  String get loggedIn => 'Kirjautuneena';
+
+  @override
+  String get loggedOut => 'Kirjautuneena ulos';
+
+  @override
+  String get lastSyncedAt => 'Viimeksi synkronoitu';
+
+  @override
+  String get syncNow => 'Synkronoi nyt';
+
+  @override
+  String get login => 'Kirjaudu sisään';
+
+  @override
+  String get logout => 'Kirjaudu ulos';
+
+  @override
+  String get disconnect => 'Katkaise yhteys';
+
+  @override
+  String get confirmLogout => 'Vahvista uloskirjautuminen';
+
+  @override
+  String get areYouSureYouWantToLogoutFromBlueSky =>
+      'Haluatko varmasti kirjautua ulos BlueSkysta?';
+
+  @override
+  String connectedAs(String name) => 'Kirjautuneena nimellä $name';
+
+  @override
+  String get dataManagement => 'Tietojen hallinta';
+
+  @override
+  String get googleDriveBackup => 'Google Drive -varmuuskopiointi';
+
+  @override
+  String get backupToGoogleDrive => 'Varmuuskopiointi Google Driveen';
+
+  @override
+  String get lastBackupAt => 'Viimeisin varmuuskopio';
+
+  @override
+  String get backupNow => 'Varmuuskopioi nyt';
+
+  @override
+  String get restoreNow => 'Palauta nyt';
+
+  @override
+  String get restoreNowButton => 'Palauta nyt';
+
+  @override
+  String get connectToGoogleDrive => 'Yhdistä Google Driveen';
+
+  @override
+  String get disconnectGoogleDrive => 'Katkaise yhteys Google Driveen';
+
+  @override
+  String get backupSuccessful => 'Varmuuskopiointi onnistui';
+
+  @override
+  String backupFailed(String error) => 'Varmuuskopiointi epäonnistui: $error';
+
+  @override
+  String get restoreFromGoogleDrive => 'Palauta Google Drivesta';
+
+  @override
+  String get restoreSuccessful => 'Palautus onnistui';
+
+  @override
+  String restoreFailed(String error) => 'Palautus epäonnistui: $error';
+
+  @override
+  String get autoRestoreFromBackup => 'Automaattinen palautus varmuuskopiosta';
+
+  @override
+  String get restoreNewerBackupOnStartup =>
+      'Palauta uudempi varmuuskopio käynnistyksen yhteydessä';
+
+  @override
+  String get noBackupFound => 'Varmuuskopiota ei löytynyt';
+
+  @override
+  String get dataExportedTo => 'Tiedot viety kohteeseen';
+
+  @override
+  String failedToExportData(String error) => 'Tietojen vienti epäonnistui: $error';
+
+  @override
+  String get dataExportedSuccessfully => 'Tiedot viety onnistuneesti';
+
+  @override
+  String get dataImportedSuccessfully => 'Tiedot tuotu onnistuneesti';
+
+  @override
+  String failedToImportData(String error) => 'Tietojen tuonti epäonnistui: $error';
+
+  @override
+  String get exportData => 'Vie tiedot';
+
+  @override
+  String get importData => 'Tuo tiedot';
+
+  @override
+  String get aboutBlueSkyIntegration => 'Tietoja BlueSky-integraatiosta';
+
+  @override
+  String get aboutBlueSkyIntegrationDescription =>
+      'BluePills käyttää BlueSky AT -protokollaa tietojen synkronointiin laitteiden välillä.';
+
+  @override
+  String get aboutBlueSkyIntegrationDescription2 =>
+      'Tietosi tallennetaan turvallisesti omalle Personal Data Serverillesi (PDS).';
+
+  @override
+  String get licenseAndLegal => 'Lisenssit ja lakitiedot';
+
+  @override
+  String get mitLicense => 'MIT-lisenssi';
+
+  @override
+  String get medicalDisclaimer => 'Lääketieteellinen vastuuvapauslauseke';
+
+  @override
+  String get medicalDisclaimerDescription =>
+      'Tämä sovellus on tarkoitettu vain tiedonhallintaan. Keskustele aina lääkärisi kanssa ennen lääkityksen muuttamista.';
+
+  @override
+  String get syncModeLocalOnlyDescription => 'Vain paikallinen tallennus';
+
+  @override
+  String get syncModeSyncEnabledDescription => 'Synkronointi käytössä';
+
+  @override
+  String get syncModeSyncOnlyDescription => 'Vain synkronointi';
+
+  @override
+  String get notifications => 'Ilmoitukset';
+
+  @override
+  String get testNotification => 'Testaa ilmoitusta';
+
+  @override
+  String get notificationSent => 'Testi-ilmoitus lähetetty';
+
+  @override
+  String get medicationReminders => 'Lääkemuistutukset';
+
+  @override
+  String get remindersToTakeYourMedication => 'Muistutukset lääkkeiden otosta';
+
+  @override
+  String get timeToTakeYour => 'Aika ottaa';
+
+  @override
+  String get editMedication => 'Muokkaa lääkettä';
+
+  @override
+  String get medicationDetails => 'Lääkkeen tiedot';
+
+  @override
+  String get addStock => 'Lisää varastoa';
+
+  @override
+  String get currentQuantity => 'Nykyinen määrä';
+
+  @override
+  String get quantityToAdd => 'Lisättävä määrä';
+
+  @override
+  String get confirmAddStock => 'Vahvista varaston lisäys';
+
+  @override
+  String get stockAddedSuccessfully => 'Varastoa lisätty onnistuneesti';
+
+  @override
+  String get saveStock => 'Tallenna varasto';
+
+  @override
+  String addStockFor(String medicationName) => 'Lisää varastoa: $medicationName';
+
+  @override
+  String get dailyMedications => 'Päivittäiset lääkkeet';
+
+  @override
+  String get allMedications => 'Kaikki lääkkeet';
 
   @override
   String get showLowStock => 'Näytä vähäinen varasto';
@@ -483,4 +533,168 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String syncFailed(String error) => 'Synkronointi epäonnistui: $error';
+
+  @override
+  String get blueskySyncEnabledSuccessfully => 'BlueSky-synkronointi otettu käyttöön';
+
+  @override
+  String failedToEnableSync(String error) => 'Synkronoinnin käyttöönotto epäonnistui: $error';
+
+  @override
+  String get blueskySyncDisabled => 'BlueSky-synkronointi poistettu käytöstä';
+
+  @override
+  String failedToDisableSync(String error) => 'Synkronoinnin poisto epäonnistui: $error';
+
+  @override
+  String criticallyLowStock(int count) => 'Erittäin vähäinen varasto ($count)';
+
+  @override
+  String get dismiss => 'Hylkää';
+
+  @override
+  String get setReminder => 'Aseta muistutus';
+
+  @override
+  String get logDose => 'Kirjaa annos';
+
+  @override
+  String get newMedication => 'Uusi lääke';
+
+  @override
+  String reminderSetFor(String name, String time) =>
+      'Muistutus lääkkeelle $name asetettu kello $time';
+
+  @override
+  String loggedDoseFor(String name) => 'Annos kirjattu lääkkeelle $name';
+
+  @override
+  String get onceDaily => 'Kerran päivässä';
+
+  @override
+  String get twiceDaily => 'Kahdesti päivässä';
+
+  @override
+  String get threeTimesDaily => 'Kolmesti päivässä';
+
+  @override
+  String get asNeeded => 'Tarvittaessa';
+
+  @override
+  String get monday => 'Maanantai';
+
+  @override
+  String get tuesday => 'Tiistai';
+
+  @override
+  String get wednesday => 'Keskiviikko';
+
+  @override
+  String get thursday => 'Torstai';
+
+  @override
+  String get friday => 'Perjantai';
+
+  @override
+  String get saturday => 'Lauantai';
+
+  @override
+  String get sunday => 'Sunnuntai';
+
+  @override
+  String get mon => 'Ma';
+
+  @override
+  String get tue => 'Ti';
+
+  @override
+  String get wed => 'Ke';
+
+  @override
+  String get thu => 'To';
+
+  @override
+  String get fri => 'Pe';
+
+  @override
+  String get sat => 'La';
+
+  @override
+  String get sun => 'Su';
+
+  @override
+  String get timesPerDayLabel => 'kertaa päivässä';
+
+  @override
+  String get everyDayLabel => 'joka päivä';
+
+  @override
+  String get everyNDaysLabel => 'joka N. päivä';
+
+  @override
+  String get intervalDaysLabel => 'päivän välein';
+
+  @override
+  String get pleaseSelectAFrequencyPattern => 'Valitse taajuuskuvio';
+
+  @override
+  String get pleaseSelectAtLeastOneDay => 'Valitse vähintään yksi päivä';
+
+  @override
+  String get useAdvancedFrequency => 'Käytä edistynyttä taajuutta';
+
+  @override
+  String get selectSpecificDaysAndPatterns => 'Valitse tietyt päivät ja kuviot';
+
+  @override
+  String get useSimpleTextFrequency => 'Käytä yksinkertaista tekstitaajuutta';
+
+  @override
+  String get frequencyPattern => 'Taajuuskuvio';
+
+  @override
+  String get reminderTime => 'Muistutusaika';
+
+  @override
+  String get noMedicationsAvailable => 'Ei lääkkeitä saatavilla';
+
+  @override
+  String get storageLocation => 'Säilytyspaikka';
+
+  @override
+  String get storageLocationLabel => 'Säilytyspaikka';
+
+  @override
+  String get asNeededLabel => 'Tarvittaessa (PRN)';
+
+  @override
+  String get asNeededDescription => 'Ei kiinteää aikataulua';
+
+  @override
+  String get lastTaken => 'Viimeksi otettu';
+
+  @override
+  String lastTakenDaysAgo(int days) =>
+      days == 0 ? 'Viimeksi otettu: Tänään' : 'Viimeksi otettu: $days päivää sitten';
+
+  @override
+  String get selectLocation => 'Valitse paikka';
+
+  @override
+  String get medicineCabinet => 'Lääkekaappi';
+
+  @override
+  String get bedroom => 'Makuuhuone';
+
+  @override
+  String get kitchen => 'Keittiö';
+
+  @override
+  String get car => 'Auto';
+
+  @override
+  String get office => 'Toimisto';
+
+  @override
+  String get purseBag => 'Laukku';
 }
