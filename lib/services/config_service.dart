@@ -5,6 +5,7 @@
 library;
 
 import 'dart:convert';
+import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bluepills/models/app_config.dart';
 
@@ -29,10 +30,14 @@ class ConfigService {
   /// The key used to store configuration in SharedPreferences.
   static const String _configKey = 'app_config';
 
-  static final ConfigService _instance = ConfigService._internal();
+  static ConfigService _instance = ConfigService._internal();
 
   /// Returns the singleton instance of the ConfigService.
   factory ConfigService() => _instance;
+
+  /// Sets the singleton instance of the ConfigService (used for testing).
+  @visibleForTesting
+  static set instance(ConfigService service) => _instance = service;
 
   ConfigService._internal();
 

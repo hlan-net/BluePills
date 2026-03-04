@@ -461,4 +461,32 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get everyDay => 'Cada día';
+
+  @override
+  String get showLowStock => 'Mostrar stock bajo';
+
+  @override
+  String get showExpiringSoon => 'Mostrar pronto a vencer';
+
+  @override
+  String get expirationDate => 'Fecha de vencimiento';
+
+  @override
+  String get expirationDateLabel => 'Fecha de vencimiento';
+
+  @override
+  String get expiresLabel => 'Vence:';
+
+  @override
+  String get selectExpirationDateOptional =>
+      'Seleccionar fecha de vencimiento (Opcional)';
+
+  @override
+  String get clearExpirationDate => 'Borrar fecha de vencimiento';
+
+  @override
+  String get syncCompletedSuccessfully => 'Sincronización completada con éxito';
+
+  @override
+  String syncFailed(String error) => 'Sincronización fallida: $error';
 }

@@ -457,4 +457,31 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get everyDay => 'Varje dag';
+
+  @override
+  String get showLowStock => 'Visa lågt lager';
+
+  @override
+  String get showExpiringSoon => 'Visa går ut snart';
+
+  @override
+  String get expirationDate => 'Utgångsdatum';
+
+  @override
+  String get expirationDateLabel => 'Utgångsdatum';
+
+  @override
+  String get expiresLabel => 'Går ut:';
+
+  @override
+  String get selectExpirationDateOptional => 'Välj utgångsdatum (valfritt)';
+
+  @override
+  String get clearExpirationDate => 'Rensa utgångsdatum';
+
+  @override
+  String get syncCompletedSuccessfully => 'Synkroniseringen lyckades';
+
+  @override
+  String syncFailed(String error) => 'Synkroniseringen misslyckades: $error';
 }

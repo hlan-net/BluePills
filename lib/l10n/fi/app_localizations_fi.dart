@@ -455,4 +455,32 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get everyDay => 'Joka päivä';
+
+  @override
+  String get showLowStock => 'Näytä vähäinen varasto';
+
+  @override
+  String get showExpiringSoon => 'Näytä pian vanhentuvat';
+
+  @override
+  String get expirationDate => 'Viimeinen käyttöpäivä';
+
+  @override
+  String get expirationDateLabel => 'Viimeinen käyttöpäivä';
+
+  @override
+  String get expiresLabel => 'Vanhentuu:';
+
+  @override
+  String get selectExpirationDateOptional =>
+      'Valitse viimeinen käyttöpäivä (valinnainen)';
+
+  @override
+  String get clearExpirationDate => 'Tyhjennä viimeinen käyttöpäivä';
+
+  @override
+  String get syncCompletedSuccessfully => 'Synkronointi onnistui';
+
+  @override
+  String syncFailed(String error) => 'Synkronointi epäonnistui: $error';
 }

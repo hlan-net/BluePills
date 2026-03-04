@@ -15,13 +15,13 @@
 ### Enhanced Prescription Patterns (US-001) - 3-4 days
 - [x] Add `scheduleDays` field to Medication model (JSON or bit flags)
 - [x] Create database migration for new field
-- [ ] Design day selector UI (Mon, Tue, Wed, Thu, Fri, Sat, Sun buttons)
-- [ ] Implement day selector in MedicationFormScreen
-- [ ] Add pattern summary text display (e.g., "Mon, Tue, Wed, Thu, Fri")
+- [x] Design day selector UI (Mon, Tue, Wed, Thu, Fri, Sat, Sun buttons)
+- [x] Implement day selector in MedicationFormScreen
+- [x] Add pattern summary text display (e.g., "Mon, Tue, Wed, Thu, Fri")
 - [x] Update `shouldTakeToday()` to use schedule pattern
 - [x] Save and load schedule pattern from database
-- [ ] Test weekday-only pattern (Adenuric use case)
-- [ ] Test multiple selected days pattern
+- [x] Test weekday-only pattern (Adenuric use case)
+- [x] Test multiple selected days pattern
 
 ### Low Stock Warnings (US-001) - 1 day
 - [x] Implement `getDaysOfSupply()` calculation
@@ -48,13 +48,13 @@
 ## 🟡 Important / Phase 2
 
 ### Expiration Date Tracking (US-002) - 2 days
-- [ ] Add `expirationDate` field to Medication model
-- [ ] Create database migration
-- [ ] Add date picker to medication form
-- [ ] Implement days until expiration calculation
-- [ ] Add expiration status badge to medication cards
-- [ ] Color-code by status (green > 60d, yellow 30-60d, orange 7-30d, red < 7d or expired)
-- [ ] Create "Expiring Soon" filter
+- [x] Add `expirationDate` field to Medication model
+- [x] Create database migration
+- [x] Add date picker to medication form
+- [x] Implement days until expiration calculation
+- [x] Add expiration status badge to medication cards
+- [x] Color-code by status (green > 60d, yellow 30-60d, orange 7-30d, red < 7d or expired)
+- [x] Create "Expiring Soon" filter
 - [ ] Create "Expired" filter
 - [ ] Sort medications by expiration date
 - [ ] Show "Expires in X days" text
@@ -161,8 +161,8 @@
 - [ ] Optimize database queries
 
 ### Code Quality
-- [ ] Refactor main.dart (too large, split into separate files)
-- [ ] Extract MedicationListScreen to separate file
+- [x] Refactor main.dart (too large, split into separate files)
+- [x] Extract MedicationListScreen to separate file
 - [ ] Create reusable UI components (MedicationCard, etc.)
 - [ ] Improve code documentation
 - [ ] Follow Flutter best practices
@@ -248,13 +248,15 @@
 **Sprint Goal:** Enable Matti's daily medication routine
 
 **In Progress:**
-- [ ] Enhanced Prescription Patterns (Day Selector UI)
-
-**Up Next:**
 - [ ] Notification Actions (Take/Snooze)
 
-**Blocked:**
-- None
+**Up Next:**
+- [ ] Expiration Notifications (US-002)
+
+**Completed this session:**
+- [x] Refactor main.dart (extracted MedicationListScreen)
+- [x] Expiration Date Tracking (Model, DB, UI, Filtering)
+- [x] Verified Enhanced Prescription Patterns (Tests)
 
 ---
 

@@ -3,11 +3,14 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
-import 'package:bluepills/database/database_adapter.dart' as _i2;
-import 'package:bluepills/models/medication.dart' as _i4;
-import 'package:bluepills/models/medication_log.dart' as _i5;
+import 'package:bluepills/database/database_adapter.dart' as _i3;
+import 'package:bluepills/models/app_config.dart' as _i2;
+import 'package:bluepills/models/medication.dart' as _i5;
+import 'package:bluepills/models/medication_log.dart' as _i6;
+import 'package:bluepills/services/config_service.dart' as _i7;
+import 'package:bluepills/services/sync_service.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -25,116 +28,261 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
+class _FakeAppConfig_0 extends _i1.SmartFake implements _i2.AppConfig {
+  _FakeAppConfig_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [DatabaseAdapter].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatabaseAdapter extends _i1.Mock implements _i2.DatabaseAdapter {
+class MockDatabaseAdapter extends _i1.Mock implements _i3.DatabaseAdapter {
   MockDatabaseAdapter() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<void> init() =>
+  _i4.Future<void> init() =>
       (super.noSuchMethod(
             Invocation.method(#init, []),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i3.Future<int> insertMedication(_i4.Medication? medication) =>
+  _i4.Future<int> insertMedication(_i5.Medication? medication) =>
       (super.noSuchMethod(
             Invocation.method(#insertMedication, [medication]),
-            returnValue: _i3.Future<int>.value(0),
+            returnValue: _i4.Future<int>.value(0),
           )
-          as _i3.Future<int>);
+          as _i4.Future<int>);
 
   @override
-  _i3.Future<List<_i4.Medication>> getMedications() =>
+  _i4.Future<List<_i5.Medication>> getMedications() =>
       (super.noSuchMethod(
             Invocation.method(#getMedications, []),
-            returnValue: _i3.Future<List<_i4.Medication>>.value(
-              <_i4.Medication>[],
+            returnValue: _i4.Future<List<_i5.Medication>>.value(
+              <_i5.Medication>[],
             ),
           )
-          as _i3.Future<List<_i4.Medication>>);
+          as _i4.Future<List<_i5.Medication>>);
 
   @override
-  _i3.Future<int> updateMedication(_i4.Medication? medication) =>
+  _i4.Future<int> updateMedication(_i5.Medication? medication) =>
       (super.noSuchMethod(
             Invocation.method(#updateMedication, [medication]),
-            returnValue: _i3.Future<int>.value(0),
+            returnValue: _i4.Future<int>.value(0),
           )
-          as _i3.Future<int>);
+          as _i4.Future<int>);
 
   @override
-  _i3.Future<int> deleteMedication(int? id) =>
+  _i4.Future<int> deleteMedication(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteMedication, [id]),
-            returnValue: _i3.Future<int>.value(0),
+            returnValue: _i4.Future<int>.value(0),
           )
-          as _i3.Future<int>);
+          as _i4.Future<int>);
 
   @override
-  _i3.Future<int> insertMedicationLog(_i5.MedicationLog? log) =>
+  _i4.Future<int> insertMedicationLog(_i6.MedicationLog? log) =>
       (super.noSuchMethod(
             Invocation.method(#insertMedicationLog, [log]),
-            returnValue: _i3.Future<int>.value(0),
+            returnValue: _i4.Future<int>.value(0),
           )
-          as _i3.Future<int>);
+          as _i4.Future<int>);
 
   @override
-  _i3.Future<List<_i5.MedicationLog>> getMedicationLogs(int? medicationId) =>
+  _i4.Future<List<_i6.MedicationLog>> getMedicationLogs(int? medicationId) =>
       (super.noSuchMethod(
             Invocation.method(#getMedicationLogs, [medicationId]),
-            returnValue: _i3.Future<List<_i5.MedicationLog>>.value(
-              <_i5.MedicationLog>[],
+            returnValue: _i4.Future<List<_i6.MedicationLog>>.value(
+              <_i6.MedicationLog>[],
             ),
           )
-          as _i3.Future<List<_i5.MedicationLog>>);
+          as _i4.Future<List<_i6.MedicationLog>>);
 
   @override
-  _i3.Future<_i4.Medication?> getMedication(int? id) =>
+  _i4.Future<_i5.Medication?> getMedication(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getMedication, [id]),
-            returnValue: _i3.Future<_i4.Medication?>.value(),
+            returnValue: _i4.Future<_i5.Medication?>.value(),
           )
-          as _i3.Future<_i4.Medication?>);
+          as _i4.Future<_i5.Medication?>);
 
   @override
-  _i3.Future<DateTime?> getLastTakenTime(int? medicationId) =>
+  _i4.Future<DateTime?> getLastTakenTime(int? medicationId) =>
       (super.noSuchMethod(
             Invocation.method(#getLastTakenTime, [medicationId]),
-            returnValue: _i3.Future<DateTime?>.value(),
+            returnValue: _i4.Future<DateTime?>.value(),
           )
-          as _i3.Future<DateTime?>);
+          as _i4.Future<DateTime?>);
 
   @override
-  _i3.Future<List<_i5.MedicationLog>> getMedicationLogsForToday() =>
+  _i4.Future<List<_i6.MedicationLog>> getMedicationLogsForToday() =>
       (super.noSuchMethod(
             Invocation.method(#getMedicationLogsForToday, []),
-            returnValue: _i3.Future<List<_i5.MedicationLog>>.value(
-              <_i5.MedicationLog>[],
+            returnValue: _i4.Future<List<_i6.MedicationLog>>.value(
+              <_i6.MedicationLog>[],
             ),
           )
-          as _i3.Future<List<_i5.MedicationLog>>);
+          as _i4.Future<List<_i6.MedicationLog>>);
 
   @override
-  _i3.Future<List<_i5.MedicationLog>> getAllLogs() =>
+  _i4.Future<List<_i6.MedicationLog>> getAllLogs() =>
       (super.noSuchMethod(
             Invocation.method(#getAllLogs, []),
-            returnValue: _i3.Future<List<_i5.MedicationLog>>.value(
-              <_i5.MedicationLog>[],
+            returnValue: _i4.Future<List<_i6.MedicationLog>>.value(
+              <_i6.MedicationLog>[],
             ),
           )
-          as _i3.Future<List<_i5.MedicationLog>>);
+          as _i4.Future<List<_i6.MedicationLog>>);
 
   @override
-  _i3.Future<String?> getDatabasePath() =>
+  _i4.Future<String?> getDatabasePath() =>
       (super.noSuchMethod(
             Invocation.method(#getDatabasePath, []),
-            returnValue: _i3.Future<String?>.value(),
+            returnValue: _i4.Future<String?>.value(),
           )
-          as _i3.Future<String?>);
+          as _i4.Future<String?>);
+}
+
+/// A class which mocks [ConfigService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockConfigService extends _i1.Mock implements _i7.ConfigService {
+  MockConfigService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.AppConfig get config =>
+      (super.noSuchMethod(
+            Invocation.getter(#config),
+            returnValue: _FakeAppConfig_0(this, Invocation.getter(#config)),
+          )
+          as _i2.AppConfig);
+
+  @override
+  bool get isSyncEnabled =>
+      (super.noSuchMethod(Invocation.getter(#isSyncEnabled), returnValue: false)
+          as bool);
+
+  @override
+  bool get hasValidSyncConfig =>
+      (super.noSuchMethod(
+            Invocation.getter(#hasValidSyncConfig),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i4.Future<void> init() =>
+      (super.noSuchMethod(
+            Invocation.method(#init, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateConfig(_i2.AppConfig? newConfig) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateConfig, [newConfig]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> enableSync({
+    required String? blueskyHandle,
+    required String? pdsUrl,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#enableSync, [], {
+              #blueskyHandle: blueskyHandle,
+              #pdsUrl: pdsUrl,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> disableSync() =>
+      (super.noSuchMethod(
+            Invocation.method(#disableSync, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateLastSyncTime([DateTime? time]) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLastSyncTime, [time]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [SyncService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSyncService extends _i1.Mock implements _i8.SyncService {
+  MockSyncService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.SyncStatus get syncStatus =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatus),
+            returnValue: _i8.SyncStatus.idle,
+          )
+          as _i8.SyncStatus);
+
+  @override
+  _i4.Future<bool> performFullSync() =>
+      (super.noSuchMethod(
+            Invocation.method(#performFullSync, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> syncSingleMedication(_i5.Medication? medication) =>
+      (super.noSuchMethod(
+            Invocation.method(#syncSingleMedication, [medication]),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> deleteMedicationFromSync(_i5.Medication? medication) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteMedicationFromSync, [medication]),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<void> markMedicationForSync(int? medicationId) =>
+      (super.noSuchMethod(
+            Invocation.method(#markMedicationForSync, [medicationId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> performBackgroundSync() =>
+      (super.noSuchMethod(
+            Invocation.method(#performBackgroundSync, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }

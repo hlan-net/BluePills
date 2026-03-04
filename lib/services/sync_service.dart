@@ -7,8 +7,13 @@ import 'package:bluepills/services/config_service.dart';
 enum SyncStatus { idle, syncing, success, error }
 
 class SyncService {
-  static final SyncService _instance = SyncService._internal();
+  static SyncService _instance = SyncService._internal();
   factory SyncService() => _instance;
+
+  /// Sets the singleton instance of the SyncService (used for testing).
+  @visibleForTesting
+  static set instance(SyncService service) => _instance = service;
+
   SyncService._internal();
 
   final DatabaseHelper _databaseHelper = DatabaseHelper();
