@@ -31,7 +31,7 @@ class MedicationFormScreen extends StatefulWidget {
 
 /// State class for the medication form screen.
 ///
-/// Manages form validation, user input, and saving medication data
+/// Manages the form validation, user input, and saving medication data
 /// to the database. Also schedules notifications for medication reminders.
 class _MedicationFormScreenState extends State<MedicationFormScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -40,6 +40,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
   late TextEditingController _quantityController;
   late Frequency _selectedFrequency;
   late DateTime _selectedReminderTime;
+  DateTime? _selectedExpirationDate;
   FrequencyPattern? _selectedFrequencyPattern;
   bool _useAdvancedFrequency = false;
   bool _wasSaved = false;
@@ -58,6 +59,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     );
     _selectedFrequency = widget.medication?.frequency ?? Frequency.onceDaily;
     _selectedReminderTime = widget.medication?.reminderTime ?? DateTime.now();
+    _selectedExpirationDate = widget.medication?.expirationDate;
     _selectedFrequencyPattern = widget.medication?.frequencyPattern;
     _useAdvancedFrequency = widget.medication?.frequencyPattern != null;
   }
@@ -84,6 +86,20 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           picked.hour,
           picked.minute,
         );
+      });
+    }
+  }
+
+  Future<void> _selectExpirationDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedExpirationDate ?? DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 3650)), // 10 years
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedExpirationDate = picked;
       });
     }
   }
@@ -125,6 +141,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
               ? _selectedFrequencyPattern
               : null,
           reminderTime: _selectedReminderTime,
+          expirationDate: _selectedExpirationDate,
         );
 
         if (widget.medication == null) {
@@ -153,6 +170,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             _nameController.clear();
             _dosageController.clear();
             _selectedReminderTime = DateTime.now();
+            _selectedExpirationDate = null;
             setState(() {});
 
             // Show success message
@@ -269,7 +287,6 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 // Frequency input - either simple text or advanced selector
                 if (!_useAdvancedFrequency)
                   DropdownButtonFormField<Frequency>(
-                    // ignore: deprecated_member_use
                     value: _selectedFrequency,
                     items: Frequency.values.map((Frequency frequency) {
                       String frequencyText;
@@ -339,6 +356,16 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                       ),
                     ),
                   ),
+                const SizedBox(height: 16),
+                ListTile(
+                  title: Text(
+                    _selectedExpirationDate == null
+                        ? 'Select Expiration Date (Optional)'
+                        : 'Expiration Date: ${_selectedExpirationDate!.year}-${_selectedExpirationDate!.month.toString().padLeft(2, '0')}-${_selectedExpirationDate!.day.toString().padLeft(2, '0')}',
+                  ),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () => _selectExpirationDate(context),
+                ),
                 ListTile(
                   title: Text(
                     '${localizations.reminderTime}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',

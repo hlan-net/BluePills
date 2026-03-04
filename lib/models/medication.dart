@@ -44,11 +44,14 @@ class Medication {
   /// The timestamp when this medication was last updated.
   DateTime updatedAt;
 
+  /// The expiration date of the medication (optional).
+  DateTime? expirationDate;
+
   /// Creates a new [Medication] instance.
   ///
-  /// All fields except [id], [remoteId], [lastSynced], [createdAt], and [updatedAt]
-  /// are required. The [createdAt] and [updatedAt] timestamps are automatically
-  /// set to the current time if not provided.
+  /// All fields except [id], [remoteId], [lastSynced], [createdAt], [updatedAt],
+  /// and [expirationDate] are required. The [createdAt] and [updatedAt]
+  /// timestamps are automatically set to the current time if not provided.
   Medication({
     this.id,
     required this.name,
@@ -62,6 +65,7 @@ class Medication {
     this.needsSync = true,
     DateTime? createdAt,
     DateTime? updatedAt,
+    this.expirationDate,
   }) : createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -86,6 +90,7 @@ class Medication {
       'needsSync': needsSync ? 1 : 0,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      'expirationDate': expirationDate?.toIso8601String(),
     };
   }
 
@@ -151,6 +156,9 @@ class Medication {
       updatedAt: map['updatedAt'] != null
           ? DateTime.parse(map['updatedAt'])
           : DateTime.now(),
+      expirationDate: map['expirationDate'] != null
+          ? DateTime.parse(map['expirationDate'])
+          : null,
     );
   }
 
@@ -171,6 +179,7 @@ class Medication {
     bool? needsSync,
     DateTime? createdAt,
     DateTime? updatedAt,
+    DateTime? expirationDate,
   }) {
     return Medication(
       id: id ?? this.id,
@@ -185,6 +194,7 @@ class Medication {
       needsSync: needsSync ?? this.needsSync,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      expirationDate: expirationDate ?? this.expirationDate,
     );
   }
 
@@ -311,5 +321,21 @@ class Medication {
       case FrequencyType.asNeeded:
         return 9999;
     }
+  }
+
+  /// Calculates the number of days until the medication expires.
+  ///
+  /// Returns null if no expiration date is set.
+  /// Returns 0 or negative if already expired.
+  int? getDaysUntilExpiration() {
+    if (expirationDate == null) return null;
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    final startOfExpiration = DateTime(
+      expirationDate!.year,
+      expirationDate!.month,
+      expirationDate!.day,
+    );
+    return startOfExpiration.difference(startOfToday).inDays;
   }
 }

@@ -62,6 +62,69 @@ void main() {
     });
   });
 
+  group('shouldTakeToday', () {
+    test('returns true for onceDaily', () {
+      final med = _createMedication(frequency: Frequency.onceDaily);
+      expect(med.shouldTakeToday(), true);
+    });
+
+    test('returns false for asNeeded', () {
+      final med = _createMedication(frequency: Frequency.asNeeded);
+      expect(med.shouldTakeToday(), false);
+    });
+
+    test('uses frequencyPattern when set (specificDays)', () {
+      final today = DateTime.now();
+      final med = _createMedication(
+        frequencyPattern: FrequencyPattern.specificDays(
+          daysOfWeek: [today.weekday],
+        ),
+      );
+      expect(med.shouldTakeToday(), true);
+
+      final otherDay = today.weekday == 7 ? 1 : today.weekday + 1;
+      final medOther = _createMedication(
+        frequencyPattern: FrequencyPattern.specificDays(
+          daysOfWeek: [otherDay],
+        ),
+      );
+      expect(medOther.shouldTakeToday(), false);
+    });
+
+    test('uses frequencyPattern when set (everyNDays)', () {
+      final now = DateTime.now();
+      // Should take today (0 days difference)
+      final med0 = _createMedication(
+        frequencyPattern: FrequencyPattern.everyNDays(days: 3),
+      );
+      expect(med0.shouldTakeToday(), true);
+
+      // Should not take today (1 day since creation, interval 3)
+      final med1 = Medication(
+        name: 'Test',
+        dosage: '1',
+        quantity: 10,
+        frequency: Frequency.onceDaily,
+        frequencyPattern: FrequencyPattern.everyNDays(days: 3),
+        reminderTime: now,
+        createdAt: now.subtract(const Duration(days: 1)),
+      );
+      expect(med1.shouldTakeToday(), false);
+
+      // Should take today (3 days since creation, interval 3)
+      final med3 = Medication(
+        name: 'Test',
+        dosage: '1',
+        quantity: 10,
+        frequency: Frequency.onceDaily,
+        frequencyPattern: FrequencyPattern.everyNDays(days: 3),
+        reminderTime: now,
+        createdAt: now.subtract(const Duration(days: 3)),
+      );
+      expect(med3.shouldTakeToday(), true);
+    });
+  });
+
   group('isTakenToday', () {
     test('returns false when no logs', () {
       final med = _createMedication(frequency: Frequency.onceDaily);
@@ -202,6 +265,45 @@ void main() {
         quantity: 7,
       );
       expect(med.getDaysOfSupply(), 3);
+    });
+  });
+
+  group('getDaysUntilExpiration', () {
+    test('returns null when no expiration date', () {
+      final med = Medication(
+        name: 'Test',
+        dosage: '1',
+        quantity: 10,
+        frequency: Frequency.onceDaily,
+        reminderTime: DateTime.now(),
+      );
+      expect(med.getDaysUntilExpiration(), null);
+    });
+
+    test('returns correct number of days', () {
+      final today = DateTime.now();
+      final med = Medication(
+        name: 'Test',
+        dosage: '1',
+        quantity: 10,
+        frequency: Frequency.onceDaily,
+        reminderTime: today,
+        expirationDate: today.add(const Duration(days: 10)),
+      );
+      expect(med.getDaysUntilExpiration(), 10);
+    });
+
+    test('returns negative when expired', () {
+      final today = DateTime.now();
+      final med = Medication(
+        name: 'Test',
+        dosage: '1',
+        quantity: 10,
+        frequency: Frequency.onceDaily,
+        reminderTime: today,
+        expirationDate: today.subtract(const Duration(days: 5)),
+      );
+      expect(med.getDaysUntilExpiration(), -5);
     });
   });
 }
