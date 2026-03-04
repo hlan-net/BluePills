@@ -14,10 +14,6 @@ import 'package:bluepills/screens/adherence_screen.dart';
 import 'package:bluepills/notifications/notification_helper.dart';
 
 /// The main screen displaying the list of medications.
-///
-/// This stateful widget shows all saved medications and provides
-/// functionality to add, edit, delete medications, and trigger sync
-/// with BlueSky if enabled.
 class MedicationListScreen extends StatefulWidget {
   const MedicationListScreen({super.key});
 
@@ -25,10 +21,6 @@ class MedicationListScreen extends StatefulWidget {
   State<MedicationListScreen> createState() => _MedicationListScreenState();
 }
 
-/// State class for the medication list screen.
-///
-/// Manages the list of medications, handles user interactions for
-/// adding, editing, and deleting medications, and manages sync operations.
 class _MedicationListScreenState extends State<MedicationListScreen>
     with SingleTickerProviderStateMixin {
   late Future<List<Medication>> _medications;
@@ -37,6 +29,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   late Animation<double> _animation;
   bool _showOnlyLowStock = false;
   bool _showOnlyExpiringSoon = false;
+  bool _showOnlyExpired = false;
+  bool _sortByExpiration = false;
 
   String _getFrequencyText(
     Frequency frequency,
@@ -56,6 +50,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
   Color _getExpirationColor(int? days) {
     if (days == null) return Colors.grey;
+    if (days < 0) return Colors.red;
     if (days < 7) return Colors.red;
     if (days < 30) return Colors.orange;
     if (days < 60) return Colors.amber;
@@ -277,10 +272,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     // Schedule the notification
     try {
       await NotificationHelper().scheduleNotification(
-        selectedMed.id!,
-        selectedMed.name,
-        '${localizations.reminderTime}: ${selectedMed.dosage}',
-        scheduledTime,
+        id: selectedMed.id!,
+        title: selectedMed.name,
+        body: '${localizations.reminderTime}: ${selectedMed.dosage}',
+        scheduledTime: scheduledTime,
         frequencyPattern: selectedMed.frequencyPattern,
       );
     } catch (e) {
@@ -332,6 +327,19 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       title: Text(localizations.myMedications),
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       actions: [
+        // Sort by Expiration
+        IconButton(
+          icon: Icon(
+            _sortByExpiration ? Icons.sort_by_alpha : Icons.history,
+            color: _sortByExpiration ? Colors.white : null,
+          ),
+          tooltip: 'Sort by Expiration',
+          onPressed: () {
+            setState(() {
+              _sortByExpiration = !_sortByExpiration;
+            });
+          },
+        ),
         // Low stock filter button
         IconButton(
           icon: Icon(
@@ -342,7 +350,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           onPressed: () {
             setState(() {
               _showOnlyLowStock = !_showOnlyLowStock;
-              if (_showOnlyLowStock) _showOnlyExpiringSoon = false;
+              if (_showOnlyLowStock) {
+                _showOnlyExpiringSoon = false;
+                _showOnlyExpired = false;
+              }
             });
           },
         ),
@@ -356,7 +367,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           onPressed: () {
             setState(() {
               _showOnlyExpiringSoon = !_showOnlyExpiringSoon;
-              if (_showOnlyExpiringSoon) _showOnlyLowStock = false;
+              if (_showOnlyExpiringSoon) {
+                _showOnlyLowStock = false;
+                _showOnlyExpired = false;
+              }
             });
           },
         ),
@@ -382,7 +396,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SettingsScreen()),
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
             ).then((_) {
               if (mounted) setState(() {});
             }); // Refresh when returning from settings
@@ -457,8 +471,24 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     if (_showOnlyExpiringSoon) {
       displayMedications = displayMedications.where((med) {
         final days = med.getDaysUntilExpiration();
-        return days != null && days < 30;
+        return days != null && days >= 0 && days < 30;
       }).toList();
+    }
+
+    if (_showOnlyExpired) {
+      displayMedications = displayMedications.where((med) {
+        final days = med.getDaysUntilExpiration();
+        return days != null && days < 0;
+      }).toList();
+    }
+
+    if (_sortByExpiration) {
+      displayMedications.sort((a, b) {
+        if (a.expirationDate == null && b.expirationDate == null) return 0;
+        if (a.expirationDate == null) return 1;
+        if (b.expirationDate == null) return -1;
+        return a.expirationDate!.compareTo(b.expirationDate!);
+      });
     }
 
     final criticallyLowStockMeds = displayMedications
@@ -488,7 +518,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     return MaterialBanner(
       padding: const EdgeInsets.all(16),
       content: Text(
-        localizations.criticallyLowStock(1), // Count logic is simplified here
+        localizations.criticallyLowStock(1),
         style: const TextStyle(color: Colors.white),
       ),
       backgroundColor: Colors.red,
@@ -514,19 +544,66 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           return const SizedBox.shrink();
         }
         final logsToday = logsSnapshot.data!;
-        final todaysMedications = medications
+        final todaysScheduled = medications
             .where((m) => m.shouldTakeToday())
             .toList();
-        if (todaysMedications.isEmpty) {
+        final asNeeded = medications.where((m) => m.isAsNeeded).toList();
+
+        if (todaysScheduled.isEmpty && asNeeded.isEmpty) {
           return const SizedBox.shrink();
         }
-        return TodayMedicationsWidget(
-          medications: todaysMedications,
-          logs: logsToday,
-          onTakeMedication: _takeMedication,
-          onTakeAll: _takeAllMedications,
+
+        return Column(
+          children: [
+            if (todaysScheduled.isNotEmpty)
+              TodayMedicationsWidget(
+                medications: todaysScheduled,
+                logs: logsToday,
+                onTakeMedication: _takeMedication,
+                onTakeAll: _takeAllMedications,
+              ),
+            if (asNeeded.isNotEmpty)
+              _buildAsNeededSection(context, asNeeded, logsToday),
+          ],
         );
       },
+    );
+  }
+
+  Widget _buildAsNeededSection(
+    BuildContext context,
+    List<Medication> asNeeded,
+    List<MedicationLog> logsToday,
+  ) {
+    final localizations = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Text(
+            localizations.asNeeded,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        ...asNeeded.map(
+          (med) => Card(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+            child: ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Colors.blue,
+                child: Icon(Icons.medical_information, color: Colors.white),
+              ),
+              title: Text(med.name),
+              subtitle: Text(med.dosage),
+              trailing: IconButton(
+                icon: const Icon(Icons.add_circle_outline),
+                onPressed: () => _takeMedication(med),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -552,19 +629,58 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          child: const Icon(Icons.medical_services, color: Colors.white),
+          child: Icon(
+            medication.isAsNeeded
+                ? Icons.medical_information
+                : Icons.medical_services,
+            color: Colors.white,
+          ),
         ),
-        title: Text(
-          medication.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                medication.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            if (medication.isAsNeeded)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  localizations.asNeeded,
+                  style: const TextStyle(fontSize: 10, color: Colors.blue),
+                ),
+              ),
+          ],
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}'
-              '${medication.getDaysOfSupply() < 9999 ? ' (${localizations.daysOfSupply(medication.getDaysOfSupply())})' : ''}',
+              '${localizations.dosageLabel} ${medication.dosage}'
+              '${medication.isAsNeeded ? '' : ' - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)}'}'
+              ' - ${localizations.quantityLabel} ${medication.quantity}'
+              '${!medication.isAsNeeded && medication.getDaysOfSupply() < 9999 ? ' (${localizations.daysOfSupply(medication.getDaysOfSupply())})' : ''}',
             ),
+            if (medication.storageLocation != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 2.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.location_on, size: 12, color: Colors.grey),
+                    const SizedBox(width: 4),
+                    Text(
+                      medication.storageLocation!,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
             if (medication.expirationDate != null)
               _buildExpirationInfo(
                 context,
@@ -630,10 +746,12 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (medication.getDaysOfSupply() < 3)
-          const Icon(Icons.error, color: Colors.red)
-        else if (medication.getDaysOfSupply() < 7)
-          const Icon(Icons.warning, color: Colors.amber),
+        if (!medication.isAsNeeded) ...[
+          if (medication.getDaysOfSupply() < 3)
+            const Icon(Icons.error, color: Colors.red)
+          else if (medication.getDaysOfSupply() < 7)
+            const Icon(Icons.warning, color: Colors.amber),
+        ],
         IconButton(
           icon: const Icon(Icons.check),
           onPressed: () => _takeMedication(medication),
@@ -735,10 +853,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: const [
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                boxShadow: [
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 4,

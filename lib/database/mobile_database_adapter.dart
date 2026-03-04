@@ -54,7 +54,7 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -84,7 +84,9 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
         needsSync INTEGER DEFAULT 1,
         createdAt TEXT,
         updatedAt TEXT,
-        expirationDate TEXT
+        expirationDate TEXT,
+        storageLocation TEXT,
+        isAsNeeded INTEGER DEFAULT 0
       )
       ''');
     await db.execute('''
@@ -128,6 +130,14 @@ class MobileDatabaseAdapter extends DatabaseAdapter {
     if (oldVersion < 4) {
       await db.execute(
         'ALTER TABLE medications ADD COLUMN expirationDate TEXT',
+      );
+    }
+    if (oldVersion < 5) {
+      await db.execute(
+        'ALTER TABLE medications ADD COLUMN storageLocation TEXT',
+      );
+      await db.execute(
+        'ALTER TABLE medications ADD COLUMN isAsNeeded INTEGER DEFAULT 0',
       );
     }
   }

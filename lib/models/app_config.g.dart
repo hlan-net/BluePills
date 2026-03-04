@@ -13,6 +13,9 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
   lastSyncTime: json['lastSyncTime'] == null
       ? null
       : DateTime.parse(json['lastSyncTime'] as String),
+  lastBackupTime: json['lastBackupTime'] == null
+      ? null
+      : DateTime.parse(json['lastBackupTime'] as String),
   syncMode:
       $enumDecodeNullable(_$SyncModeEnumMap, json['syncMode']) ??
       SyncMode.localOnly,
@@ -25,6 +28,7 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
   'blueskyHandle': instance.blueskyHandle,
   'pdsUrl': instance.pdsUrl,
   'lastSyncTime': instance.lastSyncTime?.toIso8601String(),
+  'lastBackupTime': instance.lastBackupTime?.toIso8601String(),
   'syncMode': _$SyncModeEnumMap[instance.syncMode]!,
   'autoRestoreEnabled': instance.autoRestoreEnabled,
   'languageCode': instance.languageCode,

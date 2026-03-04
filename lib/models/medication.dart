@@ -47,11 +47,18 @@ class Medication {
   /// The expiration date of the medication (optional).
   DateTime? expirationDate;
 
+  /// Where the medication is stored (optional).
+  String? storageLocation;
+
+  /// Flag indicating if this is an as-needed (PRN) medication.
+  bool isAsNeeded;
+
   /// Creates a new [Medication] instance.
   ///
   /// All fields except [id], [remoteId], [lastSynced], [createdAt], [updatedAt],
-  /// and [expirationDate] are required. The [createdAt] and [updatedAt]
-  /// timestamps are automatically set to the current time if not provided.
+  /// [expirationDate], [storageLocation], and [isAsNeeded] are required.
+  /// The [createdAt] and [updatedAt] timestamps are automatically set to the
+  /// current time if not provided.
   Medication({
     this.id,
     required this.name,
@@ -66,6 +73,8 @@ class Medication {
     DateTime? createdAt,
     DateTime? updatedAt,
     this.expirationDate,
+    this.storageLocation,
+    this.isAsNeeded = false,
   }) : createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -91,6 +100,8 @@ class Medication {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'expirationDate': expirationDate?.toIso8601String(),
+      'storageLocation': storageLocation,
+      'isAsNeeded': isAsNeeded ? 1 : 0,
     };
   }
 
@@ -159,6 +170,8 @@ class Medication {
       expirationDate: map['expirationDate'] != null
           ? DateTime.parse(map['expirationDate'])
           : null,
+      storageLocation: map['storageLocation'],
+      isAsNeeded: parseInt(map['isAsNeeded']) == 1,
     );
   }
 
@@ -180,6 +193,8 @@ class Medication {
     DateTime? createdAt,
     DateTime? updatedAt,
     Object? expirationDate = _sentinel,
+    Object? storageLocation = _sentinel,
+    bool? isAsNeeded,
   }) {
     return Medication(
       id: id ?? this.id,
@@ -197,6 +212,10 @@ class Medication {
       expirationDate: expirationDate == _sentinel
           ? this.expirationDate
           : expirationDate as DateTime?,
+      storageLocation: storageLocation == _sentinel
+          ? this.storageLocation
+          : storageLocation as String?,
+      isAsNeeded: isAsNeeded ?? this.isAsNeeded,
     );
   }
 
@@ -216,7 +235,12 @@ class Medication {
   /// This method checks the `frequencyPattern` first. If it exists, it uses
   /// the `shouldTakeOnDate` logic. Otherwise, it falls back to the simple
   /// `frequency` enum.
+  ///
+  /// Medications marked as `isAsNeeded` (PRN) do not have a schedule and
+  /// will always return false for this check.
   bool shouldTakeToday() {
+    if (isAsNeeded) return false;
+
     final today = DateTime.now();
 
     if (frequencyPattern != null) {
@@ -250,6 +274,8 @@ class Medication {
 
   /// Returns the number of doses required per day based on frequency.
   int get requiredDosesPerDay {
+    if (isAsNeeded) return 0;
+
     if (frequencyPattern != null) {
       return frequencyPattern!.timesPerDay;
     }
@@ -284,6 +310,8 @@ class Medication {
 
   /// Calculates the estimated number of days the current supply will last.
   int getDaysOfSupply() {
+    if (isAsNeeded) return 9999;
+
     if (frequencyPattern == null) {
       // Fall back to simple Frequency enum
       switch (frequency) {
