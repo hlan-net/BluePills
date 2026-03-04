@@ -141,8 +141,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   Future<void> _takeAllMedications() async {
     final medications = await _medications;
     final logs = await DatabaseHelper().getMedicationLogsForToday();
-    final todaysMedications =
-        medications.where((m) => m.shouldTakeToday()).toList();
+    final todaysMedications = medications
+        .where((m) => m.shouldTakeToday())
+        .toList();
     for (final med in todaysMedications) {
       if (!med.isTakenToday(logs)) {
         await _takeMedication(med);
@@ -176,31 +177,30 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
     return showDialog<Medication>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(localizations.selectMedication),
-            content: SizedBox(
-              width: double.maxFinite,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: medications.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: const Icon(Icons.medical_services),
-                    title: Text(medications[index].name),
-                    subtitle: Text(medications[index].dosage),
-                    onTap: () => Navigator.pop(context, medications[index]),
-                  );
-                },
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(localizations.cancel),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(localizations.selectMedication),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: medications.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: const Icon(Icons.medical_services),
+                title: Text(medications[index].name),
+                subtitle: Text(medications[index].dosage),
+                onTap: () => Navigator.pop(context, medications[index]),
+              );
+            },
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(localizations.cancel),
+          ),
+        ],
+      ),
     );
   }
 
@@ -214,7 +214,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       final localizations = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(localizations.noMedicationLeftInStock(selectedMed.name)),
+          content: Text(
+            localizations.noMedicationLeftInStock(selectedMed.name),
+          ),
           backgroundColor: Colors.orange,
         ),
       );
@@ -404,13 +406,12 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           syncService.syncStatus == SyncStatus.success
               ? localizations.syncCompletedSuccessfully
               : localizations.syncFailed(
-                syncService.lastError ?? 'Unknown error',
-              ),
+                  syncService.lastError ?? 'Unknown error',
+                ),
         ),
-        backgroundColor:
-            syncService.syncStatus == SyncStatus.success
-                ? Colors.green
-                : Colors.red,
+        backgroundColor: syncService.syncStatus == SyncStatus.success
+            ? Colors.green
+            : Colors.red,
       ),
     );
   }
@@ -448,20 +449,21 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     var displayMedications = List<Medication>.from(medications);
 
     if (_showOnlyLowStock) {
-      displayMedications =
-          displayMedications.where((med) => med.getDaysOfSupply() < 7).toList();
+      displayMedications = displayMedications
+          .where((med) => med.getDaysOfSupply() < 7)
+          .toList();
     }
 
     if (_showOnlyExpiringSoon) {
-      displayMedications =
-          displayMedications.where((med) {
-            final days = med.getDaysUntilExpiration();
-            return days != null && days < 30;
-          }).toList();
+      displayMedications = displayMedications.where((med) {
+        final days = med.getDaysUntilExpiration();
+        return days != null && days < 30;
+      }).toList();
     }
 
-    final criticallyLowStockMeds =
-        displayMedications.where((med) => med.getDaysOfSupply() < 3).toList();
+    final criticallyLowStockMeds = displayMedications
+        .where((med) => med.getDaysOfSupply() < 3)
+        .toList();
 
     return Column(
       children: [
@@ -512,8 +514,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           return const SizedBox.shrink();
         }
         final logsToday = logsSnapshot.data!;
-        final todaysMedications =
-            medications.where((m) => m.shouldTakeToday()).toList();
+        final todaysMedications = medications
+            .where((m) => m.shouldTakeToday())
+            .toList();
         if (todaysMedications.isEmpty) {
           return const SizedBox.shrink();
         }
@@ -563,7 +566,12 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               '${medication.getDaysOfSupply() < 9999 ? ' (${localizations.daysOfSupply(medication.getDaysOfSupply())})' : ''}',
             ),
             if (medication.expirationDate != null)
-              _buildExpirationInfo(context, localizations, daysUntilExpiration, medication.expirationDate!),
+              _buildExpirationInfo(
+                context,
+                localizations,
+                daysUntilExpiration,
+                medication.expirationDate!,
+              ),
           ],
         ),
         trailing: _buildCardTrailing(localizations, medication),
@@ -571,8 +579,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => MedicationDetailsScreen(medication: medication),
+              builder: (context) =>
+                  MedicationDetailsScreen(medication: medication),
             ),
           );
           if (result == true) {
@@ -583,7 +591,12 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     );
   }
 
-  Widget _buildExpirationInfo(BuildContext context, AppLocalizations localizations, int? daysUntilExpiration, DateTime expirationDate) {
+  Widget _buildExpirationInfo(
+    BuildContext context,
+    AppLocalizations localizations,
+    int? daysUntilExpiration,
+    DateTime expirationDate,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
       child: Row(
@@ -601,8 +614,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               color: _getExpirationColor(daysUntilExpiration),
               fontWeight:
                   (daysUntilExpiration != null && daysUntilExpiration < 7)
-                      ? FontWeight.bold
-                      : FontWeight.normal,
+                  ? FontWeight.bold
+                  : FontWeight.normal,
             ),
           ),
         ],
@@ -610,7 +623,10 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     );
   }
 
-  Widget _buildCardTrailing(AppLocalizations localizations, Medication medication) {
+  Widget _buildCardTrailing(
+    AppLocalizations localizations,
+    Medication medication,
+  ) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -630,24 +646,26 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     );
   }
 
-  Future<void> _confirmDelete(AppLocalizations localizations, Medication medication) async {
+  Future<void> _confirmDelete(
+    AppLocalizations localizations,
+    Medication medication,
+  ) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(localizations.deleteMedication),
-            content: Text(localizations.areYouSureYouWantToDeleteThisMedication),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(localizations.cancel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(localizations.delete),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(localizations.deleteMedication),
+        content: Text(localizations.areYouSureYouWantToDeleteThisMedication),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(localizations.cancel),
           ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(localizations.delete),
+          ),
+        ],
+      ),
     );
     if (confirm == true) {
       await DatabaseHelper().deleteMedication(medication.id!);
