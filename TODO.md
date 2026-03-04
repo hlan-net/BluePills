@@ -269,4 +269,4 @@
 - Prioritize based on user stories (US-001, US-002)
 - Focus on Matti's needs first, then Jukka's
 
-Last Updated: 2025-12-26
+Last Updated: 2026-03-04
