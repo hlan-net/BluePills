@@ -238,198 +238,225 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
             key: _formKey,
             child: Column(
               children: <Widget>[
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: localizations.medicationName,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.pleaseEnterMedicationName;
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _dosageController,
-                  decoration: InputDecoration(labelText: localizations.dosage),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.pleaseEnterDosage;
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _quantityController,
-                  decoration: InputDecoration(
-                    labelText: localizations.quantity,
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return localizations.pleaseEnterTheQuantity;
-                    }
-                    if (int.tryParse(value) == null) {
-                      return localizations.pleaseEnterAValidNumber;
-                    }
-                    return null;
-                  },
-                ),
+                _buildBasicInfoFields(localizations),
                 const SizedBox(height: 16),
-
-                // Frequency mode toggle
-                SwitchListTile(
-                  title: Text(localizations.useAdvancedFrequency),
-                  subtitle: Text(
-                    _useAdvancedFrequency
-                        ? localizations.selectSpecificDaysAndPatterns
-                        : localizations.useSimpleTextFrequency,
-                  ),
-                  value: _useAdvancedFrequency,
-                  onChanged: (value) {
-                    setState(() {
-                      _useAdvancedFrequency = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 8),
-
-                // Frequency input - either simple text or advanced selector
-                if (!_useAdvancedFrequency)
-                  DropdownButtonFormField<Frequency>(
-                    initialValue: _selectedFrequency,
-                    items: Frequency.values.map((Frequency frequency) {
-                      String frequencyText;
-                      switch (frequency) {
-                        case Frequency.onceDaily:
-                          frequencyText = localizations.onceDaily;
-                          break;
-                        case Frequency.twiceDaily:
-                          frequencyText = localizations.twiceDaily;
-                          break;
-                        case Frequency.threeTimesDaily:
-                          frequencyText = localizations.threeTimesDaily;
-                          break;
-                        case Frequency.asNeeded:
-                          frequencyText = localizations.asNeeded;
-                          break;
-                      }
-                      return DropdownMenuItem<Frequency>(
-                        value: frequency,
-                        child: Text(frequencyText),
-                      );
-                    }).toList(),
-                    onChanged: (Frequency? newValue) {
-                      setState(() {
-                        _selectedFrequency = newValue!;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: localizations.frequency,
-                    ),
-                  )
-                else
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            localizations.frequencyPattern,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 8),
-                          if (_selectedFrequencyPattern != null)
-                            Text(
-                              _selectedFrequencyPattern!.toReadableString(
-                                localizations,
-                              ),
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                          const SizedBox(height: 16),
-                          FrequencySelector(
-                            initialPattern: _selectedFrequencyPattern,
-                            onPatternChanged: (pattern) {
-                              setState(() {
-                                _selectedFrequencyPattern = pattern;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                _buildFrequencySection(localizations),
                 const SizedBox(height: 16),
-                ListTile(
-                  title: Text(
-                    _selectedExpirationDate == null
-                        ? localizations.selectExpirationDateOptional
-                        : '${localizations.expirationDateLabel}: ${MaterialLocalizations.of(context).formatMediumDate(_selectedExpirationDate!)}',
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.calendar_today),
-                      if (_selectedExpirationDate != null)
-                        IconButton(
-                          icon: const Icon(Icons.clear),
-                          tooltip: localizations.clearExpirationDate,
-                          onPressed: () {
-                            setState(() {
-                              _selectedExpirationDate = null;
-                            });
-                          },
-                        ),
-                    ],
-                  ),
-                  onTap: () => _selectExpirationDate(context),
-                ),
-                ListTile(
-                  title: Text(
-                    '${localizations.reminderTime}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
-                  ),
-                  trailing: const Icon(Icons.access_time),
-                  onTap: () => _selectTime(context),
-                ),
+                _buildDateTimePickers(context, localizations),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () => _saveMedication(addAnother: false),
-                        icon: const Icon(Icons.check),
-                        label: Text(localizations.save),
-                      ),
-                    ),
-                    if (widget.medication == null) ...[
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () => _saveMedication(addAnother: true),
-                          icon: const Icon(Icons.add),
-                          label: Text(localizations.saveAndAddMore),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
+                _buildActionButtons(localizations),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBasicInfoFields(AppLocalizations localizations) {
+    return Column(
+      children: [
+        TextFormField(
+          controller: _nameController,
+          decoration: InputDecoration(
+            labelText: localizations.medicationName,
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return localizations.pleaseEnterMedicationName;
+            }
+            return null;
+          },
+        ),
+        TextFormField(
+          controller: _dosageController,
+          decoration: InputDecoration(labelText: localizations.dosage),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return localizations.pleaseEnterDosage;
+            }
+            return null;
+          },
+        ),
+        TextFormField(
+          controller: _quantityController,
+          decoration: InputDecoration(
+            labelText: localizations.quantity,
+          ),
+          keyboardType: TextInputType.number,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return localizations.pleaseEnterTheQuantity;
+            }
+            if (int.tryParse(value) == null) {
+              return localizations.pleaseEnterAValidNumber;
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFrequencySection(AppLocalizations localizations) {
+    return Column(
+      children: [
+        SwitchListTile(
+          title: Text(localizations.useAdvancedFrequency),
+          subtitle: Text(
+            _useAdvancedFrequency
+                ? localizations.selectSpecificDaysAndPatterns
+                : localizations.useSimpleTextFrequency,
+          ),
+          value: _useAdvancedFrequency,
+          onChanged: (value) {
+            setState(() {
+              _useAdvancedFrequency = value;
+            });
+          },
+        ),
+        const SizedBox(height: 8),
+        if (!_useAdvancedFrequency)
+          _buildSimpleFrequencyDropdown(localizations)
+        else
+          _buildAdvancedFrequencyCard(localizations),
+      ],
+    );
+  }
+
+  Widget _buildSimpleFrequencyDropdown(AppLocalizations localizations) {
+    return DropdownButtonFormField<Frequency>(
+      initialValue: _selectedFrequency,
+      items: Frequency.values.map((Frequency frequency) {
+        String frequencyText;
+        switch (frequency) {
+          case Frequency.onceDaily:
+            frequencyText = localizations.onceDaily;
+            break;
+          case Frequency.twiceDaily:
+            frequencyText = localizations.twiceDaily;
+            break;
+          case Frequency.threeTimesDaily:
+            frequencyText = localizations.threeTimesDaily;
+            break;
+          case Frequency.asNeeded:
+            frequencyText = localizations.asNeeded;
+            break;
+        }
+        return DropdownMenuItem<Frequency>(
+          value: frequency,
+          child: Text(frequencyText),
+        );
+      }).toList(),
+      onChanged: (Frequency? newValue) {
+        setState(() {
+          _selectedFrequency = newValue!;
+        });
+      },
+      decoration: InputDecoration(
+        labelText: localizations.frequency,
+      ),
+    );
+  }
+
+  Widget _buildAdvancedFrequencyCard(AppLocalizations localizations) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              localizations.frequencyPattern,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            if (_selectedFrequencyPattern != null)
+              Text(
+                _selectedFrequencyPattern!.toReadableString(localizations),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            const SizedBox(height: 16),
+            FrequencySelector(
+              initialPattern: _selectedFrequencyPattern,
+              onPatternChanged: (pattern) {
+                setState(() {
+                  _selectedFrequencyPattern = pattern;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateTimePickers(BuildContext context, AppLocalizations localizations) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            _selectedExpirationDate == null
+                ? localizations.selectExpirationDateOptional
+                : '${localizations.expirationDateLabel}: ${MaterialLocalizations.of(context).formatMediumDate(_selectedExpirationDate!)}',
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.calendar_today),
+              if (_selectedExpirationDate != null)
+                IconButton(
+                  icon: const Icon(Icons.clear),
+                  tooltip: localizations.clearExpirationDate,
+                  onPressed: () {
+                    setState(() {
+                      _selectedExpirationDate = null;
+                    });
+                  },
+                ),
+            ],
+          ),
+          onTap: () => _selectExpirationDate(context),
+        ),
+        ListTile(
+          title: Text(
+            '${localizations.reminderTime}: ${TimeOfDay.fromDateTime(_selectedReminderTime).format(context)}',
+          ),
+          trailing: const Icon(Icons.access_time),
+          onTap: () => _selectTime(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(AppLocalizations localizations) {
+    return Row(
+      children: [
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: () => _saveMedication(addAnother: false),
+            icon: const Icon(Icons.check),
+            label: Text(localizations.save),
+          ),
+        ),
+        if (widget.medication == null) ...[
+          const SizedBox(width: 12),
+          Expanded(
+            child: ElevatedButton.icon(
+              onPressed: () => _saveMedication(addAnother: true),
+              icon: const Icon(Icons.add),
+              label: Text(localizations.saveAndAddMore),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
