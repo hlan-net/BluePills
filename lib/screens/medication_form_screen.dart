@@ -287,7 +287,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
                 // Frequency input - either simple text or advanced selector
                 if (!_useAdvancedFrequency)
                   DropdownButtonFormField<Frequency>(
-                    value: _selectedFrequency,
+                    initialValue: _selectedFrequency,
                     items: Frequency.values.map((Frequency frequency) {
                       String frequencyText;
                       switch (frequency) {
