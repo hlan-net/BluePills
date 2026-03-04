@@ -64,34 +64,43 @@ void main() {
     expect(find.byIcon(Icons.add), findsOneWidget);
   });
 
-  testWidgets('Medication list screen shows medication with low stock and expiration', (
-    WidgetTester tester,
-  ) async {
-    final now = DateTime.now();
-    final med = Medication(
-      id: 1,
-      name: 'Test Medication',
-      dosage: '10mg',
-      quantity: 2, // Low stock (< 3)
-      frequency: Frequency.onceDaily,
-      reminderTime: now,
-      expirationDate: now.add(const Duration(days: 5)), // Expiring soon (< 7)
-    );
+  testWidgets(
+    'Medication list screen shows medication with low stock and expiration',
+    (WidgetTester tester) async {
+      final now = DateTime.now();
+      final med = Medication(
+        id: 1,
+        name: 'Test Medication',
+        dosage: '10mg',
+        quantity: 2, // Low stock (< 3)
+        frequency: Frequency.onceDaily,
+        reminderTime: now,
+        expirationDate: now.add(const Duration(days: 5)), // Expiring soon (< 7)
+      );
 
-    when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [med]);
-    when(mockDatabaseAdapter.getMedicationLogsForToday()).thenAnswer((_) async => []);
+      when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [med]);
+      when(
+        mockDatabaseAdapter.getMedicationLogsForToday(),
+      ).thenAnswer((_) async => []);
 
-    await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
-    await tester.pump();
-    await tester.pump();
+      await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
+      await tester.pump();
+      await tester.pump();
 
-    // Found in both "Today's Medications" and "All Medications"
-    expect(find.text('Test Medication'), findsAtLeastNWidgets(1));
-    
-    // Check for warning icons
-    expect(find.byIcon(Icons.error), findsAtLeastNWidgets(1)); // Critically low stock
-    expect(find.byIcon(Icons.event), findsAtLeastNWidgets(1)); // Expiration icon
-  });
+      // Found in both "Today's Medications" and "All Medications"
+      expect(find.text('Test Medication'), findsAtLeastNWidgets(1));
+
+      // Check for warning icons
+      expect(
+        find.byIcon(Icons.error),
+        findsAtLeastNWidgets(1),
+      ); // Critically low stock
+      expect(
+        find.byIcon(Icons.event),
+        findsAtLeastNWidgets(1),
+      ); // Expiration icon
+    },
+  );
 
   testWidgets('Expiring soon filter works', (WidgetTester tester) async {
     final now = DateTime.now();
@@ -114,8 +123,12 @@ void main() {
       expirationDate: now.add(const Duration(days: 100)),
     );
 
-    when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [med1, med2]);
-    when(mockDatabaseAdapter.getMedicationLogsForToday()).thenAnswer((_) async => []);
+    when(
+      mockDatabaseAdapter.getMedications(),
+    ).thenAnswer((_) async => [med1, med2]);
+    when(
+      mockDatabaseAdapter.getMedicationLogsForToday(),
+    ).thenAnswer((_) async => []);
 
     await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
     await tester.pumpAndSettle();
@@ -150,8 +163,12 @@ void main() {
       reminderTime: now,
     );
 
-    when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [med1, med2]);
-    when(mockDatabaseAdapter.getMedicationLogsForToday()).thenAnswer((_) async => []);
+    when(
+      mockDatabaseAdapter.getMedications(),
+    ).thenAnswer((_) async => [med1, med2]);
+    when(
+      mockDatabaseAdapter.getMedicationLogsForToday(),
+    ).thenAnswer((_) async => []);
 
     await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
     await tester.pumpAndSettle();
@@ -167,7 +184,9 @@ void main() {
     expect(find.text('Full Stock'), findsNothing);
   });
 
-  testWidgets('Speed dial expands and shows options', (WidgetTester tester) async {
+  testWidgets('Speed dial expands and shows options', (
+    WidgetTester tester,
+  ) async {
     when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => []);
 
     await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
@@ -199,7 +218,9 @@ void main() {
     verify(mockDatabaseAdapter.insertMedication(any)).called(1);
   });
 
-  testWidgets('Delete medication shows confirmation dialog', (WidgetTester tester) async {
+  testWidgets('Delete medication shows confirmation dialog', (
+    WidgetTester tester,
+  ) async {
     final now = DateTime.now();
     final med = Medication(
       id: 1,
@@ -211,7 +232,9 @@ void main() {
     );
 
     when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [med]);
-    when(mockDatabaseAdapter.getMedicationLogsForToday()).thenAnswer((_) async => []);
+    when(
+      mockDatabaseAdapter.getMedicationLogsForToday(),
+    ).thenAnswer((_) async => []);
 
     await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
     await tester.pumpAndSettle();
@@ -221,7 +244,10 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify dialog is shown
-    expect(find.text('Are you sure you want to delete this medication?'), findsOneWidget);
+    expect(
+      find.text('Are you sure you want to delete this medication?'),
+      findsOneWidget,
+    );
     expect(find.text('Delete'), findsOneWidget); // The button
 
     // Tap Cancel
@@ -233,7 +259,9 @@ void main() {
     verifyNever(mockDatabaseAdapter.deleteMedication(any));
   });
 
-  testWidgets('Sync button is shown and can be tapped when enabled', (WidgetTester tester) async {
+  testWidgets('Sync button is shown and can be tapped when enabled', (
+    WidgetTester tester,
+  ) async {
     when(mockConfigService.isSyncEnabled).thenReturn(true);
     when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => []);
 

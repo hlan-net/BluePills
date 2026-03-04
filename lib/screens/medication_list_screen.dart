@@ -214,7 +214,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       final localizations = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(localizations.noMedicationLeftInStock(selectedMed.name)),
+          content: Text(
+            localizations.noMedicationLeftInStock(selectedMed.name),
+          ),
           backgroundColor: Colors.orange,
         ),
       );
@@ -713,10 +715,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
