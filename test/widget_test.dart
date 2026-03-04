@@ -18,7 +18,12 @@ import 'package:bluepills/notifications/notification_helper.dart';
 
 import 'widget_test.mocks.dart';
 
-@GenerateMocks([DatabaseAdapter, ConfigService, SyncService, NotificationHelper])
+@GenerateMocks([
+  DatabaseAdapter,
+  ConfigService,
+  SyncService,
+  NotificationHelper,
+])
 void main() {
   late MockDatabaseAdapter mockDatabaseAdapter;
   late MockConfigService mockConfigService;
@@ -216,13 +221,15 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(2), '30');
 
     when(mockDatabaseAdapter.insertMedication(any)).thenAnswer((_) async => 1);
-    when(mockNotificationHelper.scheduleNotification(
-      id: anyNamed('id'),
-      title: anyNamed('title'),
-      body: anyNamed('body'),
-      scheduledTime: anyNamed('scheduledTime'),
-      frequencyPattern: anyNamed('frequencyPattern'),
-    )).thenAnswer((_) async => {});
+    when(
+      mockNotificationHelper.scheduleNotification(
+        id: anyNamed('id'),
+        title: anyNamed('title'),
+        body: anyNamed('body'),
+        scheduledTime: anyNamed('scheduledTime'),
+        frequencyPattern: anyNamed('frequencyPattern'),
+      ),
+    ).thenAnswer((_) async => {});
 
     final saveButton = find.text('Save');
     await tester.ensureVisible(saveButton);

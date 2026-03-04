@@ -46,7 +46,9 @@ void main() {
     ImportService.instance = mockImportService;
 
     when(mockConfigService.config).thenReturn(const AppConfig());
-    when(mockGoogleDriveService.isAuthenticated()).thenAnswer((_) async => false);
+    when(
+      mockGoogleDriveService.isAuthenticated(),
+    ).thenAnswer((_) async => false);
     when(mockGoogleDriveService.getUserEmail()).thenAnswer((_) async => null);
   });
 
@@ -63,7 +65,9 @@ void main() {
     );
   }
 
-  testWidgets('Settings screen displays correctly', (WidgetTester tester) async {
+  testWidgets('Settings screen displays correctly', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(createSettingsScreen());
     await tester.pump();
 
@@ -82,7 +86,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Find the language dropdown
-    final dropdown = find.byWidgetPredicate((widget) => widget is DropdownButtonFormField);
+    final dropdown = find.byWidgetPredicate(
+      (widget) => widget is DropdownButtonFormField,
+    );
     await tester.ensureVisible(dropdown);
     expect(dropdown, findsOneWidget);
 
