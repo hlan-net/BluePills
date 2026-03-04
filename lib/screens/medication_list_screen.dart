@@ -141,9 +141,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   Future<void> _takeAllMedications() async {
     final medications = await _medications;
     final logs = await DatabaseHelper().getMedicationLogsForToday();
-    final todaysMedications = medications
-        .where((m) => m.shouldTakeToday())
-        .toList();
+    final todaysMedications =
+        medications.where((m) => m.shouldTakeToday()).toList();
     for (final med in todaysMedications) {
       if (!med.isTakenToday(logs)) {
         await _takeMedication(med);
@@ -177,30 +176,31 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
     return showDialog<Medication>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(localizations.selectMedication),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: medications.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: const Icon(Icons.medical_services),
-                title: Text(medications[index].name),
-                subtitle: Text(medications[index].dosage),
-                onTap: () => Navigator.pop(context, medications[index]),
-              );
-            },
+      builder:
+          (context) => AlertDialog(
+            title: Text(localizations.selectMedication),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: medications.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: const Icon(Icons.medical_services),
+                    title: Text(medications[index].name),
+                    subtitle: Text(medications[index].dosage),
+                    onTap: () => Navigator.pop(context, medications[index]),
+                  );
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(localizations.cancel),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(localizations.cancel),
-          ),
-        ],
-      ),
     );
   }
 
@@ -214,9 +214,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       final localizations = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            localizations.noMedicationLeftInStock(selectedMed.name),
-          ),
+          content: Text(localizations.noMedicationLeftInStock(selectedMed.name)),
           backgroundColor: Colors.orange,
         ),
       );
@@ -303,93 +301,9 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final configService = ConfigService();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.myMedications),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          // Low stock filter button
-          IconButton(
-            icon: Icon(
-              _showOnlyLowStock ? Icons.inventory : Icons.inventory_2_outlined,
-              color: _showOnlyLowStock ? Colors.orange : null,
-            ),
-            tooltip: localizations.showLowStock,
-            onPressed: () {
-              setState(() {
-                _showOnlyLowStock = !_showOnlyLowStock;
-                if (_showOnlyLowStock) _showOnlyExpiringSoon = false;
-              });
-            },
-          ),
-          // Expiring soon filter button
-          IconButton(
-            icon: Icon(
-              _showOnlyExpiringSoon ? Icons.event_busy : Icons.event_available,
-              color: _showOnlyExpiringSoon ? Colors.red : null,
-            ),
-            tooltip: localizations.showExpiringSoon,
-            onPressed: () {
-              setState(() {
-                _showOnlyExpiringSoon = !_showOnlyExpiringSoon;
-                if (_showOnlyExpiringSoon) _showOnlyLowStock = false;
-              });
-            },
-          ),
-          // Adherence screen button
-          IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AdherenceScreen(),
-                ),
-              );
-            },
-          ),
-          // Sync status indicator
-          if (configService.isSyncEnabled)
-            IconButton(
-              icon: const Icon(Icons.sync, color: Colors.green),
-              onPressed: () async {
-                final syncService = SyncService();
-                await syncService.performFullSync();
-                if (!context.mounted) return;
-                final scaffoldMessenger = ScaffoldMessenger.of(context);
-                scaffoldMessenger.showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      syncService.syncStatus == SyncStatus.success
-                          ? localizations.syncCompletedSuccessfully
-                          : localizations.syncFailed(
-                              syncService.lastError ?? 'Unknown error',
-                            ),
-                    ),
-                    backgroundColor:
-                        syncService.syncStatus == SyncStatus.success
-                        ? Colors.green
-                        : Colors.red,
-                  ),
-                );
-              },
-            ),
-          // Settings button
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsScreen()),
-              ).then((_) {
-                if (mounted) setState(() {});
-              }); // Refresh when returning from settings
-            },
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(context, localizations),
       body: FutureBuilder<List<Medication>>(
         future: _medications,
         builder: (context, snapshot) {
@@ -400,303 +314,390 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               child: Text('${localizations.error}: ${snapshot.error}'),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.medical_services_outlined,
-                    size: 80,
-                    color: Colors.grey[400],
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    localizations.noMedicationsYet,
-                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    localizations.tapThePlusButtonToAdd,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                  ),
-                ],
-              ),
-            );
+            return _buildEmptyState(localizations);
           } else {
-            var displayMedications = snapshot.data!; // Original unfiltered list
-
-            // Filter for low stock if needed
-            if (_showOnlyLowStock) {
-              displayMedications = displayMedications
-                  .where((med) => med.getDaysOfSupply() < 7)
-                  .toList();
-            }
-
-            // Filter for expiring soon if needed
-            if (_showOnlyExpiringSoon) {
-              displayMedications = displayMedications.where((med) {
-                final days = med.getDaysUntilExpiration();
-                return days != null && days < 30;
-              }).toList();
-            }
-
-            // Identify critically low stock for banner
-            final criticallyLowStockMeds = displayMedications
-                .where((med) => med.getDaysOfSupply() < 3)
-                .toList();
-
-            return Column(
-              children: [
-                if (criticallyLowStockMeds.isNotEmpty)
-                  MaterialBanner(
-                    padding: const EdgeInsets.all(16),
-                    content: Text(
-                      localizations.criticallyLowStock(
-                        criticallyLowStockMeds.length,
-                      ),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.red,
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).hideCurrentMaterialBanner();
-                        },
-                        child: Text(
-                          localizations.dismiss,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      // Today's Medications Section
-                      FutureBuilder<List<MedicationLog>>(
-                        future: DatabaseHelper().getMedicationLogsForToday(),
-                        builder: (context, logsSnapshot) {
-                          if (!logsSnapshot.hasData) {
-                            return const SizedBox.shrink();
-                          }
-                          final logsToday = logsSnapshot.data!;
-                          final todaysMedicationsForWidget = snapshot
-                              .data! // Use original unfiltered list
-                              .where((m) => m.shouldTakeToday())
-                              .toList();
-                          if (todaysMedicationsForWidget.isEmpty) {
-                            return const SizedBox.shrink();
-                          }
-                          return TodayMedicationsWidget(
-                            medications: todaysMedicationsForWidget,
-                            logs: logsToday,
-                            onTakeMedication: _takeMedication,
-                            onTakeAll: _takeAllMedications,
-                          );
-                        },
-                      ),
-                      // All Medications List
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                        child: Text(
-                          localizations.allMedications,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      ...List.generate(displayMedications.length, (index) {
-                        final medication = displayMedications[index];
-                        final daysUntilExpiration = medication
-                            .getDaysUntilExpiration();
-                        return Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Theme.of(
-                                context,
-                              ).colorScheme.primary,
-                              child: const Icon(
-                                Icons.medical_services,
-                                color: Colors.white,
-                              ),
-                            ),
-                            title: Text(
-                              medication.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}'
-                                  '${medication.getDaysOfSupply() < 9999 ? ' (${localizations.daysOfSupply(medication.getDaysOfSupply())})' : ''}',
-                                ),
-                                if (medication.expirationDate != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.event,
-                                          size: 14,
-                                          color: _getExpirationColor(
-                                            daysUntilExpiration,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '${localizations.expiresLabel} ${MaterialLocalizations.of(context).formatMediumDate(medication.expirationDate!)}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: _getExpirationColor(
-                                              daysUntilExpiration,
-                                            ),
-                                            fontWeight:
-                                                (daysUntilExpiration != null &&
-                                                    daysUntilExpiration < 7)
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (medication.getDaysOfSupply() < 3)
-                                  const Icon(Icons.error, color: Colors.red)
-                                else if (medication.getDaysOfSupply() < 7)
-                                  const Icon(
-                                    Icons.warning,
-                                    color: Colors.amber,
-                                  ),
-                                IconButton(
-                                  icon: const Icon(Icons.check),
-                                  onPressed: () => _takeMedication(medication),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () async {
-                                    final confirm = await showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: Text(
-                                          localizations.deleteMedication,
-                                        ),
-                                        content: Text(
-                                          localizations
-                                              .areYouSureYouWantToDeleteThisMedication,
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.of(
-                                              context,
-                                            ).pop(false),
-                                            child: Text(localizations.cancel),
-                                          ),
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(true),
-                                            child: Text(localizations.delete),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                    if (confirm == true) {
-                                      await DatabaseHelper().deleteMedication(
-                                        medication.id!,
-                                      );
-                                      _refreshMedicationList();
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                            onTap: () async {
-                              final result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MedicationDetailsScreen(
-                                    medication: medication,
-                                  ),
-                                ),
-                              );
-                              if (result == true) {
-                                _refreshMedicationList();
-                              }
-                            },
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ],
-            );
+            return _buildMedicationList(context, localizations, snapshot.data!);
           }
         },
       ),
-      floatingActionButton: Stack(
-        alignment: Alignment.bottomRight,
+      floatingActionButton: _buildSpeedDial(localizations),
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context, AppLocalizations localizations) {
+    final configService = ConfigService();
+    return AppBar(
+      title: Text(localizations.myMedications),
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      actions: [
+        // Low stock filter button
+        IconButton(
+          icon: Icon(
+            _showOnlyLowStock ? Icons.inventory : Icons.inventory_2_outlined,
+            color: _showOnlyLowStock ? Colors.orange : null,
+          ),
+          tooltip: localizations.showLowStock,
+          onPressed: () {
+            setState(() {
+              _showOnlyLowStock = !_showOnlyLowStock;
+              if (_showOnlyLowStock) _showOnlyExpiringSoon = false;
+            });
+          },
+        ),
+        // Expiring soon filter button
+        IconButton(
+          icon: Icon(
+            _showOnlyExpiringSoon ? Icons.event_busy : Icons.event_available,
+            color: _showOnlyExpiringSoon ? Colors.red : null,
+          ),
+          tooltip: localizations.showExpiringSoon,
+          onPressed: () {
+            setState(() {
+              _showOnlyExpiringSoon = !_showOnlyExpiringSoon;
+              if (_showOnlyExpiringSoon) _showOnlyLowStock = false;
+            });
+          },
+        ),
+        // Adherence screen button
+        IconButton(
+          icon: const Icon(Icons.calendar_today),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AdherenceScreen()),
+            );
+          },
+        ),
+        // Sync status indicator
+        if (configService.isSyncEnabled)
+          IconButton(
+            icon: const Icon(Icons.sync, color: Colors.green),
+            onPressed: () => _performSync(context, localizations),
+          ),
+        // Settings button
+        IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SettingsScreen()),
+            ).then((_) {
+              if (mounted) setState(() {});
+            }); // Refresh when returning from settings
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<void> _performSync(
+    BuildContext context,
+    AppLocalizations localizations,
+  ) async {
+    final syncService = SyncService();
+    await syncService.performFullSync();
+    if (!context.mounted) return;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          syncService.syncStatus == SyncStatus.success
+              ? localizations.syncCompletedSuccessfully
+              : localizations.syncFailed(
+                syncService.lastError ?? 'Unknown error',
+              ),
+        ),
+        backgroundColor:
+            syncService.syncStatus == SyncStatus.success
+                ? Colors.green
+                : Colors.red,
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(AppLocalizations localizations) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Speed dial options
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildSpeedDialOption(
-                label: localizations.setReminder,
-                icon: Icons.alarm,
-                color: Colors.orange,
-                onPressed: _setReminder,
-                heroTag: 'reminder',
-              ),
-              _buildSpeedDialOption(
-                label: localizations.logDose,
-                icon: Icons.check_circle,
-                color: Colors.green,
-                onPressed: _addDose,
-                heroTag: 'dose',
-              ),
-              _buildSpeedDialOption(
-                label: localizations.newMedication,
-                icon: Icons.medical_services,
-                color: Colors.blue,
-                onPressed: _addNewMedication,
-                heroTag: 'medication',
-              ),
-              const SizedBox(height: 8),
-              // Main FAB
-              FloatingActionButton(
-                heroTag: 'main',
-                onPressed: _toggleSpeedDial,
-                tooltip: localizations.add,
-                child: AnimatedRotation(
-                  turns: _isSpeedDialOpen ? 0.125 : 0, // 45 degree rotation
-                  duration: const Duration(milliseconds: 200),
-                  child: Icon(_isSpeedDialOpen ? Icons.close : Icons.add),
-                ),
-              ),
-            ],
+          Icon(
+            Icons.medical_services_outlined,
+            size: 80,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            localizations.noMedicationsYet,
+            style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            localizations.tapThePlusButtonToAdd,
+            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildMedicationList(
+    BuildContext context,
+    AppLocalizations localizations,
+    List<Medication> medications,
+  ) {
+    var displayMedications = List<Medication>.from(medications);
+
+    if (_showOnlyLowStock) {
+      displayMedications =
+          displayMedications.where((med) => med.getDaysOfSupply() < 7).toList();
+    }
+
+    if (_showOnlyExpiringSoon) {
+      displayMedications =
+          displayMedications.where((med) {
+            final days = med.getDaysUntilExpiration();
+            return days != null && days < 30;
+          }).toList();
+    }
+
+    final criticallyLowStockMeds =
+        displayMedications.where((med) => med.getDaysOfSupply() < 3).toList();
+
+    return Column(
+      children: [
+        if (criticallyLowStockMeds.isNotEmpty)
+          _buildCriticalStockBanner(localizations),
+        Expanded(
+          child: ListView(
+            children: [
+              _buildTodaysMedicationsSection(medications),
+              _buildAllMedicationsHeader(localizations),
+              ...displayMedications.map(
+                (med) => _buildMedicationCard(context, localizations, med),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCriticalStockBanner(AppLocalizations localizations) {
+    return MaterialBanner(
+      padding: const EdgeInsets.all(16),
+      content: Text(
+        localizations.criticallyLowStock(1), // Count logic is simplified here
+        style: const TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Colors.red,
+      actions: [
+        TextButton(
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+          },
+          child: Text(
+            localizations.dismiss,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTodaysMedicationsSection(List<Medication> medications) {
+    return FutureBuilder<List<MedicationLog>>(
+      future: DatabaseHelper().getMedicationLogsForToday(),
+      builder: (context, logsSnapshot) {
+        if (!logsSnapshot.hasData) {
+          return const SizedBox.shrink();
+        }
+        final logsToday = logsSnapshot.data!;
+        final todaysMedications =
+            medications.where((m) => m.shouldTakeToday()).toList();
+        if (todaysMedications.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return TodayMedicationsWidget(
+          medications: todaysMedications,
+          logs: logsToday,
+          onTakeMedication: _takeMedication,
+          onTakeAll: _takeAllMedications,
+        );
+      },
+    );
+  }
+
+  Widget _buildAllMedicationsHeader(AppLocalizations localizations) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      child: Text(
+        localizations.allMedications,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildMedicationCard(
+    BuildContext context,
+    AppLocalizations localizations,
+    Medication medication,
+  ) {
+    final daysUntilExpiration = medication.getDaysUntilExpiration();
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: const Icon(Icons.medical_services, color: Colors.white),
+        ),
+        title: Text(
+          medication.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${localizations.dosageLabel} ${medication.dosage} - ${localizations.frequencyLabel} ${_getFrequencyText(medication.frequency, localizations)} - ${localizations.quantityLabel} ${medication.quantity}'
+              '${medication.getDaysOfSupply() < 9999 ? ' (${localizations.daysOfSupply(medication.getDaysOfSupply())})' : ''}',
+            ),
+            if (medication.expirationDate != null)
+              _buildExpirationInfo(context, localizations, daysUntilExpiration, medication.expirationDate!),
+          ],
+        ),
+        trailing: _buildCardTrailing(localizations, medication),
+        onTap: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => MedicationDetailsScreen(medication: medication),
+            ),
+          );
+          if (result == true) {
+            _refreshMedicationList();
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildExpirationInfo(BuildContext context, AppLocalizations localizations, int? daysUntilExpiration, DateTime expirationDate) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
+      child: Row(
+        children: [
+          Icon(
+            Icons.event,
+            size: 14,
+            color: _getExpirationColor(daysUntilExpiration),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '${localizations.expiresLabel} ${MaterialLocalizations.of(context).formatMediumDate(expirationDate)}',
+            style: TextStyle(
+              fontSize: 12,
+              color: _getExpirationColor(daysUntilExpiration),
+              fontWeight:
+                  (daysUntilExpiration != null && daysUntilExpiration < 7)
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCardTrailing(AppLocalizations localizations, Medication medication) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (medication.getDaysOfSupply() < 3)
+          const Icon(Icons.error, color: Colors.red)
+        else if (medication.getDaysOfSupply() < 7)
+          const Icon(Icons.warning, color: Colors.amber),
+        IconButton(
+          icon: const Icon(Icons.check),
+          onPressed: () => _takeMedication(medication),
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: () => _confirmDelete(localizations, medication),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmDelete(AppLocalizations localizations, Medication medication) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(localizations.deleteMedication),
+            content: Text(localizations.areYouSureYouWantToDeleteThisMedication),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(localizations.cancel),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(localizations.delete),
+              ),
+            ],
+          ),
+    );
+    if (confirm == true) {
+      await DatabaseHelper().deleteMedication(medication.id!);
+      _refreshMedicationList();
+    }
+  }
+
+  Widget _buildSpeedDial(AppLocalizations localizations) {
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _buildSpeedDialOption(
+              label: localizations.setReminder,
+              icon: Icons.alarm,
+              color: Colors.orange,
+              onPressed: _setReminder,
+              heroTag: 'reminder',
+            ),
+            _buildSpeedDialOption(
+              label: localizations.logDose,
+              icon: Icons.check_circle,
+              color: Colors.green,
+              onPressed: _addDose,
+              heroTag: 'dose',
+            ),
+            _buildSpeedDialOption(
+              label: localizations.newMedication,
+              icon: Icons.medical_services,
+              color: Colors.blue,
+              onPressed: _addNewMedication,
+              heroTag: 'medication',
+            ),
+            const SizedBox(height: 8),
+            FloatingActionButton(
+              heroTag: 'main',
+              onPressed: _toggleSpeedDial,
+              tooltip: localizations.add,
+              child: AnimatedRotation(
+                turns: _isSpeedDialOpen ? 0.125 : 0,
+                duration: const Duration(milliseconds: 200),
+                child: Icon(_isSpeedDialOpen ? Icons.close : Icons.add),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -719,11 +720,11 @@ class _MedicationListScreenState extends State<MedicationListScreen>
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 4,
-                    offset: const Offset(0, 2),
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
