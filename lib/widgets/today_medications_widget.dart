@@ -191,14 +191,14 @@ class _MedicationTile extends StatelessWidget {
 
     const iconColor = Colors.white;
     if (isTaken) {
-      return _MedicationTileVisuals(
+      return const _MedicationTileVisuals(
         backgroundColor: Colors.green,
         icon: Icons.check,
         iconColor: iconColor,
       );
     }
 
-    return _MedicationTileVisuals(
+    return const _MedicationTileVisuals(
       backgroundColor: Colors.orange,
       icon: Icons.medication,
       iconColor: iconColor,
