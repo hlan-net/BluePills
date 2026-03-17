@@ -327,83 +327,111 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       title: Text(localizations.myMedications),
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       actions: [
-        // Sort by Expiration
-        IconButton(
-          icon: Icon(
-            _sortByExpiration ? Icons.sort_by_alpha : Icons.history,
-            color: _sortByExpiration ? Colors.white : null,
-          ),
-          tooltip: 'Sort by Expiration',
-          onPressed: () {
-            setState(() {
-              _sortByExpiration = !_sortByExpiration;
-            });
-          },
-        ),
-        // Low stock filter button
-        IconButton(
-          icon: Icon(
-            _showOnlyLowStock ? Icons.inventory : Icons.inventory_2_outlined,
-            color: _showOnlyLowStock ? Colors.orange : null,
-          ),
-          tooltip: localizations.showLowStock,
-          onPressed: () {
-            setState(() {
-              _showOnlyLowStock = !_showOnlyLowStock;
-              if (_showOnlyLowStock) {
-                _showOnlyExpiringSoon = false;
-                _showOnlyExpired = false;
-              }
-            });
-          },
-        ),
-        // Expiring soon filter button
-        IconButton(
-          icon: Icon(
-            _showOnlyExpiringSoon ? Icons.event_busy : Icons.event_available,
-            color: _showOnlyExpiringSoon ? Colors.red : null,
-          ),
-          tooltip: localizations.showExpiringSoon,
-          onPressed: () {
-            setState(() {
-              _showOnlyExpiringSoon = !_showOnlyExpiringSoon;
-              if (_showOnlyExpiringSoon) {
-                _showOnlyLowStock = false;
-                _showOnlyExpired = false;
-              }
-            });
-          },
-        ),
-        // Adherence screen button
-        IconButton(
-          icon: const Icon(Icons.calendar_today),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AdherenceScreen()),
-            );
-          },
-        ),
-        // Sync status indicator
+        _buildSortAction(),
+        _buildLowStockAction(localizations),
+        _buildExpiringSoonAction(localizations),
+        _buildAdherenceAction(context),
         if (configService.isSyncEnabled)
-          IconButton(
-            icon: const Icon(Icons.sync, color: Colors.green),
-            onPressed: () => _performSync(context, localizations),
-          ),
-        // Settings button
-        IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            ).then((_) {
-              if (mounted) setState(() {});
-            }); // Refresh when returning from settings
-          },
-        ),
+          _buildSyncAction(context, localizations),
+        _buildSettingsAction(context),
       ],
     );
+  }
+
+  Widget _buildSortAction() {
+    return IconButton(
+      icon: Icon(
+        _sortByExpiration ? Icons.sort_by_alpha : Icons.history,
+        color: _sortByExpiration ? Colors.white : null,
+      ),
+      tooltip: 'Sort by Expiration',
+      onPressed: _toggleSortByExpiration,
+    );
+  }
+
+  Widget _buildLowStockAction(AppLocalizations localizations) {
+    return IconButton(
+      icon: Icon(
+        _showOnlyLowStock ? Icons.inventory : Icons.inventory_2_outlined,
+        color: _showOnlyLowStock ? Colors.orange : null,
+      ),
+      tooltip: localizations.showLowStock,
+      onPressed: _toggleLowStockFilter,
+    );
+  }
+
+  Widget _buildExpiringSoonAction(AppLocalizations localizations) {
+    return IconButton(
+      icon: Icon(
+        _showOnlyExpiringSoon ? Icons.event_busy : Icons.event_available,
+        color: _showOnlyExpiringSoon ? Colors.red : null,
+      ),
+      tooltip: localizations.showExpiringSoon,
+      onPressed: _toggleExpiringSoonFilter,
+    );
+  }
+
+  Widget _buildAdherenceAction(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.calendar_today),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AdherenceScreen()),
+        );
+      },
+    );
+  }
+
+  Widget _buildSyncAction(
+    BuildContext context,
+    AppLocalizations localizations,
+  ) {
+    return IconButton(
+      icon: const Icon(Icons.sync, color: Colors.green),
+      onPressed: () => _performSync(context, localizations),
+    );
+  }
+
+  Widget _buildSettingsAction(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.settings),
+      onPressed: () => _openSettings(context),
+    );
+  }
+
+  void _toggleSortByExpiration() {
+    setState(() {
+      _sortByExpiration = !_sortByExpiration;
+    });
+  }
+
+  void _toggleLowStockFilter() {
+    setState(() {
+      _showOnlyLowStock = !_showOnlyLowStock;
+      if (_showOnlyLowStock) {
+        _showOnlyExpiringSoon = false;
+        _showOnlyExpired = false;
+      }
+    });
+  }
+
+  void _toggleExpiringSoonFilter() {
+    setState(() {
+      _showOnlyExpiringSoon = !_showOnlyExpiringSoon;
+      if (_showOnlyExpiringSoon) {
+        _showOnlyLowStock = false;
+        _showOnlyExpired = false;
+      }
+    });
+  }
+
+  Future<void> _openSettings(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+    );
+    if (mounted) setState(() {});
   }
 
   Future<void> _performSync(
@@ -460,45 +488,14 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     AppLocalizations localizations,
     List<Medication> medications,
   ) {
-    var displayMedications = List<Medication>.from(medications);
-
-    if (_showOnlyLowStock) {
-      displayMedications = displayMedications
-          .where((med) => med.getDaysOfSupply() < 7)
-          .toList();
-    }
-
-    if (_showOnlyExpiringSoon) {
-      displayMedications = displayMedications.where((med) {
-        final days = med.getDaysUntilExpiration();
-        return days != null && days >= 0 && days < 30;
-      }).toList();
-    }
-
-    if (_showOnlyExpired) {
-      displayMedications = displayMedications.where((med) {
-        final days = med.getDaysUntilExpiration();
-        return days != null && days < 0;
-      }).toList();
-    }
-
-    if (_sortByExpiration) {
-      displayMedications.sort((a, b) {
-        if (a.expirationDate == null && b.expirationDate == null) return 0;
-        if (a.expirationDate == null) return 1;
-        if (b.expirationDate == null) return -1;
-        return a.expirationDate!.compareTo(b.expirationDate!);
-      });
-    }
-
-    final criticallyLowStockMeds = displayMedications
-        .where((med) => med.getDaysOfSupply() < 3)
-        .toList();
+    final displayMedications = _prepareDisplayMedications(medications);
+    final hasCriticalStock = displayMedications.any(
+      (med) => med.getDaysOfSupply() < 3,
+    );
 
     return Column(
       children: [
-        if (criticallyLowStockMeds.isNotEmpty)
-          _buildCriticalStockBanner(localizations),
+        if (hasCriticalStock) _buildCriticalStockBanner(localizations),
         Expanded(
           child: ListView(
             children: [
@@ -512,6 +509,45 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         ),
       ],
     );
+  }
+
+  List<Medication> _prepareDisplayMedications(List<Medication> medications) {
+    var filtered = List<Medication>.from(medications);
+    filtered = _applyFilter(filtered, _showOnlyLowStock, _isLowStock);
+    filtered = _applyFilter(filtered, _showOnlyExpiringSoon, _isExpiringSoon);
+    filtered = _applyFilter(filtered, _showOnlyExpired, _isExpired);
+
+    if (_sortByExpiration) {
+      filtered.sort(_compareByExpirationDate);
+    }
+    return filtered;
+  }
+
+  List<Medication> _applyFilter(
+    List<Medication> medications,
+    bool shouldFilter,
+    bool Function(Medication) predicate,
+  ) {
+    return shouldFilter ? medications.where(predicate).toList() : medications;
+  }
+
+  bool _isLowStock(Medication medication) => medication.getDaysOfSupply() < 7;
+
+  bool _isExpiringSoon(Medication medication) {
+    final days = medication.getDaysUntilExpiration();
+    return days != null && days >= 0 && days < 30;
+  }
+
+  bool _isExpired(Medication medication) {
+    final days = medication.getDaysUntilExpiration();
+    return days != null && days < 0;
+  }
+
+  int _compareByExpirationDate(Medication a, Medication b) {
+    if (a.expirationDate == null && b.expirationDate == null) return 0;
+    if (a.expirationDate == null) return 1;
+    if (b.expirationDate == null) return -1;
+    return a.expirationDate!.compareTo(b.expirationDate!);
   }
 
   Widget _buildCriticalStockBanner(AppLocalizations localizations) {

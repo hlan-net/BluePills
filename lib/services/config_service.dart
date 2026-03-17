@@ -84,13 +84,17 @@ class ConfigService {
 
   /// Updates the last sync time in the configuration.
   Future<void> updateLastSyncTime([DateTime? time]) async {
-    final newConfig = _config.copyWith(lastSyncTime: time ?? DateTime.now());
+    final newConfig = _config.copyWith(
+      timestamps: AppConfigTimestamps(lastSyncTime: time ?? DateTime.now()),
+    );
     await updateConfig(newConfig);
   }
 
   /// Updates the last backup time in the configuration.
   Future<void> updateLastBackupTime([DateTime? time]) async {
-    final newConfig = _config.copyWith(lastBackupTime: time ?? DateTime.now());
+    final newConfig = _config.copyWith(
+      timestamps: AppConfigTimestamps(lastBackupTime: time ?? DateTime.now()),
+    );
     await updateConfig(newConfig);
   }
 

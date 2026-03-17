@@ -37,22 +37,8 @@ class TodayMedicationsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-
-    // Filter for scheduled today or as-needed
-    final todaysMedications = medications
-        .where((m) => m.shouldTakeToday() || m.isAsNeeded)
-        .toList();
-
-    // Sort: Scheduled first, then as-needed
-    todaysMedications.sort((a, b) {
-      if (a.isAsNeeded && !b.isAsNeeded) return 1;
-      if (!a.isAsNeeded && b.isAsNeeded) return -1;
-      return a.name.compareTo(b.name);
-    });
-
-    final allTaken = todaysMedications
-        .where((m) => !m.isAsNeeded)
-        .every((m) => m.isTakenToday(logs));
+    final todaysMedications = _prepareMedications();
+    final allTaken = _allScheduledMedicationsTaken(todaysMedications);
 
     return Card(
       margin: const EdgeInsets.all(16),
@@ -62,84 +48,172 @@ class TodayMedicationsWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  localizations.todaysMedications,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                if (!allTaken)
-                  TextButton(
-                    onPressed: onTakeAll,
-                    child: Text(localizations.takeAll),
-                  ),
-              ],
-            ),
+            _buildHeader(context, localizations, allTaken),
             const SizedBox(height: 16),
             if (todaysMedications.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Center(
-                  child: Text(localizations.noMedicationsScheduledForToday),
-                ),
-              )
+              _buildEmptyState(localizations)
             else
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: todaysMedications.length,
-                itemBuilder: (context, index) {
-                  final medication = todaysMedications[index];
-                  final isTaken = medication.isTakenToday(logs);
-                  final dosesRemaining = medication.dosesRemainingToday(logs);
-
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundColor: medication.isAsNeeded
-                          ? Colors.blue.withValues(alpha: 0.1)
-                          : (isTaken ? Colors.green : Colors.orange),
-                      child: Icon(
-                        medication.isAsNeeded
-                            ? Icons.medical_information
-                            : (isTaken ? Icons.check : Icons.medication),
-                        color: medication.isAsNeeded
-                            ? Colors.blue
-                            : Colors.white,
-                      ),
-                    ),
-                    title: Text(
-                      medication.name,
-                      style: TextStyle(
-                        fontWeight: isTaken
-                            ? FontWeight.normal
-                            : FontWeight.bold,
-                        decoration: isTaken ? TextDecoration.lineThrough : null,
-                      ),
-                    ),
-                    subtitle: Text(
-                      medication.isAsNeeded
-                          ? localizations.asNeeded
-                          : localizations.takenOf(
-                              medication.requiredDosesPerDay - dosesRemaining,
-                              medication.requiredDosesPerDay,
-                            ),
-                    ),
-                    trailing: isTaken
-                        ? const Icon(Icons.check_circle, color: Colors.green)
-                        : IconButton(
-                            icon: const Icon(Icons.check),
-                            onPressed: () => onTakeMedication(medication),
-                          ),
-                  );
-                },
-              ),
+              _buildMedicationList(localizations, todaysMedications),
           ],
         ),
       ),
     );
   }
+
+  List<Medication> _prepareMedications() {
+    final todaysMedications = medications
+        .where((m) => m.shouldTakeToday() || m.isAsNeeded)
+        .toList();
+
+    todaysMedications.sort((a, b) {
+      if (a.isAsNeeded && !b.isAsNeeded) return 1;
+      if (!a.isAsNeeded && b.isAsNeeded) return -1;
+      return a.name.compareTo(b.name);
+    });
+    return todaysMedications;
+  }
+
+  bool _allScheduledMedicationsTaken(List<Medication> todaysMedications) {
+    return todaysMedications
+        .where((m) => !m.isAsNeeded)
+        .every((m) => m.isTakenToday(logs));
+  }
+
+  Widget _buildHeader(
+    BuildContext context,
+    AppLocalizations localizations,
+    bool allTaken,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          localizations.todaysMedications,
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        if (!allTaken)
+          TextButton(onPressed: onTakeAll, child: Text(localizations.takeAll)),
+      ],
+    );
+  }
+
+  Widget _buildEmptyState(AppLocalizations localizations) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Center(child: Text(localizations.noMedicationsScheduledForToday)),
+    );
+  }
+
+  Widget _buildMedicationList(
+    AppLocalizations localizations,
+    List<Medication> todaysMedications,
+  ) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: todaysMedications.length,
+      itemBuilder: (context, index) {
+        final medication = todaysMedications[index];
+        final isTaken = medication.isTakenToday(logs);
+        final dosesRemaining = medication.dosesRemainingToday(logs);
+
+        return _MedicationTile(
+          medication: medication,
+          isTaken: isTaken,
+          dosesRemaining: dosesRemaining,
+          localizations: localizations,
+          onTakeMedication: onTakeMedication,
+        );
+      },
+    );
+  }
+}
+
+class _MedicationTile extends StatelessWidget {
+  final Medication medication;
+  final bool isTaken;
+  final int dosesRemaining;
+  final AppLocalizations localizations;
+  final Function(Medication) onTakeMedication;
+
+  const _MedicationTile({
+    required this.medication,
+    required this.isTaken,
+    required this.dosesRemaining,
+    required this.localizations,
+    required this.onTakeMedication,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final status = _tileVisuals();
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: status.backgroundColor,
+        child: Icon(status.icon, color: status.iconColor),
+      ),
+      title: Text(
+        medication.name,
+        style: TextStyle(
+          fontWeight: isTaken ? FontWeight.normal : FontWeight.bold,
+          decoration: isTaken ? TextDecoration.lineThrough : null,
+        ),
+      ),
+      subtitle: Text(_subtitleText()),
+      trailing: isTaken
+          ? const Icon(Icons.check_circle, color: Colors.green)
+          : IconButton(
+              icon: const Icon(Icons.check),
+              onPressed: () => onTakeMedication(medication),
+            ),
+    );
+  }
+
+  String _subtitleText() {
+    if (medication.isAsNeeded) {
+      return localizations.asNeeded;
+    }
+    final dosesTaken = medication.requiredDosesPerDay - dosesRemaining;
+    return localizations.takenOf(dosesTaken, medication.requiredDosesPerDay);
+  }
+
+  _MedicationTileVisuals _tileVisuals() {
+    if (medication.isAsNeeded) {
+      return _MedicationTileVisuals(
+        backgroundColor: Colors.blue.withValues(alpha: 0.1),
+        icon: Icons.medical_information,
+        iconColor: Colors.blue,
+      );
+    }
+
+    final iconColor = Colors.white;
+    if (isTaken) {
+      return _MedicationTileVisuals(
+        backgroundColor: Colors.green,
+        icon: Icons.check,
+        iconColor: iconColor,
+      );
+    }
+
+    return _MedicationTileVisuals(
+      backgroundColor: Colors.orange,
+      icon: Icons.medication,
+      iconColor: iconColor,
+    );
+  }
+}
+
+class _MedicationTileVisuals {
+  final Color backgroundColor;
+  final IconData icon;
+  final Color iconColor;
+
+  const _MedicationTileVisuals({
+    required this.backgroundColor,
+    required this.icon,
+    required this.iconColor,
+  });
 }

@@ -60,8 +60,7 @@ class AppConfig {
     bool? syncEnabled,
     String? blueskyHandle,
     String? pdsUrl,
-    DateTime? lastSyncTime,
-    DateTime? lastBackupTime,
+    AppConfigTimestamps? timestamps,
     SyncMode? syncMode,
     bool? autoRestoreEnabled,
     String? languageCode,
@@ -70,13 +69,24 @@ class AppConfig {
       syncEnabled: syncEnabled ?? this.syncEnabled,
       blueskyHandle: blueskyHandle ?? this.blueskyHandle,
       pdsUrl: pdsUrl ?? this.pdsUrl,
-      lastSyncTime: lastSyncTime ?? this.lastSyncTime,
-      lastBackupTime: lastBackupTime ?? this.lastBackupTime,
+      lastSyncTime: timestamps?.lastSyncTime ?? this.lastSyncTime,
+      lastBackupTime: timestamps?.lastBackupTime ?? this.lastBackupTime,
       syncMode: syncMode ?? this.syncMode,
       autoRestoreEnabled: autoRestoreEnabled ?? this.autoRestoreEnabled,
       languageCode: languageCode ?? this.languageCode,
     );
   }
+}
+
+/// Holds optional timestamp overrides for [AppConfig.copyWith].
+class AppConfigTimestamps {
+  /// Updated last successful sync time.
+  final DateTime? lastSyncTime;
+
+  /// Updated last backup time.
+  final DateTime? lastBackupTime;
+
+  const AppConfigTimestamps({this.lastSyncTime, this.lastBackupTime});
 }
 
 /// Defines the different modes for data synchronization.
