@@ -189,7 +189,7 @@ class _MedicationTile extends StatelessWidget {
       );
     }
 
-    final iconColor = Colors.white;
+    const iconColor = Colors.white;
     if (isTaken) {
       return _MedicationTileVisuals(
         backgroundColor: Colors.green,
