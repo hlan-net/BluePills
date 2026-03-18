@@ -14,27 +14,37 @@ import 'package:bluepills/screens/medication_form_screen.dart';
 import 'package:bluepills/screens/medication_list_screen.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/l10n/app_localizations_delegate.dart';
+import 'package:bluepills/notifications/notification_helper.dart';
 
 import 'widget_test.mocks.dart';
 
-@GenerateMocks([DatabaseAdapter, ConfigService, SyncService])
+@GenerateMocks([
+  DatabaseAdapter,
+  ConfigService,
+  SyncService,
+  NotificationHelper,
+])
 void main() {
   late MockDatabaseAdapter mockDatabaseAdapter;
   late MockConfigService mockConfigService;
   late MockSyncService mockSyncService;
+  late MockNotificationHelper mockNotificationHelper;
 
   setUp(() {
     mockDatabaseAdapter = MockDatabaseAdapter();
     mockConfigService = MockConfigService();
     mockSyncService = MockSyncService();
+    mockNotificationHelper = MockNotificationHelper();
 
     DatabaseHelper.instance = DatabaseHelper.withAdapter(mockDatabaseAdapter);
     ConfigService.instance = mockConfigService;
     SyncService.instance = mockSyncService;
+    NotificationHelper.instance = mockNotificationHelper;
 
     when(mockDatabaseAdapter.init()).thenAnswer((_) async {});
     when(mockConfigService.config).thenReturn(const AppConfig());
     when(mockConfigService.isSyncEnabled).thenReturn(false);
+    when(mockNotificationHelper.init()).thenAnswer((_) async {});
   });
 
   Widget createTestWidget(Widget child) {
@@ -211,8 +221,19 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(2), '30');
 
     when(mockDatabaseAdapter.insertMedication(any)).thenAnswer((_) async => 1);
+    when(
+      mockNotificationHelper.scheduleNotification(
+        id: anyNamed('id'),
+        title: anyNamed('title'),
+        body: anyNamed('body'),
+        scheduledTime: anyNamed('scheduledTime'),
+        frequencyPattern: anyNamed('frequencyPattern'),
+      ),
+    ).thenAnswer((_) async => {});
 
-    await tester.tap(find.text('Save'));
+    final saveButton = find.text('Save');
+    await tester.ensureVisible(saveButton);
+    await tester.tap(saveButton);
     await tester.pumpAndSettle();
 
     verify(mockDatabaseAdapter.insertMedication(any)).called(1);
@@ -278,5 +299,92 @@ void main() {
 
     verify(mockSyncService.performFullSync()).called(1);
     expect(find.text('Sync completed successfully'), findsOneWidget);
+  });
+
+  testWidgets('Logging a dose updates medication quantity and records log', (
+    WidgetTester tester,
+  ) async {
+    final med = Medication(
+      id: 1,
+      name: 'Painkiller',
+      dosage: '20mg',
+      quantity: 2,
+      frequency: Frequency.onceDaily,
+      reminderTime: DateTime.now(),
+    );
+
+    when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [med]);
+    when(
+      mockDatabaseAdapter.getMedicationLogsForToday(),
+    ).thenAnswer((_) async => []);
+    when(mockDatabaseAdapter.updateMedication(any)).thenAnswer((_) async => 1);
+    when(
+      mockDatabaseAdapter.insertMedicationLog(any),
+    ).thenAnswer((_) async => 1);
+
+    await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
+    await tester.pumpAndSettle();
+
+    // Open speed dial
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+
+    // Trigger log dose flow and pick medication
+    await tester.tap(
+      find.widgetWithIcon(FloatingActionButton, Icons.check_circle),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('Painkiller'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final updatedMed =
+        verify(mockDatabaseAdapter.updateMedication(captureAny)).captured.single
+            as Medication;
+    verify(mockDatabaseAdapter.insertMedicationLog(any)).called(1);
+    expect(updatedMed.quantity, 1);
+    expect(find.text('Logged dose for Painkiller'), findsOneWidget);
+  });
+
+  testWidgets('Logging dose with empty stock shows warning', (
+    WidgetTester tester,
+  ) async {
+    final med = Medication(
+      id: 1,
+      name: 'Antibiotic',
+      dosage: '10mg',
+      quantity: 0,
+      frequency: Frequency.onceDaily,
+      reminderTime: DateTime.now(),
+    );
+
+    when(mockDatabaseAdapter.getMedications()).thenAnswer((_) async => [med]);
+    when(
+      mockDatabaseAdapter.getMedicationLogsForToday(),
+    ).thenAnswer((_) async => []);
+
+    await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.widgetWithIcon(FloatingActionButton, Icons.check_circle),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('Antibiotic'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    verifyNever(mockDatabaseAdapter.updateMedication(any));
+    expect(find.text('No Antibiotic left in stock'), findsOneWidget);
   });
 }

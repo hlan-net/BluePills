@@ -11,6 +11,7 @@ Medication _createMedication({
   int quantity = 30,
   bool needsSync = true,
   DateTime? expirationDate,
+  bool isAsNeeded = false,
 }) {
   return Medication(
     id: id,
@@ -22,6 +23,7 @@ Medication _createMedication({
     reminderTime: DateTime.now(),
     needsSync: needsSync,
     expirationDate: expirationDate,
+    isAsNeeded: isAsNeeded,
   );
 }
 
@@ -72,8 +74,16 @@ void main() {
       expect(med.shouldTakeToday(), true);
     });
 
-    test('returns false for asNeeded', () {
+    test('returns false for asNeeded frequency', () {
       final med = _createMedication(frequency: Frequency.asNeeded);
+      expect(med.shouldTakeToday(), false);
+    });
+
+    test('returns false when isAsNeeded is true regardless of frequency', () {
+      final med = _createMedication(
+        frequency: Frequency.onceDaily,
+        isAsNeeded: true,
+      );
       expect(med.shouldTakeToday(), false);
     });
 

@@ -1,203 +1,94 @@
+import 'package:flutter/widgets.dart';
+
 /// Base class for application localizations.
 ///
 /// This library defines the abstract base class for all localized strings
 /// used in the BluePills application. Implementations provide translations
 /// for specific languages.
-library;
-
-import 'package:flutter/material.dart';
-
-/// Abstract base class for application localizations.
-///
-/// Defines all the localized strings used throughout the application.
-/// Concrete implementations (e.g., [AppLocalizationsEn], [AppLocalizationsFi])
-/// provide the actual translations for specific languages.
-///
-/// Access localizations in your widgets using:
-/// ```dart
-/// final localizations = AppLocalizations.of(context);
-/// Text(localizations.appTitle);
-/// ```
 abstract class AppLocalizations {
-  /// Retrieves the localized strings for the current context.
-  ///
-  /// Returns null if localizations haven't been loaded yet.
+  const AppLocalizations();
+
   static AppLocalizations? of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  /// List of locales supported by the application.
   static const List<Locale> supportedLocales = [
-    Locale('en'), // English
-    Locale('fi', 'FI'), // Finnish
-    Locale('sv', 'SE'), // Swedish
-    Locale('de', 'DE'), // German
-    Locale('es', 'ES'), // Spanish
+    Locale('en'),
+    Locale('fi'),
+    Locale('sv'),
+    Locale('de'),
+    Locale('es'),
   ];
 
-  // App title
   String get appTitle;
-
-  // Main screen
+  String get dosageLabel;
+  String get frequencyLabel;
+  String get quantityLabel;
+  String daysOfSupply(int days);
+  String get addMedication;
+  String get medicationName;
+  String get pleaseEnterMedicationName;
+  String get dosage;
+  String get pleaseEnterDosage;
+  String get saveMedication;
+  String get quantity;
+  String get pleaseEnterTheQuantity;
+  String get pleaseEnterAValidNumber;
+  String get pleaseEnterFrequency;
+  String get frequency;
+  String get selectReminderTime;
+  String get save;
+  String get saveAndAddMore;
+  String get medicationSavedAddAnother;
+  String failedToSaveMedication(String error);
   String get myMedications;
   String get noMedicationsYet;
-
-  // Form screen
-  String get addMedication;
-  String get editMedication;
-  String get medicationName;
-  String get dosage;
-  String get frequency;
-  String get reminderTime;
-  String get saveMedication;
-
-  // Validation messages
-  String get pleaseEnterMedicationName;
-  String get pleaseEnterDosage;
-  String get pleaseEnterFrequency;
-
-  // Generic
-  String get error;
-
-  // Settings screen
-  String get settings;
-  String get language;
-  String get appLanguage;
-  String get deviceLanguage;
+  String get tapThePlusButtonToAdd;
+  String get selectLanguage;
   String get english;
   String get finnish;
   String get swedish;
   String get german;
   String get spanish;
-
-  // Medication list screen
-  String get noMedicationsAvailable;
-  String get selectMedication;
-  String get cancel;
-  String loggedDoseFor(String medicationName);
-  String noMedicationLeftInStock(String medicationName);
-  String get setReminderFeatureComingSoon;
-  String get tapThePlusButtonToAdd;
-  String get todaysMedications;
-  String takenOf(int taken, int total);
-  String markedAsTaken(String medicationName);
-  String get allMedications;
+  String get appLanguage;
+  String get deviceLanguage;
+  String get language;
+  String get theme;
+  String get followSystem;
+  String get light;
+  String get dark;
   String get deleteMedication;
   String get areYouSureYouWantToDeleteThisMedication;
+  String get cancel;
   String get delete;
-  String get setReminder;
-  String get logDose;
-  String get newMedication;
+  String get error;
   String get add;
-
-  // Medication form screen
-  String get pleaseSelectAFrequencyPattern;
-  String get pleaseSelectAtLeastOneDay;
-  String get medicationSavedAddAnother;
-  String failedToSaveMedication(String error);
-  String get quantity;
-  String get pleaseEnterTheQuantity;
-  String get pleaseEnterAValidNumber;
-  String get useAdvancedFrequency;
-  String get selectSpecificDaysAndPatterns;
-  String get useSimpleTextFrequency;
-  String get frequencyPattern;
-  String get save;
-  String get saveAndAddMore;
-
-  // Frequency options
-  String get onceDaily;
-  String get twiceDaily;
-  String get threeTimesDaily;
-  String get asNeeded;
-
-  // Medication details screen
-  String get dosageLabel;
-  String get frequencyLabel;
-  String get quantityLabel;
-  String get addStock;
-
-  // Add stock screen
-  String addStockFor(String medicationName);
-  String get saveStock;
-
-  // Settings screen
-  String get blueskySynchronization;
-  String get blueskyHandle;
-  String get yourHandleBskySocial;
-  String get pleaseEnterYourBlueskyHandle;
-  String get personalDataServerPDSURL;
-  String get yourPdsExampleCom;
-  String get pleaseEnterYourPDSURL;
-  String get pleaseEnterAValidURL;
-  String get enabling;
-  String get enableBlueSkySync;
-  String get disableSync;
-  String get disableBlueSkySync;
-  String get disableBlueSkySyncConfirmation;
-  String get disable;
-  String get blueskySyncDisabled;
-  String failedToDisableSync(String error);
-  String get blueskySyncEnabledSuccessfully;
-  String failedToEnableSync(String error);
-
-  // Google Drive Backup Card
-  String get googleDriveBackup;
-  String connectedAs(String userId);
-  String get autoRestoreFromBackup;
-  String get restoreNewerBackupOnStartup;
-  String get backupNow;
-  String get restoreNow;
-  String get disconnect;
-  String get backupSuccessful;
-  String backupFailed(String error);
-  String get restoreSuccessful;
-  String get noBackupFound;
-  String restoreFailed(String error);
-
-  // Data Management Card
-  String get dataManagement;
-  String get importData;
-  String get exportData;
-  String get dataImportedSuccessfully;
-  String failedToImportData(String error);
-  String get dataExportedSuccessfully;
-  String failedToExportData(String error);
-
-  // About Card
-  String get aboutBlueSkyIntegration;
-  String get aboutBlueSkyIntegrationDescription;
-  String get aboutBlueSkyIntegrationDescription2;
-  String get licenseAndLegal;
-  String get mitLicense;
-  String get medicalDisclaimer;
-  String get medicalDisclaimerDescription;
-
-  // Sync Mode descriptions
-  String get syncModeLocalOnlyDescription;
-  String get syncModeSyncEnabledDescription;
-  String get syncModeSyncOnlyDescription;
-
-  // Low Stock & Dashboard
-  String criticallyLowStock(int count);
-  String get dismiss;
+  String markedAsTaken(String name);
+  String noMedicationLeftInStock(String name);
+  String get setReminderFeatureComingSoon;
+  String get selectMedication;
+  String get todaysMedications;
+  String takenOf(int taken, int total);
   String get takeAll;
   String get noMedicationsScheduledForToday;
-
-  // Stock & Reminders
-  String daysOfSupply(int days);
-  String get selectReminderTime;
-  String reminderSetFor(String medication, String time);
-
-  // Adherence Screen
+  String get settings;
+  String get about;
+  String get version;
+  String get privacyPolicy;
+  String get medicationLogs;
+  String get noLogsYet;
+  String get time;
   String get medicationAdherence;
   String get noDataAvailable;
   String get noMedicationLogsYet;
   String get adherenceStatistics;
   String get last7Days;
   String get last30Days;
-
-  // Frequency Selector & Patterns
+  String get overallAdherence;
+  String get dosesTaken;
+  String get dosesMissed;
+  String get weeklyView;
+  String get monthlyView;
   String get daily;
   String get specificDays;
   String get everyNDays;
@@ -212,7 +103,85 @@ abstract class AppLocalizations {
   String everyIntervalDays(int days);
   String get everyDay;
 
-  // New keys for expiration tracking and UI improvements
+  String get synchronization;
+  String get blueskySynchronization;
+  String get enableBlueSkySync;
+  String get blueSkyHandle;
+  String get yourHandleBskySocial;
+  String get pleaseEnterYourBlueskyHandle;
+  String get personalDataServerPDSURL;
+  String get yourPdsExampleCom;
+  String get pleaseEnterYourPDSURL;
+  String get pleaseEnterAValidURL;
+  String get enabling;
+  String get appPassword;
+  String get disableSync;
+  String get disableBlueSkySync;
+  String get disableBlueSkySyncConfirmation;
+  String get disable;
+  String get status;
+  String get syncDisabled;
+  String get loggedIn;
+  String get loggedOut;
+  String get lastSyncedAt;
+  String get syncNow;
+  String get login;
+  String get logout;
+  String get disconnect;
+  String get confirmLogout;
+  String get areYouSureYouWantToLogoutFromBlueSky;
+  String connectedAs(String name);
+  String get dataManagement;
+  String get googleDriveBackup;
+  String get backupToGoogleDrive;
+  String get lastBackupAt;
+  String get backupNow;
+  String get restoreNow;
+  String get restoreNowButton;
+  String get connectToGoogleDrive;
+  String get disconnectGoogleDrive;
+  String get backupSuccessful;
+  String backupFailed(String error);
+  String get restoreFromGoogleDrive;
+  String get restoreSuccessful;
+  String restoreFailed(String error);
+  String get autoRestoreFromBackup;
+  String get restoreNewerBackupOnStartup;
+  String get noBackupFound;
+  String get dataExportedTo;
+  String failedToExportData(String error);
+  String get dataExportedSuccessfully;
+  String get dataImportedSuccessfully;
+  String failedToImportData(String error);
+  String get exportData;
+  String get importData;
+  String get aboutBlueSkyIntegration;
+  String get aboutBlueSkyIntegrationDescription;
+  String get aboutBlueSkyIntegrationDescription2;
+  String get licenseAndLegal;
+  String get mitLicense;
+  String get medicalDisclaimer;
+  String get medicalDisclaimerDescription;
+  String get syncModeLocalOnlyDescription;
+  String get syncModeSyncEnabledDescription;
+  String get syncModeSyncOnlyDescription;
+  String get notifications;
+  String get testNotification;
+  String get notificationSent;
+  String get medicationReminders;
+  String get remindersToTakeYourMedication;
+  String get timeToTakeYour;
+  String get editMedication;
+  String get medicationDetails;
+  String get addStock;
+  String get currentQuantity;
+  String get quantityToAdd;
+  String get confirmAddStock;
+  String get stockAddedSuccessfully;
+  String get saveStock;
+  String addStockFor(String medicationName);
+  String get dailyMedications;
+  String get allMedications;
   String get showLowStock;
   String get showExpiringSoon;
   String get expirationDate;
@@ -222,4 +191,61 @@ abstract class AppLocalizations {
   String get clearExpirationDate;
   String get syncCompletedSuccessfully;
   String syncFailed(String error);
+  String get blueskySyncEnabledSuccessfully;
+  String failedToEnableSync(String error);
+  String get blueskySyncDisabled;
+  String failedToDisableSync(String error);
+  String criticallyLowStock(int count);
+  String get dismiss;
+  String get setReminder;
+  String get logDose;
+  String get newMedication;
+  String reminderSetFor(String name, String time);
+  String loggedDoseFor(String name);
+  String get onceDaily;
+  String get twiceDaily;
+  String get threeTimesDaily;
+  String get asNeeded;
+  String get monday;
+  String get tuesday;
+  String get wednesday;
+  String get thursday;
+  String get friday;
+  String get saturday;
+  String get sunday;
+  String get mon;
+  String get tue;
+  String get wed;
+  String get thu;
+  String get fri;
+  String get sat;
+  String get sun;
+  String get timesPerDayLabel;
+  String get everyDayLabel;
+  String get everyNDaysLabel;
+  String get intervalDaysLabel;
+
+  String get pleaseSelectAFrequencyPattern;
+  String get pleaseSelectAtLeastOneDay;
+  String get useAdvancedFrequency;
+  String get selectSpecificDaysAndPatterns;
+  String get useSimpleTextFrequency;
+  String get frequencyPattern;
+  String get reminderTime;
+  String get noMedicationsAvailable;
+
+  // New keys for storage location and PRN
+  String get storageLocation;
+  String get storageLocationLabel;
+  String get asNeededLabel;
+  String get asNeededDescription;
+  String get lastTaken;
+  String lastTakenDaysAgo(int days);
+  String get selectLocation;
+  String get medicineCabinet;
+  String get bedroom;
+  String get kitchen;
+  String get car;
+  String get office;
+  String get purseBag;
 }
