@@ -10,6 +10,17 @@ import 'package:flutter/foundation.dart';
 /// to a JSON file that can be saved to the device's file system. The exported
 /// data can later be imported using [ImportService].
 class ExportService {
+  static ExportService _instance = ExportService._internal();
+
+  /// Returns the singleton instance of the ExportService.
+  factory ExportService() => _instance;
+
+  /// Sets the singleton instance of the ExportService (used for testing).
+  @visibleForTesting
+  static set instance(ExportService service) => _instance = service;
+
+  ExportService._internal();
+
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   /// Exports all medications from the database to a JSON file.

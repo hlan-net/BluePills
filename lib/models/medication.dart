@@ -44,11 +44,21 @@ class Medication {
   /// The timestamp when this medication was last updated.
   DateTime updatedAt;
 
+  /// The expiration date of the medication (optional).
+  DateTime? expirationDate;
+
+  /// Where the medication is stored (optional).
+  String? storageLocation;
+
+  /// Flag indicating if this is an as-needed (PRN) medication.
+  bool isAsNeeded;
+
   /// Creates a new [Medication] instance.
   ///
-  /// All fields except [id], [remoteId], [lastSynced], [createdAt], and [updatedAt]
-  /// are required. The [createdAt] and [updatedAt] timestamps are automatically
-  /// set to the current time if not provided.
+  /// All fields except [id], [remoteId], [lastSynced], [createdAt], [updatedAt],
+  /// [expirationDate], [storageLocation], and [isAsNeeded] are required.
+  /// The [createdAt] and [updatedAt] timestamps are automatically set to the
+  /// current time if not provided.
   Medication({
     this.id,
     required this.name,
@@ -62,6 +72,9 @@ class Medication {
     this.needsSync = true,
     DateTime? createdAt,
     DateTime? updatedAt,
+    this.expirationDate,
+    this.storageLocation,
+    this.isAsNeeded = false,
   }) : createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -86,6 +99,9 @@ class Medication {
       'needsSync': needsSync ? 1 : 0,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      'expirationDate': expirationDate?.toIso8601String(),
+      'storageLocation': storageLocation,
+      'isAsNeeded': isAsNeeded ? 1 : 0,
     };
   }
 
@@ -151,6 +167,11 @@ class Medication {
       updatedAt: map['updatedAt'] != null
           ? DateTime.parse(map['updatedAt'])
           : DateTime.now(),
+      expirationDate: map['expirationDate'] != null
+          ? DateTime.parse(map['expirationDate'])
+          : null,
+      storageLocation: map['storageLocation'],
+      isAsNeeded: parseInt(map['isAsNeeded']) == 1,
     );
   }
 
@@ -171,6 +192,9 @@ class Medication {
     bool? needsSync,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Object? expirationDate = _sentinel,
+    Object? storageLocation = _sentinel,
+    bool? isAsNeeded,
   }) {
     return Medication(
       id: id ?? this.id,
@@ -185,8 +209,17 @@ class Medication {
       needsSync: needsSync ?? this.needsSync,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      expirationDate: expirationDate == _sentinel
+          ? this.expirationDate
+          : expirationDate as DateTime?,
+      storageLocation: storageLocation == _sentinel
+          ? this.storageLocation
+          : storageLocation as String?,
+      isAsNeeded: isAsNeeded ?? this.isAsNeeded,
     );
   }
+
+  static const Object _sentinel = Object();
 
   /// Marks this medication as updated and needing synchronization.
   ///
@@ -202,7 +235,12 @@ class Medication {
   /// This method checks the `frequencyPattern` first. If it exists, it uses
   /// the `shouldTakeOnDate` logic. Otherwise, it falls back to the simple
   /// `frequency` enum.
+  ///
+  /// Medications marked as `isAsNeeded` (PRN) do not have a schedule and
+  /// will always return false for this check.
   bool shouldTakeToday() {
+    if (isAsNeeded) return false;
+
     final today = DateTime.now();
 
     if (frequencyPattern != null) {
@@ -236,6 +274,8 @@ class Medication {
 
   /// Returns the number of doses required per day based on frequency.
   int get requiredDosesPerDay {
+    if (isAsNeeded) return 0;
+
     if (frequencyPattern != null) {
       return frequencyPattern!.timesPerDay;
     }
@@ -270,6 +310,8 @@ class Medication {
 
   /// Calculates the estimated number of days the current supply will last.
   int getDaysOfSupply() {
+    if (isAsNeeded) return 9999;
+
     if (frequencyPattern == null) {
       // Fall back to simple Frequency enum
       switch (frequency) {
@@ -311,5 +353,21 @@ class Medication {
       case FrequencyType.asNeeded:
         return 9999;
     }
+  }
+
+  /// Calculates the number of days until the medication expires.
+  ///
+  /// Returns null if no expiration date is set.
+  /// Returns 0 or negative if already expired.
+  int? getDaysUntilExpiration() {
+    if (expirationDate == null) return null;
+    final today = DateTime.now();
+    final startOfToday = DateTime(today.year, today.month, today.day);
+    final startOfExpiration = DateTime(
+      expirationDate!.year,
+      expirationDate!.month,
+      expirationDate!.day,
+    );
+    return startOfExpiration.difference(startOfToday).inDays;
   }
 }

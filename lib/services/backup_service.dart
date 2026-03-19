@@ -29,6 +29,17 @@ import 'package:bluepills/services/config_service.dart';
 /// final success = await backupService.restore();
 /// ```
 class BackupService {
+  static BackupService _instance = BackupService._internal();
+
+  /// Returns the singleton instance of the BackupService.
+  factory BackupService() => _instance;
+
+  /// Sets the singleton instance of the BackupService (used for testing).
+  @visibleForTesting
+  static set instance(BackupService service) => _instance = service;
+
+  BackupService._internal();
+
   final GoogleDriveService _driveService = GoogleDriveService();
   final DatabaseHelper _dbHelper = DatabaseHelper();
   final ConfigService _configService = ConfigService();

@@ -15,13 +15,13 @@
 ### Enhanced Prescription Patterns (US-001) - 3-4 days
 - [x] Add `scheduleDays` field to Medication model (JSON or bit flags)
 - [x] Create database migration for new field
-- [ ] Design day selector UI (Mon, Tue, Wed, Thu, Fri, Sat, Sun buttons)
-- [ ] Implement day selector in MedicationFormScreen
-- [ ] Add pattern summary text display (e.g., "Mon, Tue, Wed, Thu, Fri")
+- [x] Design day selector UI (Mon, Tue, Wed, Thu, Fri, Sat, Sun buttons)
+- [x] Implement day selector in MedicationFormScreen
+- [x] Add pattern summary text display (e.g., "Mon, Tue, Wed, Thu, Fri")
 - [x] Update `shouldTakeToday()` to use schedule pattern
 - [x] Save and load schedule pattern from database
-- [ ] Test weekday-only pattern (Adenuric use case)
-- [ ] Test multiple selected days pattern
+- [x] Test weekday-only pattern (Adenuric use case)
+- [x] Test multiple selected days pattern
 
 ### Low Stock Warnings (US-001) - 1 day
 - [x] Implement `getDaysOfSupply()` calculation
@@ -37,8 +37,8 @@
 - [x] Add time picker to medication form
 - [x] Schedule notifications using NotificationHelper
 - [x] Handle daily reminder scheduling based on pattern
-- [ ] Implement "Take" action in notification
-- [ ] Implement "Snooze" action (15 min, 30 min, 1 hour)
+- [x] Implement "Take" action in notification
+- [x] Implement "Snooze" action (15 min)
 - [x] Handle notification when app is closed
 - [ ] Reschedule for next occurrence
 - [ ] Test reminder on actual device
@@ -48,41 +48,41 @@
 ## 🟡 Important / Phase 2
 
 ### Expiration Date Tracking (US-002) - 2 days
-- [ ] Add `expirationDate` field to Medication model
-- [ ] Create database migration
-- [ ] Add date picker to medication form
-- [ ] Implement days until expiration calculation
-- [ ] Add expiration status badge to medication cards
-- [ ] Color-code by status (green > 60d, yellow 30-60d, orange 7-30d, red < 7d or expired)
-- [ ] Create "Expiring Soon" filter
-- [ ] Create "Expired" filter
-- [ ] Sort medications by expiration date
+- [x] Add `expirationDate` field to Medication model
+- [x] Create database migration
+- [x] Add date picker to medication form
+- [x] Implement days until expiration calculation
+- [x] Add expiration status badge to medication cards
+- [x] Color-code by status (green > 60d, yellow 30-60d, orange 7-30d, red < 7d or expired)
+- [x] Create "Expiring Soon" filter
+- [x] Create "Expired" filter
+- [x] Sort medications by expiration date
 - [ ] Show "Expires in X days" text
 
 ### Expiration Notifications (US-002) - 1-2 days
-- [ ] Schedule notification 30 days before expiration
-- [ ] Schedule notification 7 days before expiration
-- [ ] Schedule notification on expiration day
+- [x] Schedule notification 30 days before expiration
+- [x] Schedule notification 7 days before expiration
+- [x] Schedule notification on expiration day
 - [ ] Group multiple expiring medications in one notification
-- [ ] Update notifications when expiration date changes
-- [ ] Cancel notifications when medication deleted
+- [x] Update notifications when expiration date changes
+- [x] Cancel notifications when medication deleted
 - [ ] Test notification scheduling
 
 ### Storage Location (US-002) - 1 day
-- [ ] Add `storageLocation` field to Medication model
-- [ ] Create database migration
-- [ ] Add location dropdown to medication form
-- [ ] Add predefined locations: Medicine Cabinet, Bedroom, Kitchen, Car, Office, Purse/Bag
+- [x] Add `storageLocation` field to Medication model
+- [x] Create database migration
+- [x] Add location dropdown to medication form
+- [x] Add predefined locations: Medicine Cabinet, Bedroom, Kitchen, Car, Office, Purse/Bag
 - [ ] Allow custom location entry
-- [ ] Show location badge/icon on medication cards
+- [x] Show location badge/icon on medication cards
 - [ ] Add filter by location
 - [ ] Test location search and filtering
 
 ### As-Needed (PRN) Flag (US-002) - 1 day
-- [ ] Add `isAsNeeded` boolean field to Medication model
-- [ ] Create database migration
-- [ ] Add "As-Needed (PRN)" toggle to medication form
-- [ ] Exclude PRN medications from "Today's Medications"
+- [x] Add `isAsNeeded` boolean field to Medication model
+- [x] Create database migration
+- [x] Add "As-Needed (PRN)" toggle to medication form
+- [x] Exclude PRN medications from "Today's Medications" (shown separately or below)
 - [ ] Show "Last taken: X days ago" for PRN medications
 - [ ] Track usage frequency for PRN medications
 - [ ] Add "As-Needed" filter to medication list
@@ -106,15 +106,15 @@
 - [ ] Add medication name auto-suggest
 - [ ] Improve dosage input (number + unit dropdown)
 - [ ] Add better form validation with helpful messages
-- [ ] Add "Save & Add Another" button
+- [x] Add "Save & Add Another" button
 - [ ] Show form progress indicator
-- [ ] Add help text/tooltips for complex fields
+- [x] Add help text/tooltips for complex fields
 
 ### Search and Filters
 - [ ] Add search bar to home screen
 - [ ] Implement medication name search
-- [ ] Add filter chips: All, Active, As-needed, Low Stock, Expiring
-- [ ] Add sort options: Name, Expiration, Quantity, Recently Added
+- [x] Add filter chips: All, Active, As-needed, Low Stock, Expiring
+- [x] Add sort options: Name, Expiration, Quantity, Recently Added
 - [ ] Save user's preferred filter/sort settings
 - [ ] Highlight search results
 
@@ -130,12 +130,12 @@
 ## 🔧 Technical Debt & Improvements
 
 ### Database & Data
-- [ ] Implement database migration strategy
-- [ ] Add database version tracking
+- [x] Implement database migration strategy
+- [x] Add database version tracking
 - [ ] Add data validation before insert/update
 - [ ] Optimize queries for large medication lists
 - [ ] Add database indices for common queries
-- [ ] Implement data export/backup functionality
+- [x] Implement data export/backup functionality
 
 ### Error Handling
 - [ ] Add comprehensive error handling in medication logging
@@ -145,12 +145,12 @@
 - [ ] Add crash reporting (optional, privacy-focused)
 
 ### Testing
-- [ ] Write unit tests for Medication model
-- [ ] Write unit tests for schedule logic (`shouldTakeToday()`)
-- [ ] Write unit tests for adherence calculations
+- [x] Write unit tests for Medication model
+- [x] Write unit tests for schedule logic (`shouldTakeToday()`)
+- [x] Write unit tests for adherence calculations
 - [ ] Write integration tests for medication CRUD
-- [ ] Write widget tests for critical screens
-- [ ] Set up automated testing in CI/CD
+- [x] Write widget tests for critical screens
+- [x] Set up automated testing in CI/CD
 - [ ] Add test coverage reporting
 
 ### Performance
@@ -161,12 +161,12 @@
 - [ ] Optimize database queries
 
 ### Code Quality
-- [ ] Refactor main.dart (too large, split into separate files)
-- [ ] Extract MedicationListScreen to separate file
-- [ ] Create reusable UI components (MedicationCard, etc.)
+- [x] Refactor main.dart (too large, split into separate files)
+- [x] Extract MedicationListScreen to separate file
+- [x] Create reusable UI components (MedicationCard, etc.)
 - [ ] Improve code documentation
 - [ ] Follow Flutter best practices
-- [ ] Run dart analyze and fix warnings
+- [x] Run dart analyze and fix warnings
 
 ---
 
@@ -186,7 +186,7 @@
 - [ ] Submit to App Store
 
 ### Web (Current)
-- [ ] Test web version functionality
+- [x] Test web version functionality
 - [ ] Handle web-specific limitations (notifications)
 - [ ] Optimize for desktop browsers
 - [ ] Add PWA support
@@ -209,11 +209,11 @@
 - [ ] Document all notification settings
 
 ### Developer Documentation
-- [ ] Document database schema
-- [ ] Document API/model interfaces
-- [ ] Add contribution guidelines
-- [ ] Create architecture documentation
-- [ ] Document build process
+- [x] Document database schema
+- [x] Document API/model interfaces
+- [x] Add contribution guidelines
+- [x] Create architecture documentation
+- [x] Document build process
 
 ### App Store Assets
 - [ ] Create app screenshots
@@ -248,13 +248,18 @@
 **Sprint Goal:** Enable Matti's daily medication routine
 
 **In Progress:**
-- [ ] Enhanced Prescription Patterns (Day Selector UI)
+- [ ] Reschedule for next occurrence
 
 **Up Next:**
-- [ ] Notification Actions (Take/Snooze)
+- [ ] Search medications by name
 
-**Blocked:**
-- None
+**Completed this session:**
+- [x] Notification Actions (Take/Snooze)
+- [x] Expiration Notifications (US-002)
+- [x] Storage Location Tracking (US-002)
+- [x] As-Needed (PRN) Flag (US-002)
+- [x] Full Localization (5 languages)
+- [x] Fixed all CI/CD compilation and linting issues
 
 ---
 
@@ -267,4 +272,4 @@
 - Prioritize based on user stories (US-001, US-002)
 - Focus on Matti's needs first, then Jukka's
 
-Last Updated: 2025-12-26
+Last Updated: 2026-03-04

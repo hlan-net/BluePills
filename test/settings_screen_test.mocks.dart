@@ -4,17 +4,19 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
-import 'dart:io' as _i9;
+import 'dart:io' as _i10;
 
 import 'package:bluepills/models/app_config.dart' as _i2;
-import 'package:bluepills/services/backup_service.dart' as _i11;
+import 'package:bluepills/models/medication.dart' as _i6;
+import 'package:bluepills/services/backup_service.dart' as _i7;
 import 'package:bluepills/services/config_service.dart' as _i3;
-import 'package:bluepills/services/export_service.dart' as _i5;
-import 'package:bluepills/services/google_drive_service.dart' as _i7;
-import 'package:bluepills/services/import_service.dart' as _i6;
+import 'package:bluepills/services/export_service.dart' as _i12;
+import 'package:bluepills/services/google_drive_service.dart' as _i8;
+import 'package:bluepills/services/import_service.dart' as _i13;
+import 'package:bluepills/services/sync_service.dart' as _i5;
 import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart'
-    as _i8;
-import 'package:googleapis/drive/v3.dart' as _i10;
+    as _i9;
+import 'package:googleapis/drive/v3.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -85,13 +87,17 @@ class MockConfigService extends _i1.Mock implements _i3.ConfigService {
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> enableSync({
-    required String? blueskyHandle,
-    required String? pdsUrl,
+  _i4.Future<void> updateSyncConfig({
+    required bool? syncEnabled,
+    String? blueskyHandle,
+    String? appPassword,
+    String? pdsUrl,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#enableSync, [], {
+            Invocation.method(#updateSyncConfig, [], {
+              #syncEnabled: syncEnabled,
               #blueskyHandle: blueskyHandle,
+              #appPassword: appPassword,
               #pdsUrl: pdsUrl,
             }),
             returnValue: _i4.Future<void>.value(),
@@ -100,9 +106,9 @@ class MockConfigService extends _i1.Mock implements _i3.ConfigService {
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> disableSync() =>
+  _i4.Future<void> updateLanguage(String? languageCode) =>
       (super.noSuchMethod(
-            Invocation.method(#disableSync, []),
+            Invocation.method(#updateLanguage, [languageCode]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
@@ -116,107 +122,70 @@ class MockConfigService extends _i1.Mock implements _i3.ConfigService {
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
-}
-
-/// A class which mocks [ExportService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockExportService extends _i1.Mock implements _i5.ExportService {
-  MockExportService() {
-    _i1.throwOnMissingStub(this);
-  }
 
   @override
-  _i4.Future<void> exportMedications() =>
+  _i4.Future<void> updateLastBackupTime([DateTime? time]) =>
       (super.noSuchMethod(
-            Invocation.method(#exportMedications, []),
+            Invocation.method(#updateLastBackupTime, [time]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
 }
 
-/// A class which mocks [ImportService].
+/// A class which mocks [SyncService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockImportService extends _i1.Mock implements _i6.ImportService {
-  MockImportService() {
+class MockSyncService extends _i1.Mock implements _i5.SyncService {
+  MockSyncService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> importMedications() =>
+  _i5.SyncStatus get syncStatus =>
       (super.noSuchMethod(
-            Invocation.method(#importMedications, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            Invocation.getter(#syncStatus),
+            returnValue: _i5.SyncStatus.idle,
           )
-          as _i4.Future<void>);
-}
-
-/// A class which mocks [GoogleDriveService].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockGoogleDriveService extends _i1.Mock
-    implements _i7.GoogleDriveService {
-  MockGoogleDriveService() {
-    _i1.throwOnMissingStub(this);
-  }
+          as _i5.SyncStatus);
 
   @override
-  _i4.Stream<_i8.GoogleSignInCredentials?> get onCurrentUserChanged =>
+  _i4.Future<bool> performFullSync() =>
       (super.noSuchMethod(
-            Invocation.getter(#onCurrentUserChanged),
-            returnValue: _i4.Stream<_i8.GoogleSignInCredentials?>.empty(),
+            Invocation.method(#performFullSync, []),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i4.Stream<_i8.GoogleSignInCredentials?>);
+          as _i4.Future<bool>);
 
   @override
-  _i4.Future<_i8.GoogleSignInCredentials?> signIn() =>
+  _i4.Future<bool> syncSingleMedication(_i6.Medication? medication) =>
       (super.noSuchMethod(
-            Invocation.method(#signIn, []),
-            returnValue: _i4.Future<_i8.GoogleSignInCredentials?>.value(),
+            Invocation.method(#syncSingleMedication, [medication]),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i4.Future<_i8.GoogleSignInCredentials?>);
+          as _i4.Future<bool>);
 
   @override
-  _i4.Future<_i8.GoogleSignInCredentials?> signInSilently() =>
+  _i4.Future<bool> deleteMedicationFromSync(_i6.Medication? medication) =>
       (super.noSuchMethod(
-            Invocation.method(#signInSilently, []),
-            returnValue: _i4.Future<_i8.GoogleSignInCredentials?>.value(),
+            Invocation.method(#deleteMedicationFromSync, [medication]),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i4.Future<_i8.GoogleSignInCredentials?>);
+          as _i4.Future<bool>);
 
   @override
-  _i4.Future<void> signOut() =>
+  _i4.Future<void> markMedicationForSync(int? medicationId) =>
       (super.noSuchMethod(
-            Invocation.method(#signOut, []),
+            Invocation.method(#markMedicationForSync, [medicationId]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> uploadBackup(_i9.File? file) =>
+  _i4.Future<void> performBackgroundSync() =>
       (super.noSuchMethod(
-            Invocation.method(#uploadBackup, [file]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
-  _i4.Future<_i10.File?> getBackupMetadata() =>
-      (super.noSuchMethod(
-            Invocation.method(#getBackupMetadata, []),
-            returnValue: _i4.Future<_i10.File?>.value(),
-          )
-          as _i4.Future<_i10.File?>);
-
-  @override
-  _i4.Future<void> downloadBackup(String? fileId, _i9.File? targetFile) =>
-      (super.noSuchMethod(
-            Invocation.method(#downloadBackup, [fileId, targetFile]),
+            Invocation.method(#performBackgroundSync, []),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
@@ -226,7 +195,7 @@ class MockGoogleDriveService extends _i1.Mock
 /// A class which mocks [BackupService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBackupService extends _i1.Mock implements _i11.BackupService {
+class MockBackupService extends _i1.Mock implements _i7.BackupService {
   MockBackupService() {
     _i1.throwOnMissingStub(this);
   }
@@ -252,6 +221,136 @@ class MockBackupService extends _i1.Mock implements _i11.BackupService {
   _i4.Future<void> checkAndRestore() =>
       (super.noSuchMethod(
             Invocation.method(#checkAndRestore, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [GoogleDriveService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGoogleDriveService extends _i1.Mock
+    implements _i8.GoogleDriveService {
+  MockGoogleDriveService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Stream<_i9.GoogleSignInCredentials?> get onCurrentUserChanged =>
+      (super.noSuchMethod(
+            Invocation.getter(#onCurrentUserChanged),
+            returnValue: _i4.Stream<_i9.GoogleSignInCredentials?>.empty(),
+          )
+          as _i4.Stream<_i9.GoogleSignInCredentials?>);
+
+  @override
+  _i4.Future<bool> isAuthenticated() =>
+      (super.noSuchMethod(
+            Invocation.method(#isAuthenticated, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<String?> getUserEmail() =>
+      (super.noSuchMethod(
+            Invocation.method(#getUserEmail, []),
+            returnValue: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
+
+  @override
+  _i4.Future<void> authenticate() =>
+      (super.noSuchMethod(
+            Invocation.method(#authenticate, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<_i9.GoogleSignInCredentials?> signIn() =>
+      (super.noSuchMethod(
+            Invocation.method(#signIn, []),
+            returnValue: _i4.Future<_i9.GoogleSignInCredentials?>.value(),
+          )
+          as _i4.Future<_i9.GoogleSignInCredentials?>);
+
+  @override
+  _i4.Future<_i9.GoogleSignInCredentials?> signInSilently() =>
+      (super.noSuchMethod(
+            Invocation.method(#signInSilently, []),
+            returnValue: _i4.Future<_i9.GoogleSignInCredentials?>.value(),
+          )
+          as _i4.Future<_i9.GoogleSignInCredentials?>);
+
+  @override
+  _i4.Future<void> signOut() =>
+      (super.noSuchMethod(
+            Invocation.method(#signOut, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> uploadBackup(_i10.File? file) =>
+      (super.noSuchMethod(
+            Invocation.method(#uploadBackup, [file]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<_i11.File?> getBackupMetadata() =>
+      (super.noSuchMethod(
+            Invocation.method(#getBackupMetadata, []),
+            returnValue: _i4.Future<_i11.File?>.value(),
+          )
+          as _i4.Future<_i11.File?>);
+
+  @override
+  _i4.Future<void> downloadBackup(String? fileId, _i10.File? targetFile) =>
+      (super.noSuchMethod(
+            Invocation.method(#downloadBackup, [fileId, targetFile]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [ExportService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockExportService extends _i1.Mock implements _i12.ExportService {
+  MockExportService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<void> exportMedications() =>
+      (super.noSuchMethod(
+            Invocation.method(#exportMedications, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+}
+
+/// A class which mocks [ImportService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockImportService extends _i1.Mock implements _i13.ImportService {
+  MockImportService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<void> importMedications() =>
+      (super.noSuchMethod(
+            Invocation.method(#importMedications, []),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
