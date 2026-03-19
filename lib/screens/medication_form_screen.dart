@@ -258,9 +258,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
       children: [
         TextFormField(
           controller: _nameController,
-          decoration: InputDecoration(
-            labelText: localizations.medicationName,
-          ),
+          decoration: InputDecoration(labelText: localizations.medicationName),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return localizations.pleaseEnterMedicationName;
@@ -280,9 +278,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         ),
         TextFormField(
           controller: _quantityController,
-          decoration: InputDecoration(
-            labelText: localizations.quantity,
-          ),
+          decoration: InputDecoration(labelText: localizations.quantity),
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -353,9 +349,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
           _selectedFrequency = newValue!;
         });
       },
-      decoration: InputDecoration(
-        labelText: localizations.frequency,
-      ),
+      decoration: InputDecoration(labelText: localizations.frequency),
     );
   }
 
@@ -375,9 +369,9 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
               Text(
                 _selectedFrequencyPattern!.toReadableString(localizations),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             const SizedBox(height: 16),
             FrequencySelector(
@@ -394,7 +388,10 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
     );
   }
 
-  Widget _buildDateTimePickers(BuildContext context, AppLocalizations localizations) {
+  Widget _buildDateTimePickers(
+    BuildContext context,
+    AppLocalizations localizations,
+  ) {
     return Column(
       children: [
         ListTile(
