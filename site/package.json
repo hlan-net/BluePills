@@ -1,5 +1,3 @@
 {
-  "dependencies": {
-    "@github/copilot": "^0.0.400"
-  }
+  "dependencies": {}
 }
