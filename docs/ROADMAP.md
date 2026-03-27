@@ -1,100 +1,92 @@
 # Development Roadmap - BluePills
 
-## Current State Analysis
+## Current Product State
 
-### ✅ Already Implemented
-- [x] Medication entry (name, dosage, quantity)
-- [x] Basic frequency patterns (Once Daily, Twice Daily, etc.)
-- [x] Inventory tracking (quantity decrements when logged)
-- [x] Speed Dial FAB (New Medication, Log Dose, Set Reminder actions)
-- [x] Database infrastructure (DatabaseHelper, SQLite)
-- [x] Notification system infrastructure (NotificationHelper)
-- [x] Basic list view of medications
-- [x] Delete medications
-- [x] Update medication quantities (Add Stock)
-- [x] Today's medications dashboard (Matti's core need)
-- [x] Enhanced prescription patterns (Specific Days, Every N Days)
-- [x] Low stock warnings and banners
-- [x] Expiration date tracking and color-coded badges
-- [x] Basic reminder scheduling
-- [x] Adherence tracking and calendar view
-- [x] Main screen refactoring for better maintainability
+### ✅ Implemented
+- [x] Medication CRUD (add, edit, delete) with dosage, quantity, and frequency
+- [x] Enhanced schedules (specific weekdays, every N days, pattern summary)
+- [x] Today's Medications dashboard with taken/due/missed status and quick actions
+- [x] Inventory tracking with low-stock warnings and dedicated filters
+- [x] Reminder infrastructure with notification actions (Take, Snooze)
+- [x] Expiration tracking with badges, filters, and sorting
+- [x] Expiration notifications at 30/7/0 day milestones
+- [x] Storage location field with predefined locations
+- [x] As-needed (PRN) medication support
+- [x] Adherence calendar and aggregate adherence metrics
+- [x] Export/import and backup foundations
+- [x] Multi-language support (EN/FI/SV/DE/ES)
 
-### ⚠️ Partially Implemented
-- [ ] Basic Reminders (Notification "Take" and "Snooze" actions)
+### ⚠️ In Progress / Needs Validation
+- [ ] Reminder flow: reschedule next occurrence after action completion
+- [ ] Reminder behavior verified on physical Android device
+- [ ] Expiration notification scheduling verified end-to-end
 
 ### ❌ Not Yet Implemented
-- [ ] Expiration Notifications (30/7/1 day warnings)
-- [ ] Storage location tracking
-- [ ] As-needed (PRN) medication type
 - [ ] Search medications by name
-- [ ] Varying dose support (Advanced)
-- [ ] Data export to CSV/PDF
+- [ ] Group multiple expiring medications into one notification
+- [ ] PRN enhancements ("last taken" summary, usage frequency trends)
+- [ ] Custom storage location entry and location-based filtering
+- [ ] Adherence export (CSV/PDF) and trend visualizations
+- [ ] Advanced varying dose rules (different doses by day/time)
 
 ---
 
-## Recommended Development Priority
+## Next Release Scope (Recommended)
 
-### Phase 1: Complete Matti's Core Needs (US-001) 🎯 HIGH PRIORITY
+### Release Focus: Reminder reliability + discoverability
 
-#### 1.1 Today's Medications Dashboard (DONE)
-#### 1.2 Enhanced Prescription Patterns (DONE)
-#### 1.3 Low Stock Warnings (DONE)
-#### 1.4 Basic Reminders (IN PROGRESS)
-**Features:**
-- [x] Set reminder time for each medication
-- [x] Schedule daily notifications based on prescription pattern
-- [x] Show medication name in notification
-- [ ] "Take" action button in notification
-- [ ] Snooze option (15 min, 30 min, 1 hour)
+1. Reminder completion reliability
+- [ ] Implement robust "next occurrence" rescheduling logic
+- [ ] Verify action behavior for Take and Snooze across app states
 
----
+2. Notification quality
+- [ ] Group multiple expiring medications into a single daily digest notification
+- [ ] Add/confirm tests for expiration notification scheduling
 
-### Phase 2: Jukka's Essential Needs (US-002) 🎯 MEDIUM PRIORITY
+3. Medication findability
+- [ ] Add search by medication name to main list/dashboard
 
-#### 2.1 Expiration Date Tracking (DONE)
-#### 2.2 Expiration Notifications (Next Up)
-**Features:**
-- [ ] Notification 30 days before expiration
-- [ ] Notification 7 days before expiration
-- [ ] Notification on expiration day
-- [ ] Group multiple expiring medications in one notification
+4. PRN usability quick win
+- [ ] Show "last taken" relative text for PRN medications
 
 ---
 
-### Phase 3: Enhanced User Experience 🎯 LOWER PRIORITY
+## Phase Plan
 
-#### 3.1 Adherence Tracking & History (DONE)
-#### 3.2 Improved Medication Form UX
-#### 3.3 Search and Filters
-- [x] Filter by Low Stock
-- [x] Filter by Expiring Soon
-- [ ] Search by Name
+### Phase 1 - Core routine reliability (current)
+- Reminders consistently fire and recover after interaction
+- Expiration reminders remain accurate after edits/imports/deletes
 
----
+### Phase 2 - Day-to-day usability
+- Fast search and filtering for active/low stock/expiring medications
+- Better PRN-specific context and history summaries
 
-## Decision Framework
-
-When prioritizing, ask:
-
-1. **Does it help Matti take medications correctly?** (Primary persona)
-2. **Is it part of the daily routine?** (High frequency = high value)
-3. **Does it prevent a problem?** (Missing doses, running out, expired meds)
-4. **Is it a quick win?** (High value, low effort)
-5. **Does it enable other features?** (Foundation for future work)
+### Phase 3 - Advanced adherence and dosing
+- Trend views and export for adherence reporting
+- Flexible varying dose schedules for complex therapies
 
 ---
 
-## Success Metrics
+## Prioritization Framework
 
-### Short-term (Completed)
-- Users can set up complex schedules (weekdays only, specific days)
-- Users see "today's medications" on home screen
-- Users receive daily reminders
-- Users know when to refill (low stock warnings)
+When choosing work, prioritize items that:
 
-### Medium-term (Next Quarter)
-- Users track medication adherence over time
-- Users manage expiration dates
-- Users rarely forget medications (high adherence %)
-- Users successfully refill before running out
+1. Directly help users take the right medication at the right time
+2. Reduce missed doses, stockouts, and expiration-related risk
+3. Improve confidence in reminders/notifications on real devices
+4. Deliver clear user value with low implementation risk
+5. Build reusable foundations for future sync and analytics features
+
+---
+
+## Outcome Targets
+
+### Near-term
+- Reminder actions are reliable on physical devices
+- Users can quickly find medications with name search
+- Expiration reminders are concise and non-spammy
+
+### Mid-term
+- Users can understand adherence trends over time
+- PRN usage patterns become visible and actionable
+- Complex dosing workflows are supported without manual workarounds
