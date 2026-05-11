@@ -169,7 +169,7 @@ jobs:
         java-version: '17'
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: android-actions/setup-android@v4
 
     - name: Get dependencies
       run: flutter pub get
