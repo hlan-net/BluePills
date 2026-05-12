@@ -179,13 +179,7 @@ class _MedicationFormScreenState extends State<MedicationFormScreen> {
         // 1. Handle Reminders
         if (!newMedication.isAsNeeded) {
           try {
-            await notificationHelper.scheduleNotification(
-              id: newMedication.id!,
-              title: 'Medication Reminder',
-              body: 'Time to take your ${newMedication.name}!',
-              scheduledTime: newMedication.reminderTime,
-              frequencyPattern: newMedication.frequencyPattern,
-            );
+            await notificationHelper.scheduleMedicationReminder(newMedication);
           } catch (e) {
             debugPrint('Failed to schedule reminder: $e');
           }

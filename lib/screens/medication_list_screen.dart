@@ -31,6 +31,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   bool _showOnlyExpiringSoon = false;
   bool _showOnlyExpired = false;
   bool _sortByExpiration = false;
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
 
   String _getFrequencyText(
     Frequency frequency,
@@ -74,6 +76,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   @override
   void dispose() {
     _animationController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -271,13 +274,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
     // Schedule the notification
     try {
-      await NotificationHelper().scheduleNotification(
-        id: selectedMed.id!,
-        title: selectedMed.name,
-        body: '${localizations.reminderTime}: ${selectedMed.dosage}',
-        scheduledTime: scheduledTime,
-        frequencyPattern: selectedMed.frequencyPattern,
-      );
+      await NotificationHelper().scheduleMedicationReminder(updatedMed);
     } catch (e) {
       debugPrint('Error scheduling notification: $e');
     }
@@ -326,6 +323,42 @@ class _MedicationListScreenState extends State<MedicationListScreen>
     return AppBar(
       title: Text(localizations.myMedications),
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(56),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: TextField(
+            controller: _searchController,
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value.trim().toLowerCase();
+              });
+            },
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.search),
+              hintText: '${localizations.medicationName}...',
+              isDense: true,
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none,
+              ),
+              suffixIcon: _searchQuery.isEmpty
+                  ? null
+                  : IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          _searchController.clear();
+                          _searchQuery = '';
+                        });
+                      },
+                    ),
+            ),
+          ),
+        ),
+      ),
       actions: [
         _buildSortAction(),
         _buildLowStockAction(localizations),
@@ -499,7 +532,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
         Expanded(
           child: ListView(
             children: [
-              _buildTodaysMedicationsSection(medications),
+              _buildTodaysMedicationsSection(displayMedications),
               _buildAllMedicationsHeader(localizations),
               ...displayMedications.map(
                 (med) => _buildMedicationCard(context, localizations, med),
@@ -513,6 +546,11 @@ class _MedicationListScreenState extends State<MedicationListScreen>
 
   List<Medication> _prepareDisplayMedications(List<Medication> medications) {
     var filtered = List<Medication>.from(medications);
+    if (_searchQuery.isNotEmpty) {
+      filtered = filtered
+          .where((med) => med.name.toLowerCase().contains(_searchQuery))
+          .toList();
+    }
     filtered = _applyFilter(filtered, _showOnlyLowStock, _isLowStock);
     filtered = _applyFilter(filtered, _showOnlyExpiringSoon, _isExpiringSoon);
     filtered = _applyFilter(filtered, _showOnlyExpired, _isExpired);
@@ -598,8 +636,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                 onTakeMedication: _takeMedication,
                 onTakeAll: _takeAllMedications,
               ),
-            if (asNeeded.isNotEmpty)
-              _buildAsNeededSection(context, asNeeded, logsToday),
+            if (asNeeded.isNotEmpty) _buildAsNeededSection(context, asNeeded),
           ],
         );
       },
@@ -609,7 +646,6 @@ class _MedicationListScreenState extends State<MedicationListScreen>
   Widget _buildAsNeededSection(
     BuildContext context,
     List<Medication> asNeeded,
-    List<MedicationLog> logsToday,
   ) {
     final localizations = AppLocalizations.of(context)!;
     return Column(
@@ -631,7 +667,11 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                 child: Icon(Icons.medical_information, color: Colors.white),
               ),
               title: Text(med.name),
-              subtitle: Text(med.dosage),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [Text(med.dosage), _buildLastTakenWidget(med)],
+              ),
               trailing: IconButton(
                 icon: const Icon(Icons.add_circle_outline),
                 onPressed: () => _takeMedication(med),
@@ -640,6 +680,36 @@ class _MedicationListScreenState extends State<MedicationListScreen>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildLastTakenWidget(Medication medication) {
+    final localizations = AppLocalizations.of(context)!;
+    return FutureBuilder<List<MedicationLog>>(
+      future: DatabaseHelper().getMedicationLogs(medication.id!),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Text(
+            '${localizations.lastTaken}: -',
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          );
+        }
+
+        final logs = snapshot.data!;
+        logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+        final lastTaken = logs.first.timestamp;
+        final now = DateTime.now();
+        final daysAgo = DateTime(now.year, now.month, now.day)
+            .difference(
+              DateTime(lastTaken.year, lastTaken.month, lastTaken.day),
+            )
+            .inDays;
+
+        return Text(
+          localizations.lastTakenDaysAgo(daysAgo),
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        );
+      },
     );
   }
 
@@ -724,6 +794,7 @@ class _MedicationListScreenState extends State<MedicationListScreen>
                 daysUntilExpiration,
                 medication.expirationDate!,
               ),
+            if (medication.isAsNeeded) _buildLastTakenWidget(medication),
           ],
         ),
         trailing: _buildCardTrailing(localizations, medication),
@@ -822,6 +893,8 @@ class _MedicationListScreenState extends State<MedicationListScreen>
       ),
     );
     if (confirm == true) {
+      await NotificationHelper().cancelNotification(medication.id!);
+      await NotificationHelper().cancelExpirationNotifications(medication.id!);
       await DatabaseHelper().deleteMedication(medication.id!);
       _refreshMedicationList();
     }
