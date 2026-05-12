@@ -33,6 +33,24 @@ jobs:
         echo "## Outdated Packages" >> dependency-report.md
         flutter pub outdated --mode=outdated >> dependency-report.md
 
+    - name: Close previous weekly dependency report
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh issue list \
+          --repo "${{ github.repository }}" \
+          --state open \
+          --label "dependencies,maintenance" \
+          --search 'in:title "Weekly Dependency Update Report"' \
+          --json number \
+          --jq '.[].number' \
+        | while read -r num; do
+            gh issue close "$num" \
+              --repo "${{ github.repository }}" \
+              --reason "not planned" \
+              --comment "Superseded by this week's report."
+          done
+
     - name: Create issue for outdated dependencies
       uses: peter-evans/create-issue-from-file@v6
       with:
@@ -139,6 +157,24 @@ jobs:
         else
           echo "All files have documentation!" >> todo-report.md
         fi
+
+    - name: Close previous weekly documentation report
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh issue list \
+          --repo "${{ github.repository }}" \
+          --state open \
+          --label "documentation,maintenance" \
+          --search 'in:title "Weekly Documentation & TODO Report"' \
+          --json number \
+          --jq '.[].number' \
+        | while read -r num; do
+            gh issue close "$num" \
+              --repo "${{ github.repository }}" \
+              --reason "not planned" \
+              --comment "Superseded by this week's report."
+          done
 
     - name: Create documentation issue
       uses: peter-evans/create-issue-from-file@v6
