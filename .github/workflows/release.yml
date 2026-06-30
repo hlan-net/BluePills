@@ -160,7 +160,7 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: ${{ env.FLUTTER_VERSION }}
-        cache: true
+        cache: false
 
     - name: Setup Java
       uses: actions/setup-java@v5
@@ -261,7 +261,7 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: ${{ env.FLUTTER_VERSION }}
-        cache: true
+        cache: false
 
     - name: Get dependencies
       run: flutter pub get
@@ -314,7 +314,7 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: ${{ env.FLUTTER_VERSION }}
-        cache: true
+        cache: false
 
     - name: Setup Linux dependencies
       run: |
@@ -358,7 +358,7 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: ${{ env.FLUTTER_VERSION }}
-        cache: true
+        cache: false
 
     - name: Get dependencies
       run: flutter pub get
@@ -397,7 +397,7 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         flutter-version: ${{ env.FLUTTER_VERSION }}
-        cache: true
+        cache: false
 
     - name: Get dependencies
       run: flutter pub get
