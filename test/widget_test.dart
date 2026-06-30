@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:bluepills/database/database_adapter.dart';
 import 'package:bluepills/database/database_helper.dart';
 import 'package:bluepills/models/medication.dart';
+import 'package:bluepills/models/medication_log.dart';
 import 'package:bluepills/models/frequency.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/services/sync_service.dart';
@@ -42,6 +43,9 @@ void main() {
     NotificationHelper.instance = mockNotificationHelper;
 
     when(mockDatabaseAdapter.init()).thenAnswer((_) async {});
+    when(
+      mockDatabaseAdapter.getMedicationLogs(any),
+    ).thenAnswer((_) async => []);
     when(mockConfigService.config).thenReturn(const AppConfig());
     when(mockConfigService.isSyncEnabled).thenReturn(false);
     when(mockNotificationHelper.init()).thenAnswer((_) async {});
@@ -192,6 +196,82 @@ void main() {
 
     expect(find.text('Low Stock'), findsAtLeastNWidgets(1));
     expect(find.text('Full Stock'), findsNothing);
+  });
+
+  testWidgets('Search filters medication list by name', (
+    WidgetTester tester,
+  ) async {
+    final now = DateTime.now();
+    final med1 = Medication(
+      id: 1,
+      name: 'Aspirin',
+      dosage: '10mg',
+      quantity: 10,
+      frequency: Frequency.onceDaily,
+      reminderTime: now,
+    );
+    final med2 = Medication(
+      id: 2,
+      name: 'Vitamin D',
+      dosage: '10mg',
+      quantity: 10,
+      frequency: Frequency.onceDaily,
+      reminderTime: now,
+    );
+
+    when(
+      mockDatabaseAdapter.getMedications(),
+    ).thenAnswer((_) async => [med1, med2]);
+    when(
+      mockDatabaseAdapter.getMedicationLogsForToday(),
+    ).thenAnswer((_) async => []);
+
+    await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Aspirin'), findsAtLeastNWidgets(1));
+    expect(find.text('Vitamin D'), findsAtLeastNWidgets(1));
+
+    await tester.enterText(find.byType(TextField), 'asp');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Aspirin'), findsAtLeastNWidgets(1));
+    expect(find.text('Vitamin D'), findsNothing);
+  });
+
+  testWidgets('As-needed medication shows last taken text', (
+    WidgetTester tester,
+  ) async {
+    final now = DateTime.now();
+    final asNeeded = Medication(
+      id: 1,
+      name: 'Pain Relief',
+      dosage: '10mg',
+      quantity: 10,
+      frequency: Frequency.asNeeded,
+      reminderTime: now,
+      isAsNeeded: true,
+    );
+
+    when(
+      mockDatabaseAdapter.getMedications(),
+    ).thenAnswer((_) async => [asNeeded]);
+    when(
+      mockDatabaseAdapter.getMedicationLogsForToday(),
+    ).thenAnswer((_) async => []);
+    when(mockDatabaseAdapter.getMedicationLogs(1)).thenAnswer(
+      (_) async => [
+        MedicationLog(
+          medicationId: 1,
+          timestamp: DateTime.now().subtract(const Duration(days: 2)),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(createTestWidget(const MedicationListScreen()));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Last taken: 2 days ago'), findsAtLeastNWidgets(1));
   });
 
   testWidgets('Speed dial expands and shows options', (

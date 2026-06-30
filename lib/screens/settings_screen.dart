@@ -1,3 +1,7 @@
+/// User-facing settings screen.
+///
+/// Exposes language preference, AT Protocol sync configuration, Google Drive
+/// backup, local export/import, and links to project resources.
 library;
 
 import 'package:bluepills/services/export_service.dart';
@@ -11,7 +15,9 @@ import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/notifications/notification_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Stateful screen widget that renders all user-configurable preferences.
 class SettingsScreen extends StatefulWidget {
+  /// Creates the settings screen.
   const SettingsScreen({super.key});
 
   @override

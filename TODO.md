@@ -40,7 +40,7 @@
 - [x] Implement "Take" action in notification
 - [x] Implement "Snooze" action (15 min)
 - [x] Handle notification when app is closed
-- [ ] Reschedule for next occurrence
+- [x] Reschedule for next occurrence
 - [ ] Test reminder on actual device
 
 ---
@@ -63,7 +63,7 @@
 - [x] Schedule notification 30 days before expiration
 - [x] Schedule notification 7 days before expiration
 - [x] Schedule notification on expiration day
-- [ ] Group multiple expiring medications in one notification
+- [x] Group multiple expiring medications in one notification
 - [x] Update notifications when expiration date changes
 - [x] Cancel notifications when medication deleted
 - [ ] Test notification scheduling
@@ -83,7 +83,7 @@
 - [x] Create database migration
 - [x] Add "As-Needed (PRN)" toggle to medication form
 - [x] Exclude PRN medications from "Today's Medications" (shown separately or below)
-- [ ] Show "Last taken: X days ago" for PRN medications
+- [x] Show "Last taken: X days ago" for PRN medications
 - [ ] Track usage frequency for PRN medications
 - [ ] Add "As-Needed" filter to medication list
 - [ ] Test PRN logging workflow
@@ -111,8 +111,8 @@
 - [x] Add help text/tooltips for complex fields
 
 ### Search and Filters
-- [ ] Add search bar to home screen
-- [ ] Implement medication name search
+- [x] Add search bar to home screen
+- [x] Implement medication name search
 - [x] Add filter chips: All, Active, As-needed, Low Stock, Expiring
 - [x] Add sort options: Name, Expiration, Quantity, Recently Added
 - [ ] Save user's preferred filter/sort settings
@@ -248,12 +248,19 @@
 **Sprint Goal:** Enable Matti's daily medication routine
 
 **In Progress:**
-- [ ] Reschedule for next occurrence
+- _none_
 
 **Up Next:**
-- [ ] Search medications by name
+- [ ] Test reminder on actual device
+- [ ] Allow custom storage location entry
+- [ ] Filter by storage location
 
 **Completed this session:**
+- [x] Reschedule reminders for next occurrence (everyNDays patterns)
+- [x] Grouped expiration notifications (one alert for multiple meds)
+- [x] Medication name search (filter chip + search bar)
+- [x] "Last taken: X days ago" for PRN medications
+- [x] Cancel reminders & expiration alerts on medication delete
 - [x] Notification Actions (Take/Snooze)
 - [x] Expiration Notifications (US-002)
 - [x] Storage Location Tracking (US-002)
@@ -272,4 +279,4 @@
 - Prioritize based on user stories (US-001, US-002)
 - Focus on Matti's needs first, then Jukka's
 
-Last Updated: 2026-03-04
+Last Updated: 2026-05-12
