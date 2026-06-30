@@ -321,12 +321,30 @@ class MockNotificationHelper extends _i1.Mock
           as _i4.Future<void>);
 
   @override
+  _i4.Future<void> scheduleMedicationReminder(
+    _i5.Medication? medication, {
+    DateTime? from,
+    bool? repeat = true,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #scheduleMedicationReminder,
+              [medication],
+              {#from: from, #repeat: repeat},
+            ),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
   _i4.Future<void> scheduleNotification({
     required int? id,
     required String? title,
     required String? body,
     required DateTime? scheduledTime,
     _i10.FrequencyPattern? frequencyPattern,
+    bool? repeat = true,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#scheduleNotification, [], {
@@ -335,6 +353,7 @@ class MockNotificationHelper extends _i1.Mock
               #body: body,
               #scheduledTime: scheduledTime,
               #frequencyPattern: frequencyPattern,
+              #repeat: repeat,
             }),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
@@ -345,6 +364,15 @@ class MockNotificationHelper extends _i1.Mock
   _i4.Future<void> scheduleExpirationNotifications(_i5.Medication? med) =>
       (super.noSuchMethod(
             Invocation.method(#scheduleExpirationNotifications, [med]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> refreshGroupedExpirationNotifications() =>
+      (super.noSuchMethod(
+            Invocation.method(#refreshGroupedExpirationNotifications, []),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
