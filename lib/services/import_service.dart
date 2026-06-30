@@ -43,7 +43,7 @@ class ImportService {
   Future<void> importMedications() async {
     try {
       // Use file_picker to select a file
-      final result = await FilePicker.platform.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
