@@ -91,7 +91,11 @@ jobs:
         MINOR=${MINOR:-0}
         PATCH=${PATCH:-0}
         BASE=$((MAJOR * 10000 + MINOR * 100 + PATCH))
-        ATTEMPT="${GITHUB_RUN_ATTEMPT:-1}"
+        BUILD_NUMBER=$(grep "^version:" pubspec.yaml | sed -n '\''s/.*+\([0-9]*\).*/\1/p'\'')
+        if [ -z "$BUILD_NUMBER" ]; then
+          BUILD_NUMBER="${GITHUB_RUN_ATTEMPT:-1}"
+        fi
+        ATTEMPT="$BUILD_NUMBER"
         if [ -z "$ATTEMPT" ]; then
           ATTEMPT=1
         fi
