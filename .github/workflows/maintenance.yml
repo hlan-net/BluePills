@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.32.7'
+        flutter-version: '3.44.4'
 
     - name: Check for outdated packages
       run: |
@@ -64,12 +64,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.32.7'
+        flutter-version: '3.44.4'
 
     - name: Run security audit
       run: |
@@ -89,12 +89,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.32.7'
+        flutter-version: '3.44.4'
 
     - name: Get dependencies
       run: flutter pub get
@@ -126,7 +126,7 @@ jobs:
 
     - name: Comment on performance changes
       if: github.event_name == 'pull_request'
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         script: |
           const fs = require('fs');
@@ -138,7 +138,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Check for TODO comments
       run: |
@@ -189,12 +189,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.32.7'
+        flutter-version: '3.44.4'
 
     - name: Run Flutter doctor
       run: flutter doctor -v
