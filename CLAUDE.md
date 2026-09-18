@@ -14,7 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `flutter test --coverage` | Tests with coverage report |
 | `flutter run` | Run app on connected device/emulator |
 
-**Flutter version:** 3.38.9 (stable)
+**Flutter version:** 3.44.4 (stable)
 
 ## Architecture
 
