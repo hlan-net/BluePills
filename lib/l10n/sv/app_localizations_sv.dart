@@ -471,6 +471,41 @@ class AppLocalizationsSv extends AppLocalizations {
   String get notificationSent => 'Testavisering skickad';
 
   @override
+  String get remindersEnabled => 'Medicinpåminnelser';
+
+  @override
+  String get remindersEnabledDescription =>
+      'Få en påminnelse när det är dags att ta din medicin eller när den håller på att gå ut';
+
+  @override
+  String get notificationPermission => 'Aviseringsbehörighet';
+
+  @override
+  String get exactAlarmPermission => 'Behörighet för exakta alarm';
+
+  @override
+  String get permissionGranted => 'Beviljad';
+
+  @override
+  String get permissionDenied => 'Nekad';
+
+  @override
+  String get openSettings => 'Öppna inställningar';
+
+  @override
+  String get enable => 'Aktivera';
+
+  @override
+  String get notificationsOffTitle => 'Aviseringar är avstängda';
+
+  @override
+  String get notificationsOffMessage =>
+      'BluePills kan inte påminna dig om att ta din medicin eftersom aviseringsbehörighet saknas. Du kan aktivera den i systeminställningarna.';
+
+  @override
+  String get notNow => 'Inte nu';
+
+  @override
   String get medicationReminders => 'Medicin-påminnelser';
 
   @override

@@ -470,6 +470,41 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificationSent => 'Notificación de prueba enviada';
 
   @override
+  String get remindersEnabled => 'Recordatorios de medicamentos';
+
+  @override
+  String get remindersEnabledDescription =>
+      'Recibe un recordatorio cuando sea hora de tomar tu medicamento o cuando esté por caducar';
+
+  @override
+  String get notificationPermission => 'Permiso de notificaciones';
+
+  @override
+  String get exactAlarmPermission => 'Permiso de alarmas exactas';
+
+  @override
+  String get permissionGranted => 'Concedido';
+
+  @override
+  String get permissionDenied => 'Denegado';
+
+  @override
+  String get openSettings => 'Abrir ajustes';
+
+  @override
+  String get enable => 'Activar';
+
+  @override
+  String get notificationsOffTitle => 'Las notificaciones están desactivadas';
+
+  @override
+  String get notificationsOffMessage =>
+      'BluePills no puede recordarte que tomes tu medicamento porque el permiso de notificaciones no está concedido. Puedes activarlo en los ajustes del sistema.';
+
+  @override
+  String get notNow => 'Ahora no';
+
+  @override
   String get medicationReminders => 'Recordatorios de medicamentos';
 
   @override

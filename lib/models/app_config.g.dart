@@ -21,6 +21,7 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
       SyncMode.localOnly,
   autoRestoreEnabled: json['autoRestoreEnabled'] as bool? ?? true,
   languageCode: json['languageCode'] as String?,
+  notificationsEnabled: json['notificationsEnabled'] as bool? ?? true,
 );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
@@ -32,6 +33,7 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
   'syncMode': _$SyncModeEnumMap[instance.syncMode]!,
   'autoRestoreEnabled': instance.autoRestoreEnabled,
   'languageCode': instance.languageCode,
+  'notificationsEnabled': instance.notificationsEnabled,
 };
 
 const _$SyncModeEnumMap = {

@@ -66,6 +66,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final ConfigService _configService = ConfigService();
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   Locale? _locale;
   Timer? _configRefreshTimer;
 
@@ -78,6 +79,48 @@ class _MyAppState extends State<MyApp> {
       if (!mounted) return;
       _updateLocale();
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybePromptForNotificationPermission();
+    });
+  }
+
+  Future<void> _maybePromptForNotificationPermission() async {
+    if (!_configService.config.notificationsEnabled) {
+      return;
+    }
+
+    final status = await NotificationHelper().checkPermissionStatus();
+    if (status.notificationsGranted || !mounted) {
+      return;
+    }
+
+    final context = _navigatorKey.currentContext;
+    if (context == null) {
+      return;
+    }
+    final localizations = AppLocalizations.of(context)!;
+
+    final shouldOpenSettings = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(localizations.notificationsOffTitle),
+        content: Text(localizations.notificationsOffMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(localizations.notNow),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(localizations.openSettings),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldOpenSettings == true) {
+      await NotificationHelper().openNotificationSettings();
+    }
   }
 
   @override
@@ -106,6 +149,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: _navigatorKey,
       title: 'BluePills',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

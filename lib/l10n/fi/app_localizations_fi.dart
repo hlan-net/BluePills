@@ -470,6 +470,41 @@ class AppLocalizationsFi extends AppLocalizations {
   String get notificationSent => 'Testi-ilmoitus lähetetty';
 
   @override
+  String get remindersEnabled => 'Lääkemuistutukset';
+
+  @override
+  String get remindersEnabledDescription =>
+      'Saat muistutuksen, kun on aika ottaa lääke tai kun se on vanhenemassa';
+
+  @override
+  String get notificationPermission => 'Ilmoituslupa';
+
+  @override
+  String get exactAlarmPermission => 'Tarkkojen hälytysten lupa';
+
+  @override
+  String get permissionGranted => 'Myönnetty';
+
+  @override
+  String get permissionDenied => 'Ei myönnetty';
+
+  @override
+  String get openSettings => 'Avaa asetukset';
+
+  @override
+  String get enable => 'Ota käyttöön';
+
+  @override
+  String get notificationsOffTitle => 'Ilmoitukset ovat pois päältä';
+
+  @override
+  String get notificationsOffMessage =>
+      'BluePills ei voi muistuttaa lääkkeen ottamisesta, koska ilmoituslupaa ei ole myönnetty. Voit ottaa sen käyttöön järjestelmäasetuksista.';
+
+  @override
+  String get notNow => 'Ei nyt';
+
+  @override
   String get medicationReminders => 'Lääkemuistutukset';
 
   @override

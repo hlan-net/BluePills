@@ -82,6 +82,12 @@ class ConfigService {
     await updateConfig(newConfig);
   }
 
+  /// Enables or disables medication and expiration reminder notifications.
+  Future<void> updateNotificationsEnabled(bool enabled) async {
+    final newConfig = _config.copyWith(notificationsEnabled: enabled);
+    await updateConfig(newConfig);
+  }
+
   /// Updates the last sync time in the configuration.
   Future<void> updateLastSyncTime([DateTime? time]) async {
     final newConfig = _config.copyWith(

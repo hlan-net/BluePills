@@ -168,6 +168,17 @@ abstract class AppLocalizations {
   String get notifications;
   String get testNotification;
   String get notificationSent;
+  String get remindersEnabled;
+  String get remindersEnabledDescription;
+  String get notificationPermission;
+  String get exactAlarmPermission;
+  String get permissionGranted;
+  String get permissionDenied;
+  String get openSettings;
+  String get enable;
+  String get notificationsOffTitle;
+  String get notificationsOffMessage;
+  String get notNow;
   String get medicationReminders;
   String get remindersToTakeYourMedication;
   String get timeToTakeYour;

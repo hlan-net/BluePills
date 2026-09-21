@@ -31,6 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final GoogleDriveService _googleDriveService = GoogleDriveService();
   final ExportService _exportService = ExportService();
   final ImportService _importService = ImportService();
+  final NotificationHelper _notificationHelper = NotificationHelper();
 
   final _formKey = GlobalKey<FormState>();
   final _handleController = TextEditingController();
@@ -39,6 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   bool _isGoogleAuthenticated = false;
   String? _googleUser;
+  NotificationPermissionStatus? _notificationStatus;
 
   @override
   void initState() {
@@ -47,6 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _handleController.text = config.blueskyHandle ?? '';
     _pdsController.text = config.pdsUrl ?? 'https://bsky.social';
     _checkGoogleStatus();
+    _checkNotificationStatus();
   }
 
   Future<void> _checkGoogleStatus() async {
@@ -58,6 +61,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _googleUser = user;
       });
     }
+  }
+
+  Future<void> _checkNotificationStatus() async {
+    final status = await _notificationHelper.checkPermissionStatus();
+    if (mounted) {
+      setState(() {
+        _notificationStatus = status;
+      });
+    }
+  }
+
+  Future<void> _toggleRemindersEnabled(bool enabled) async {
+    await _configService.updateNotificationsEnabled(enabled);
+    if (enabled) {
+      await _notificationHelper.requestNotificationPermission();
+      await _notificationHelper.requestExactAlarmPermission();
+      await _notificationHelper.rescheduleAllReminders();
+    } else {
+      await _notificationHelper.cancelAllNotifications();
+    }
+    await _checkNotificationStatus();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _enableNotificationPermission() async {
+    final granted = await _notificationHelper.requestNotificationPermission();
+    if (!granted) {
+      await _notificationHelper.openNotificationSettings();
+    }
+    await _checkNotificationStatus();
+  }
+
+  Future<void> _enableExactAlarmPermission() async {
+    await _notificationHelper.requestExactAlarmPermission();
+    await _checkNotificationStatus();
   }
 
   @override
@@ -466,11 +506,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const Divider(),
 
-          // Notification Test Section
+          // Notification Section
           _buildSectionHeader(localizations.notifications),
+          SwitchListTile(
+            secondary: const Icon(Icons.notifications_active),
+            title: Text(localizations.remindersEnabled),
+            subtitle: Text(localizations.remindersEnabledDescription),
+            value: config.notificationsEnabled,
+            onChanged: (value) => _toggleRemindersEnabled(value),
+          ),
+          if (config.notificationsEnabled) ...[
+            _buildPermissionTile(
+              localizations: localizations,
+              label: localizations.notificationPermission,
+              granted: _notificationStatus?.notificationsGranted,
+              onEnable: _enableNotificationPermission,
+            ),
+            _buildPermissionTile(
+              localizations: localizations,
+              label: localizations.exactAlarmPermission,
+              granted: _notificationStatus?.exactAlarmsGranted,
+              onEnable: _enableExactAlarmPermission,
+            ),
+          ],
           ListTile(
             leading: const Icon(Icons.notifications),
             title: Text(localizations.testNotification),
+            enabled: config.notificationsEnabled,
             onTap: () async {
               final messenger = ScaffoldMessenger.of(context);
               await NotificationHelper().scheduleNotification(
@@ -520,6 +582,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
+    );
+  }
+
+  Widget _buildPermissionTile({
+    required AppLocalizations localizations,
+    required String label,
+    required bool? granted,
+    required VoidCallback onEnable,
+  }) {
+    final isGranted = granted ?? true;
+    return ListTile(
+      leading: Icon(
+        isGranted ? Icons.check_circle : Icons.error,
+        color: isGranted ? Colors.green : Colors.orange,
+      ),
+      title: Text(label),
+      subtitle: Text(
+        isGranted
+            ? localizations.permissionGranted
+            : localizations.permissionDenied,
+      ),
+      trailing: isGranted
+          ? null
+          : TextButton(
+              onPressed: onEnable,
+              child: Text(localizations.enable),
+            ),
     );
   }
 

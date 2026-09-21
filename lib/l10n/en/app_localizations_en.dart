@@ -463,6 +463,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationSent => 'Test notification sent';
 
   @override
+  String get remindersEnabled => 'Medication reminders';
+
+  @override
+  String get remindersEnabledDescription =>
+      'Get reminded when it\'s time to take your medication or when it\'s about to expire';
+
+  @override
+  String get notificationPermission => 'Notification permission';
+
+  @override
+  String get exactAlarmPermission => 'Exact alarm permission';
+
+  @override
+  String get permissionGranted => 'Granted';
+
+  @override
+  String get permissionDenied => 'Denied';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get enable => 'Enable';
+
+  @override
+  String get notificationsOffTitle => 'Notifications are off';
+
+  @override
+  String get notificationsOffMessage =>
+      'BluePills can\'t remind you to take your medication because notification permission isn\'t granted. You can enable it in system settings.';
+
+  @override
+  String get notNow => 'Not now';
+
+  @override
   String get medicationReminders => 'Medication Reminders';
 
   @override
