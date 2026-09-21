@@ -19,7 +19,7 @@ flutter pub get
 
 # Generate code if needed
 echo "🏗️ Generating code..."
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 
 # Format code
 echo "🎨 Formatting code..."
