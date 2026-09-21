@@ -3,20 +3,22 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
-import 'dart:io' as _i10;
+import 'dart:async' as _i5;
+import 'dart:io' as _i11;
 
 import 'package:bluepills/models/app_config.dart' as _i2;
-import 'package:bluepills/models/medication.dart' as _i6;
-import 'package:bluepills/services/backup_service.dart' as _i7;
-import 'package:bluepills/services/config_service.dart' as _i3;
-import 'package:bluepills/services/export_service.dart' as _i12;
-import 'package:bluepills/services/google_drive_service.dart' as _i8;
-import 'package:bluepills/services/import_service.dart' as _i13;
-import 'package:bluepills/services/sync_service.dart' as _i5;
+import 'package:bluepills/models/frequency_pattern.dart' as _i15;
+import 'package:bluepills/models/medication.dart' as _i7;
+import 'package:bluepills/notifications/notification_helper.dart' as _i3;
+import 'package:bluepills/services/backup_service.dart' as _i8;
+import 'package:bluepills/services/config_service.dart' as _i4;
+import 'package:bluepills/services/export_service.dart' as _i13;
+import 'package:bluepills/services/google_drive_service.dart' as _i9;
+import 'package:bluepills/services/import_service.dart' as _i14;
+import 'package:bluepills/services/sync_service.dart' as _i6;
 import 'package:google_sign_in_all_platforms/google_sign_in_all_platforms.dart'
-    as _i9;
-import 'package:googleapis/drive/v3.dart' as _i11;
+    as _i10;
+import 'package:googleapis/drive/v3.dart' as _i12;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -40,10 +42,18 @@ class _FakeAppConfig_0 extends _i1.SmartFake implements _i2.AppConfig {
     : super(parent, parentInvocation);
 }
 
+class _FakeNotificationPermissionStatus_1 extends _i1.SmartFake
+    implements _i3.NotificationPermissionStatus {
+  _FakeNotificationPermissionStatus_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(parent, parentInvocation);
+}
+
 /// A class which mocks [ConfigService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockConfigService extends _i1.Mock implements _i3.ConfigService {
+class MockConfigService extends _i1.Mock implements _i4.ConfigService {
   MockConfigService() {
     _i1.throwOnMissingStub(this);
   }
@@ -70,25 +80,25 @@ class MockConfigService extends _i1.Mock implements _i3.ConfigService {
           as bool);
 
   @override
-  _i4.Future<void> init() =>
+  _i5.Future<void> init() =>
       (super.noSuchMethod(
             Invocation.method(#init, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> updateConfig(_i2.AppConfig? newConfig) =>
+  _i5.Future<void> updateConfig(_i2.AppConfig? newConfig) =>
       (super.noSuchMethod(
             Invocation.method(#updateConfig, [newConfig]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> updateSyncConfig({
+  _i5.Future<void> updateSyncConfig({
     required bool? syncEnabled,
     String? blueskyHandle,
     String? appPassword,
@@ -101,259 +111,428 @@ class MockConfigService extends _i1.Mock implements _i3.ConfigService {
               #appPassword: appPassword,
               #pdsUrl: pdsUrl,
             }),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> updateLanguage(String? languageCode) =>
+  _i5.Future<void> updateLanguage(String? languageCode) =>
       (super.noSuchMethod(
             Invocation.method(#updateLanguage, [languageCode]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> updateLastSyncTime([DateTime? time]) =>
+  _i5.Future<void> updateNotificationsEnabled(bool? enabled) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateNotificationsEnabled, [enabled]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> updateLastSyncTime([DateTime? time]) =>
       (super.noSuchMethod(
             Invocation.method(#updateLastSyncTime, [time]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> updateLastBackupTime([DateTime? time]) =>
+  _i5.Future<void> updateLastBackupTime([DateTime? time]) =>
       (super.noSuchMethod(
             Invocation.method(#updateLastBackupTime, [time]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [SyncService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSyncService extends _i1.Mock implements _i5.SyncService {
+class MockSyncService extends _i1.Mock implements _i6.SyncService {
   MockSyncService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.SyncStatus get syncStatus =>
+  _i6.SyncStatus get syncStatus =>
       (super.noSuchMethod(
             Invocation.getter(#syncStatus),
-            returnValue: _i5.SyncStatus.idle,
+            returnValue: _i6.SyncStatus.idle,
           )
-          as _i5.SyncStatus);
+          as _i6.SyncStatus);
 
   @override
-  _i4.Future<bool> performFullSync() =>
+  _i5.Future<bool> performFullSync() =>
       (super.noSuchMethod(
             Invocation.method(#performFullSync, []),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i5.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> syncSingleMedication(_i6.Medication? medication) =>
+  _i5.Future<bool> syncSingleMedication(_i7.Medication? medication) =>
       (super.noSuchMethod(
             Invocation.method(#syncSingleMedication, [medication]),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i5.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> deleteMedicationFromSync(_i6.Medication? medication) =>
+  _i5.Future<bool> deleteMedicationFromSync(_i7.Medication? medication) =>
       (super.noSuchMethod(
             Invocation.method(#deleteMedicationFromSync, [medication]),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i5.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i5.Future<bool>);
 
   @override
-  _i4.Future<void> markMedicationForSync(int? medicationId) =>
+  _i5.Future<void> markMedicationForSync(int? medicationId) =>
       (super.noSuchMethod(
             Invocation.method(#markMedicationForSync, [medicationId]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> performBackgroundSync() =>
+  _i5.Future<void> performBackgroundSync() =>
       (super.noSuchMethod(
             Invocation.method(#performBackgroundSync, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [BackupService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBackupService extends _i1.Mock implements _i7.BackupService {
+class MockBackupService extends _i1.Mock implements _i8.BackupService {
   MockBackupService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> backup() =>
+  _i5.Future<void> backup() =>
       (super.noSuchMethod(
             Invocation.method(#backup, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<bool> restore() =>
+  _i5.Future<bool> restore() =>
       (super.noSuchMethod(
             Invocation.method(#restore, []),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i5.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i5.Future<bool>);
 
   @override
-  _i4.Future<void> checkAndRestore() =>
+  _i5.Future<void> checkAndRestore() =>
       (super.noSuchMethod(
             Invocation.method(#checkAndRestore, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [GoogleDriveService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGoogleDriveService extends _i1.Mock
-    implements _i8.GoogleDriveService {
+    implements _i9.GoogleDriveService {
   MockGoogleDriveService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Stream<_i9.GoogleSignInCredentials?> get onCurrentUserChanged =>
+  _i5.Stream<_i10.GoogleSignInCredentials?> get onCurrentUserChanged =>
       (super.noSuchMethod(
             Invocation.getter(#onCurrentUserChanged),
-            returnValue: _i4.Stream<_i9.GoogleSignInCredentials?>.empty(),
+            returnValue: _i5.Stream<_i10.GoogleSignInCredentials?>.empty(),
           )
-          as _i4.Stream<_i9.GoogleSignInCredentials?>);
+          as _i5.Stream<_i10.GoogleSignInCredentials?>);
 
   @override
-  _i4.Future<bool> isAuthenticated() =>
+  _i5.Future<bool> isAuthenticated() =>
       (super.noSuchMethod(
             Invocation.method(#isAuthenticated, []),
-            returnValue: _i4.Future<bool>.value(false),
+            returnValue: _i5.Future<bool>.value(false),
           )
-          as _i4.Future<bool>);
+          as _i5.Future<bool>);
 
   @override
-  _i4.Future<String?> getUserEmail() =>
+  _i5.Future<String?> getUserEmail() =>
       (super.noSuchMethod(
             Invocation.method(#getUserEmail, []),
-            returnValue: _i4.Future<String?>.value(),
+            returnValue: _i5.Future<String?>.value(),
           )
-          as _i4.Future<String?>);
+          as _i5.Future<String?>);
 
   @override
-  _i4.Future<void> authenticate() =>
+  _i5.Future<void> authenticate() =>
       (super.noSuchMethod(
             Invocation.method(#authenticate, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<_i9.GoogleSignInCredentials?> signIn() =>
+  _i5.Future<_i10.GoogleSignInCredentials?> signIn() =>
       (super.noSuchMethod(
             Invocation.method(#signIn, []),
-            returnValue: _i4.Future<_i9.GoogleSignInCredentials?>.value(),
+            returnValue: _i5.Future<_i10.GoogleSignInCredentials?>.value(),
           )
-          as _i4.Future<_i9.GoogleSignInCredentials?>);
+          as _i5.Future<_i10.GoogleSignInCredentials?>);
 
   @override
-  _i4.Future<_i9.GoogleSignInCredentials?> signInSilently() =>
+  _i5.Future<_i10.GoogleSignInCredentials?> signInSilently() =>
       (super.noSuchMethod(
             Invocation.method(#signInSilently, []),
-            returnValue: _i4.Future<_i9.GoogleSignInCredentials?>.value(),
+            returnValue: _i5.Future<_i10.GoogleSignInCredentials?>.value(),
           )
-          as _i4.Future<_i9.GoogleSignInCredentials?>);
+          as _i5.Future<_i10.GoogleSignInCredentials?>);
 
   @override
-  _i4.Future<void> signOut() =>
+  _i5.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> uploadBackup(_i10.File? file) =>
+  _i5.Future<void> uploadBackup(_i11.File? file) =>
       (super.noSuchMethod(
             Invocation.method(#uploadBackup, [file]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<_i11.File?> getBackupMetadata() =>
+  _i5.Future<_i12.File?> getBackupMetadata() =>
       (super.noSuchMethod(
             Invocation.method(#getBackupMetadata, []),
-            returnValue: _i4.Future<_i11.File?>.value(),
+            returnValue: _i5.Future<_i12.File?>.value(),
           )
-          as _i4.Future<_i11.File?>);
+          as _i5.Future<_i12.File?>);
 
   @override
-  _i4.Future<void> downloadBackup(String? fileId, _i10.File? targetFile) =>
+  _i5.Future<void> downloadBackup(String? fileId, _i11.File? targetFile) =>
       (super.noSuchMethod(
             Invocation.method(#downloadBackup, [fileId, targetFile]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [ExportService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExportService extends _i1.Mock implements _i12.ExportService {
+class MockExportService extends _i1.Mock implements _i13.ExportService {
   MockExportService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> exportMedications() =>
+  _i5.Future<void> exportMedications() =>
       (super.noSuchMethod(
             Invocation.method(#exportMedications, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [ImportService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockImportService extends _i1.Mock implements _i13.ImportService {
+class MockImportService extends _i1.Mock implements _i14.ImportService {
   MockImportService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<void> importMedications() =>
+  _i5.Future<void> importMedications() =>
       (super.noSuchMethod(
             Invocation.method(#importMedications, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
+}
+
+/// A class which mocks [NotificationHelper].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockNotificationHelper extends _i1.Mock
+    implements _i3.NotificationHelper {
+  MockNotificationHelper() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Future<void> init() =>
+      (super.noSuchMethod(
+            Invocation.method(#init, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> requestPermissionsIfEnabled() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestPermissionsIfEnabled, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<_i3.NotificationPermissionStatus> checkPermissionStatus() =>
+      (super.noSuchMethod(
+            Invocation.method(#checkPermissionStatus, []),
+            returnValue: _i5.Future<_i3.NotificationPermissionStatus>.value(
+              _FakeNotificationPermissionStatus_1(
+                this,
+                Invocation.method(#checkPermissionStatus, []),
+              ),
+            ),
+          )
+          as _i5.Future<_i3.NotificationPermissionStatus>);
+
+  @override
+  _i5.Future<bool> requestNotificationPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestNotificationPermission, []),
+            returnValue: _i5.Future<bool>.value(false),
+          )
+          as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> requestExactAlarmPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestExactAlarmPermission, []),
+            returnValue: _i5.Future<bool>.value(false),
+          )
+          as _i5.Future<bool>);
+
+  @override
+  _i5.Future<void> openNotificationSettings() =>
+      (super.noSuchMethod(
+            Invocation.method(#openNotificationSettings, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> rescheduleAllReminders() =>
+      (super.noSuchMethod(
+            Invocation.method(#rescheduleAllReminders, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> scheduleMedicationReminder(
+    _i7.Medication? medication, {
+    DateTime? from,
+    bool? repeat = true,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #scheduleMedicationReminder,
+              [medication],
+              {#from: from, #repeat: repeat},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> scheduleNotification({
+    required int? id,
+    required String? title,
+    required String? body,
+    required DateTime? scheduledTime,
+    _i15.FrequencyPattern? frequencyPattern,
+    bool? repeat = true,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#scheduleNotification, [], {
+              #id: id,
+              #title: title,
+              #body: body,
+              #scheduledTime: scheduledTime,
+              #frequencyPattern: frequencyPattern,
+              #repeat: repeat,
+            }),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> scheduleExpirationNotifications(_i7.Medication? med) =>
+      (super.noSuchMethod(
+            Invocation.method(#scheduleExpirationNotifications, [med]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> refreshGroupedExpirationNotifications() =>
+      (super.noSuchMethod(
+            Invocation.method(#refreshGroupedExpirationNotifications, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> cancelNotification(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelNotification, [id]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> cancelAllNotifications() =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelAllNotifications, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> cancelExpirationNotifications(int? medicationId) =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelExpirationNotifications, [medicationId]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 }

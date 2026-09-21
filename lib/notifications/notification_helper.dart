@@ -4,6 +4,7 @@
 /// medication reminder notifications using flutter_local_notifications.
 library;
 
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:bluepills/database/database_helper.dart';
@@ -11,8 +12,26 @@ import 'package:bluepills/models/frequency.dart';
 import 'package:bluepills/models/frequency_pattern.dart';
 import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/models/medication_log.dart';
+import 'package:bluepills/services/config_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
+/// The current OS-level notification permission state.
+class NotificationPermissionStatus {
+  /// Whether the app is allowed to show notifications at all.
+  final bool notificationsGranted;
+
+  /// Whether the app can schedule exact (time-precise) alarms.
+  ///
+  /// Reminders still fire when this is denied, but the OS may delay them.
+  final bool exactAlarmsGranted;
+
+  /// Creates a permission status snapshot.
+  const NotificationPermissionStatus({
+    required this.notificationsGranted,
+    required this.exactAlarmsGranted,
+  });
+}
 
 /// Singleton service for managing local notifications.
 class NotificationHelper {
@@ -62,17 +81,112 @@ class NotificationHelper {
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
     );
 
-    await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
+    await requestPermissionsIfEnabled();
+  }
 
-    await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestExactAlarmsPermission();
+  /// Requests the notification and exact-alarm permissions, unless the
+  /// user has turned reminders off in settings.
+  @visibleForTesting
+  Future<void> requestPermissionsIfEnabled() async {
+    if (ConfigService().config.notificationsEnabled) {
+      await requestNotificationPermission();
+      await requestExactAlarmPermission();
+    }
+  }
+
+  AndroidFlutterLocalNotificationsPlugin? _androidPlugin() =>
+      _notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+
+  /// Checks the current OS-level notification and exact-alarm permission
+  /// state. Platforms without this permission model (desktop, web) always
+  /// report both as granted.
+  Future<NotificationPermissionStatus> checkPermissionStatus() async {
+    try {
+      final androidPlugin = _androidPlugin();
+      if (androidPlugin == null) {
+        return const NotificationPermissionStatus(
+          notificationsGranted: true,
+          exactAlarmsGranted: true,
+        );
+      }
+      final notificationsGranted =
+          await androidPlugin.areNotificationsEnabled() ?? false;
+      final exactAlarmsGranted =
+          await androidPlugin.canScheduleExactNotifications() ?? false;
+      return NotificationPermissionStatus(
+        notificationsGranted: notificationsGranted,
+        exactAlarmsGranted: exactAlarmsGranted,
+      );
+    } catch (e) {
+      debugPrint('Error checking notification permission status: $e');
+      return const NotificationPermissionStatus(
+        notificationsGranted: true,
+        exactAlarmsGranted: true,
+      );
+    }
+  }
+
+  /// Requests the runtime notification permission (Android 13+).
+  ///
+  /// Returns whether it is granted afterwards. If it was already
+  /// permanently denied, the OS shows no dialog and this just reports the
+  /// current state; use [openNotificationSettings] as a fallback.
+  Future<bool> requestNotificationPermission() async {
+    try {
+      final androidPlugin = _androidPlugin();
+      if (androidPlugin == null) {
+        return true;
+      }
+      return await androidPlugin.requestNotificationsPermission() ?? false;
+    } catch (e) {
+      debugPrint('Error requesting notification permission: $e');
+      return false;
+    }
+  }
+
+  /// Requests the exact-alarm scheduling permission (Android 12+).
+  ///
+  /// On Android this opens the system settings screen directly when the
+  /// permission is still missing.
+  Future<bool> requestExactAlarmPermission() async {
+    try {
+      final androidPlugin = _androidPlugin();
+      if (androidPlugin == null) {
+        return true;
+      }
+      return await androidPlugin.requestExactAlarmsPermission() ?? false;
+    } catch (e) {
+      debugPrint('Error requesting exact alarm permission: $e');
+      return false;
+    }
+  }
+
+  /// Opens the OS notification settings screen for this app. Used when the
+  /// notification permission was permanently denied and can no longer be
+  /// requested through the normal in-app dialog.
+  Future<void> openNotificationSettings() async {
+    try {
+      await AppSettings.openAppSettings(type: AppSettingsType.notification);
+    } catch (e) {
+      debugPrint('Error opening notification settings: $e');
+    }
+  }
+
+  /// Reschedules reminders for every medication that uses them and
+  /// refreshes expiration alerts. Used after notifications are re-enabled
+  /// from settings.
+  Future<void> rescheduleAllReminders() async {
+    final medications = await DatabaseHelper().getMedications();
+    for (final med in medications) {
+      if (med.id == null || med.isAsNeeded) {
+        continue;
+      }
+      await scheduleMedicationReminder(med);
+    }
+    await refreshGroupedExpirationNotifications();
   }
 
   void _onDidReceiveNotificationResponse(NotificationResponse details) {

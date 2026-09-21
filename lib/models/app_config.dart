@@ -36,6 +36,9 @@ class AppConfig {
   /// The selected language code. If null, the device language is used.
   final String? languageCode;
 
+  /// Whether medication and expiration reminder notifications are enabled.
+  final bool notificationsEnabled;
+
   /// Creates a new [AppConfig] instance with default values.
   const AppConfig({
     this.syncEnabled = false,
@@ -46,6 +49,7 @@ class AppConfig {
     this.syncMode = SyncMode.localOnly,
     this.autoRestoreEnabled = true,
     this.languageCode,
+    this.notificationsEnabled = true,
   });
 
   /// Creates an [AppConfig] instance from JSON data.
@@ -64,6 +68,7 @@ class AppConfig {
     SyncMode? syncMode,
     bool? autoRestoreEnabled,
     String? languageCode,
+    bool? notificationsEnabled,
   }) {
     return AppConfig(
       syncEnabled: syncEnabled ?? this.syncEnabled,
@@ -74,6 +79,7 @@ class AppConfig {
       syncMode: syncMode ?? this.syncMode,
       autoRestoreEnabled: autoRestoreEnabled ?? this.autoRestoreEnabled,
       languageCode: languageCode ?? this.languageCode,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     );
   }
 }

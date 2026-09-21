@@ -473,6 +473,41 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notificationSent => 'Test-Benachrichtigung gesendet';
 
   @override
+  String get remindersEnabled => 'Medikamentenerinnerungen';
+
+  @override
+  String get remindersEnabledDescription =>
+      'Erhalte eine Erinnerung, wenn es Zeit ist, dein Medikament einzunehmen, oder wenn es bald abläuft';
+
+  @override
+  String get notificationPermission => 'Benachrichtigungsberechtigung';
+
+  @override
+  String get exactAlarmPermission => 'Berechtigung für genaue Alarme';
+
+  @override
+  String get permissionGranted => 'Erteilt';
+
+  @override
+  String get permissionDenied => 'Nicht erteilt';
+
+  @override
+  String get openSettings => 'Einstellungen öffnen';
+
+  @override
+  String get enable => 'Aktivieren';
+
+  @override
+  String get notificationsOffTitle => 'Benachrichtigungen sind deaktiviert';
+
+  @override
+  String get notificationsOffMessage =>
+      'BluePills kann dich nicht an die Einnahme deiner Medikamente erinnern, da die Benachrichtigungsberechtigung fehlt. Du kannst sie in den Systemeinstellungen aktivieren.';
+
+  @override
+  String get notNow => 'Nicht jetzt';
+
+  @override
   String get medicationReminders => 'Medikamentenerinnerungen';
 
   @override
