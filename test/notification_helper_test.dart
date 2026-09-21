@@ -1,8 +1,17 @@
+import 'package:bluepills/database/database_adapter.dart';
+import 'package:bluepills/database/database_helper.dart';
+import 'package:bluepills/models/frequency.dart';
+import 'package:bluepills/models/medication.dart';
 import 'package:bluepills/notifications/notification_helper.dart';
 import 'package:bluepills/services/config_service.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'notification_helper_test.mocks.dart';
+
+@GenerateMocks([DatabaseAdapter])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -63,5 +72,38 @@ void main() {
         completes,
       );
     });
+  });
+
+  group('rescheduleAllReminders', () {
+    test(
+      'skips as-needed medications before touching the platform channel',
+      () async {
+        final mockAdapter = MockDatabaseAdapter();
+        DatabaseHelper.instance = DatabaseHelper.withAdapter(mockAdapter);
+        when(mockAdapter.init()).thenAnswer((_) async {});
+        when(mockAdapter.getMedications()).thenAnswer(
+          (_) async => [
+            Medication(
+              id: 1,
+              name: 'As needed med',
+              dosage: '1 tablet',
+              quantity: 1,
+              frequency: Frequency.asNeeded,
+              reminderTime: DateTime.now(),
+              isAsNeeded: true,
+            ),
+          ],
+        );
+
+        // The medication is skipped, but refreshing expiration alerts still
+        // touches the (unavailable in tests) notification platform channel.
+        await expectLater(
+          NotificationHelper().rescheduleAllReminders(),
+          throwsA(anything),
+        );
+
+        verify(mockAdapter.getMedications()).called(greaterThanOrEqualTo(1));
+      },
+    );
   });
 }
