@@ -396,6 +396,15 @@ class MockNotificationHelper extends _i1.Mock
           as _i5.Future<void>);
 
   @override
+  _i5.Future<void> requestPermissionsIfEnabled() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestPermissionsIfEnabled, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
   _i5.Future<_i3.NotificationPermissionStatus> checkPermissionStatus() =>
       (super.noSuchMethod(
             Invocation.method(#checkPermissionStatus, []),

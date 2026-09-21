@@ -81,6 +81,13 @@ class NotificationHelper {
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
     );
 
+    await requestPermissionsIfEnabled();
+  }
+
+  /// Requests the notification and exact-alarm permissions, unless the
+  /// user has turned reminders off in settings.
+  @visibleForTesting
+  Future<void> requestPermissionsIfEnabled() async {
     if (ConfigService().config.notificationsEnabled) {
       await requestNotificationPermission();
       await requestExactAlarmPermission();
