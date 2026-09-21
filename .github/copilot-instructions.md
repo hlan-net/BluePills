@@ -2,8 +2,8 @@
 
 ## Build, Test, and Lint
 
-- **Flutter Version**: Project uses Flutter 3.44.4 (stable channel).
-- **Code Generation**: Run `dart run build_runner build --delete-conflicting-outputs` after modifying models in `lib/models/app_config.dart` or other files with `@JsonSerializable` or `@GenerateMocks`.
+- **Flutter Version**: Project uses Flutter 3.47.0 (stable channel).
+- **Code Generation**: Run `dart run build_runner build` after modifying models in `lib/models/app_config.dart` or other files with `@JsonSerializable` or `@GenerateMocks`.
 - **Lint**: Run `flutter analyze` to check for issues.
 - **Test**:
   - Run all tests: `flutter test`

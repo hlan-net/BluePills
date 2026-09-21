@@ -37,7 +37,7 @@ fi
 flutter pub get
 
 # Generate code
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 
 # Install optional tools
 echo "🔧 Installing optional development tools..."
@@ -130,7 +130,7 @@ echo "🏗️ Building BluePills for all platforms..."
 # Clean previous builds
 flutter clean
 flutter pub get
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build
 
 # Android
 echo "📱 Building Android..."

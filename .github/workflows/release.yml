@@ -33,7 +33,7 @@ on:
         default: internal
 
 env:
-  FLUTTER_VERSION: '3.44.4'
+  FLUTTER_VERSION: '3.47.0'
 
 jobs:
   # Create GitHub Release
@@ -179,7 +179,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs --force-jit
+      run: dart run build_runner build --force-jit
 
     - name: Setup Android signing (if keystore available)
       if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
@@ -271,7 +271,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs --force-jit
+      run: dart run build_runner build --force-jit
 
     - name: Build Web
       run: flutter build web --release --dart-define=FLUTTER_WEB_USE_SKIA=true
@@ -329,7 +329,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs --force-jit
+      run: dart run build_runner build --force-jit
 
     - name: Build Linux
       run: flutter build linux --release
@@ -368,7 +368,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs --force-jit
+      run: dart run build_runner build --force-jit
 
     - name: Build Windows
       run: flutter build windows --release
@@ -407,7 +407,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs --force-jit
+      run: dart run build_runner build --force-jit
 
     - name: Build macOS
       run: flutter build macos --release

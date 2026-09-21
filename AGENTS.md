@@ -3,14 +3,14 @@
 This handbook keeps agentic contributors aligned on how the BluePills repo builds, lints, tests, and stays privacy-first. Read it once per session, then keep it open while you work.
 
 ## 1. Project Snapshot
-- **Stack:** Flutter 3.44.4, Dart 3.x, Material Design 3 UI, sqflite/localstorage persistence, AT Protocol sync.
+- **Stack:** Flutter 3.47.0, Dart 3.x, Material Design 3 UI, sqflite/localstorage persistence, AT Protocol sync.
 - **Platforms:** Android, Web/PWA, Linux, Windows, macOS (iOS planned). Ensure code stays platform-neutral when possible.
 - **Philosophy:** Local-first and telemetry-free. Never add analytics, crash reporters, or ad SDKs.
 - **Key Paths:** `lib/main.dart` bootstraps services; `lib/models/` holds persisted entities; `lib/services/` contains singletons; `lib/screens/` and `lib/widgets/` build UI; `test/` stores unit & widget suites.
 - **Scripts Worth Knowing:** `./setup-automation.sh` (dev bootstrap), `./scripts/security-check.sh` (security scan), `.github/workflows/*.yml` (CI reference).
 
 ## 2. Tooling & Environment
-- Install Flutter 3.44.4 (stable) plus matching Dart SDK; run `flutter doctor` before touching the code.
+- Install Flutter 3.47.0 (stable) plus matching Dart SDK; run `flutter doctor` before touching the code.
 - Use `flutter pub get` after dependency or branch changes; never commit the `.pub-cache` contents.
 - Secrets live in `.env`; copy from `.env.example` and avoid committing real credentials.
 - Desktop builds rely on `sqflite_common_ffi`; web relies on `shared_preferences`/`localstorage`. Keep code paths guarded via `kIsWeb` or `Platform` checks when necessary.
@@ -20,7 +20,7 @@ This handbook keeps agentic contributors aligned on how the BluePills repo build
 | Command | When to Run | Notes |
 | --- | --- | --- |
 | `flutter pub get` | After pulling or editing `pubspec.yaml` | Required before builds/tests. |
-| `dart run build_runner build --delete-conflicting-outputs` | After editing `json_serializable` models, DTOs, or mocks | Cleans stale generated files. |
+| `dart run build_runner build` | After editing `json_serializable` models, DTOs, or mocks | Cleans stale generated files. |
 | `flutter analyze` | Before pushing or opening PRs | Must be clean; fix warnings instead of suppressing. |
 | `flutter test` | Run entire test suite | Widget + unit coverage. |
 | `flutter test test/path/to/file_test.dart` | Run a single test file | Use this during focused work or reproductions. |
@@ -86,8 +86,8 @@ This handbook keeps agentic contributors aligned on how the BluePills repo build
 - Validate user inputs server-side analogues (if any) and sanitize log output so PHI never leaks.
 
 ## 12. Copilot / Cursor Rules (from .github/copilot-instructions.md)
-- Stay on Flutter 3.44.4; do not bump the SDK without PM approval.
-- Use `dart run build_runner build --delete-conflicting-outputs` whenever touching generated models or mocks.
+- Stay on Flutter 3.47.0; do not bump the SDK without PM approval.
+- Use `dart run build_runner build` whenever touching generated models or mocks.
 - Favor async/await and avoid blocking calls on the UI thread.
 - Handle dates/times through the `timezone` package for reminders/notifications.
 - Continue using `AppLocalizations` for every user-visible string; never regress to hardcoded English.

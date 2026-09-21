@@ -6,23 +6,23 @@ on:
     paths-ignore:
       - 'docs/**'
       - '*.md'
-      - '.github/workflows/**'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - 'docs/**'
       - '*.md'
-      - '.github/workflows/**'
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: '3.44.4'
+  FLUTTER_VERSION: '3.47.0'
 
 jobs:
   # Code Quality Checks
   analyze:
     name: Code Analysis
     runs-on: ubuntu-latest
+    env:
+      HAS_SONAR_TOKEN: ${{ secrets.SONAR_TOKEN != '' }}
     permissions:
       pull-requests: write
       contents: read
@@ -43,7 +43,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs --force-jit
+      run: dart run build_runner build --force-jit
 
     - name: Verify formatting
       run: dart format --output=none --set-exit-if-changed .
@@ -65,17 +65,24 @@ jobs:
         fail_ci_if_error: false
 
     - name: SonarCloud Scan
+      if: env.HAS_SONAR_TOKEN == 'true'
       uses: SonarSource/sonarqube-scan-action@v8
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: SonarCloud Quality Gate Check
+      if: env.HAS_SONAR_TOKEN == 'true'
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       continue-on-error: true
+
+    - name: Report unavailable SonarCloud credentials
+      if: env.HAS_SONAR_TOKEN != 'true'
+      run: |
+        echo "::notice::SonarCloud skipped because SONAR_TOKEN is unavailable. Configure a Dependabot secret to enable scanning on Dependabot PRs. Analysis, tests and platform builds still run."
 
 
   # Security Scanning
@@ -105,6 +112,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: analyze
     strategy:
+      fail-fast: false
       matrix:
         include:
           - platform: android
@@ -138,7 +146,7 @@ jobs:
       run: flutter pub get
 
     - name: Generate code
-      run: dart run build_runner build --delete-conflicting-outputs --force-jit
+      run: dart run build_runner build --force-jit
 
     - name: Build for Android
       if: matrix.platform == 'android'
@@ -191,7 +199,7 @@ jobs:
     - name: Update dependencies
       run: |
         flutter pub upgrade --major-versions
-        dart run build_runner build --delete-conflicting-outputs --force-jit
+        dart run build_runner build --force-jit
 
     - name: Check for changes
       id: changes

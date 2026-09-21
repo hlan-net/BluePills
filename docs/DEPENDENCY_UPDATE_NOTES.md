@@ -1,4 +1,54 @@
-# Dependency Update Notes - October 2025
+# Dependency Update Notes
+
+## Dependabot refresh - September 2026
+
+The updates proposed in PRs #217-#221 are tested together on Flutter 3.47.0
+(Dart 3.13). `build_runner` 2.16.1 requires an analyzer version whose `meta`
+constraint conflicts with the pin in Flutter 3.44.4. Use the pinned Flutter
+version when resolving dependencies and regenerating the lockfile.
+
+`build_runner` now replaces conflicting generated outputs by default. The
+removed `--delete-conflicting-outputs` option has been dropped from active
+build commands. Flutter also migrates `analysis_options.yaml` to exclude its
+build and native platform directories; application code and tests remain
+included in analysis.
+
+- `build_runner`: 2.15.0 -> 2.16.1
+- `sqflite`: 2.4.3 -> 2.4.4
+- `table_calendar`: 3.2.0 -> 3.2.1
+- `sqflite_common_ffi`: 2.4.2 -> 2.4.3
+- `json_serializable`: 6.14.0 -> 6.14.1
+
+The Android toolchain moves to Gradle 8.14.5, Android Gradle Plugin 8.13.0,
+and Kotlin 2.2.20 to meet Flutter 3.47's minimum supported versions. Install
+JDK 17 or newer for Android builds. NDK 28.2.13676358 matches the JNI plugin's
+requirement. Flutter's generated Gradle compatibility flags are retained.
+Flutter still warns that a future release will require Gradle 9 / AGP 9 and
+Kotlin 2.3.20; that separate major toolchain migration is not included here.
+
+CI now runs for workflow changes as well as application changes. SonarCloud
+runs when `SONAR_TOKEN` is available; otherwise CI emits a notice and still
+runs code generation, formatting, security checks, analysis, tests and builds.
+Platform builds no longer cancel one another when one platform fails.
+To enable SonarCloud on Dependabot PRs, configure `SONAR_TOKEN` as a
+**Dependabot secret** as well as an Actions secret. Dependabot-triggered
+workflows cannot use ordinary Actions secrets:
+https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-on-actions
+
+Invalid placeholder reviewers/assignees and the nonexistent `automated` label
+were removed from the Dependabot configuration.
+
+### Local verification
+
+- Dependency resolution and code generation completed successfully.
+- Formatting passed without changes; Flutter analysis reported no issues.
+- All 63 unit and widget tests passed with coverage enabled.
+- Android arm64 debug APK, web release and Linux debug builds succeeded.
+- Windows and macOS builds are left to the PR's CI matrix.
+- The web build reports a Cupertino icon font warning; no visual smoke test
+  was performed.
+
+---
 
 ## Weekly Review - October 10, 2025
 
