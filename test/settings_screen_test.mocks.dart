@@ -116,6 +116,15 @@ class MockConfigService extends _i1.Mock implements _i3.ConfigService {
           as _i4.Future<void>);
 
   @override
+  _i4.Future<void> updateNotificationsEnabled(bool? enabled) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateNotificationsEnabled, [enabled]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
   _i4.Future<void> updateLastSyncTime([DateTime? time]) =>
       (super.noSuchMethod(
             Invocation.method(#updateLastSyncTime, [time]),

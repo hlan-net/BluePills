@@ -605,10 +605,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       trailing: isGranted
           ? null
-          : TextButton(
-              onPressed: onEnable,
-              child: Text(localizations.enable),
-            ),
+          : TextButton(onPressed: onEnable, child: Text(localizations.enable)),
     );
   }
 

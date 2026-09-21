@@ -90,12 +90,12 @@ class _MyAppState extends State<MyApp> {
     }
 
     final status = await NotificationHelper().checkPermissionStatus();
-    if (status.notificationsGranted || !mounted) {
+    if (status.notificationsGranted) {
       return;
     }
 
     final context = _navigatorKey.currentContext;
-    if (context == null) {
+    if (context == null || !context.mounted) {
       return;
     }
     final localizations = AppLocalizations.of(context)!;
