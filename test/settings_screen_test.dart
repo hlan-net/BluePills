@@ -1,6 +1,7 @@
 import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/l10n/app_localizations_delegate.dart';
 import 'package:bluepills/models/app_config.dart';
+import 'package:bluepills/notifications/notification_helper.dart';
 import 'package:bluepills/screens/settings_screen.dart';
 import 'package:bluepills/services/backup_service.dart';
 import 'package:bluepills/services/config_service.dart';
@@ -23,6 +24,7 @@ import 'settings_screen_test.mocks.dart';
   GoogleDriveService,
   ExportService,
   ImportService,
+  NotificationHelper,
 ])
 void main() {
   late MockConfigService mockConfigService;
@@ -30,6 +32,7 @@ void main() {
   late MockGoogleDriveService mockGoogleDriveService;
   late MockExportService mockExportService;
   late MockImportService mockImportService;
+  late MockNotificationHelper mockNotificationHelper;
 
   setUp(() {
     mockConfigService = MockConfigService();
@@ -37,6 +40,7 @@ void main() {
     mockGoogleDriveService = MockGoogleDriveService();
     mockExportService = MockExportService();
     mockImportService = MockImportService();
+    mockNotificationHelper = MockNotificationHelper();
 
     // Use dependency injection through static instances
     ConfigService.instance = mockConfigService;
@@ -44,12 +48,37 @@ void main() {
     GoogleDriveService.instance = mockGoogleDriveService;
     ExportService.instance = mockExportService;
     ImportService.instance = mockImportService;
+    NotificationHelper.instance = mockNotificationHelper;
 
     when(mockConfigService.config).thenReturn(const AppConfig());
     when(
       mockGoogleDriveService.isAuthenticated(),
     ).thenAnswer((_) async => false);
     when(mockGoogleDriveService.getUserEmail()).thenAnswer((_) async => null);
+    when(mockNotificationHelper.checkPermissionStatus()).thenAnswer(
+      (_) async => const NotificationPermissionStatus(
+        notificationsGranted: true,
+        exactAlarmsGranted: true,
+      ),
+    );
+    when(
+      mockNotificationHelper.requestNotificationPermission(),
+    ).thenAnswer((_) async => true);
+    when(
+      mockNotificationHelper.requestExactAlarmPermission(),
+    ).thenAnswer((_) async => true);
+    when(
+      mockNotificationHelper.rescheduleAllReminders(),
+    ).thenAnswer((_) async {});
+    when(
+      mockNotificationHelper.cancelAllNotifications(),
+    ).thenAnswer((_) async {});
+    when(
+      mockNotificationHelper.openNotificationSettings(),
+    ).thenAnswer((_) async {});
+    when(
+      mockConfigService.updateNotificationsEnabled(any),
+    ).thenAnswer((_) async {});
   });
 
   Widget createSettingsScreen() {
@@ -139,4 +168,69 @@ void main() {
 
     verify(mockImportService.importMedications()).called(1);
   });
+
+  testWidgets('Disabling reminders cancels all notifications', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.pump();
+
+    final toggle = find.byType(SwitchListTile);
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pump();
+
+    verify(mockConfigService.updateNotificationsEnabled(false)).called(1);
+    verify(mockNotificationHelper.cancelAllNotifications()).called(1);
+    verifyNever(mockNotificationHelper.rescheduleAllReminders());
+  });
+
+  testWidgets('Enabling reminders requests permissions and reschedules', (
+    WidgetTester tester,
+  ) async {
+    when(
+      mockConfigService.config,
+    ).thenReturn(const AppConfig(notificationsEnabled: false));
+
+    await tester.pumpWidget(createSettingsScreen());
+    await tester.pump();
+
+    final toggle = find.byType(SwitchListTile);
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pump();
+
+    verify(mockConfigService.updateNotificationsEnabled(true)).called(1);
+    verify(mockNotificationHelper.requestNotificationPermission()).called(1);
+    verify(mockNotificationHelper.requestExactAlarmPermission()).called(1);
+    verify(mockNotificationHelper.rescheduleAllReminders()).called(1);
+    verifyNever(mockNotificationHelper.cancelAllNotifications());
+  });
+
+  testWidgets(
+    'Missing notification permission shows an enable action that opens settings',
+    (WidgetTester tester) async {
+      when(mockNotificationHelper.checkPermissionStatus()).thenAnswer(
+        (_) async => const NotificationPermissionStatus(
+          notificationsGranted: false,
+          exactAlarmsGranted: true,
+        ),
+      );
+      when(
+        mockNotificationHelper.requestNotificationPermission(),
+      ).thenAnswer((_) async => false);
+
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pump();
+      await tester.pump();
+
+      final enableButton = find.widgetWithText(TextButton, 'Enable');
+      await tester.ensureVisible(enableButton);
+      await tester.tap(enableButton);
+      await tester.pump();
+
+      verify(mockNotificationHelper.requestNotificationPermission()).called(1);
+      verify(mockNotificationHelper.openNotificationSettings()).called(1);
+    },
+  );
 }
