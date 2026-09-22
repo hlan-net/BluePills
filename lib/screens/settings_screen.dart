@@ -13,6 +13,7 @@ import 'package:bluepills/services/config_service.dart';
 import 'package:bluepills/services/sync_service.dart';
 import 'package:bluepills/l10n/app_localizations.dart';
 import 'package:bluepills/notifications/notification_helper.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Stateful screen widget that renders all user-configurable preferences.
@@ -41,6 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _isGoogleAuthenticated = false;
   String? _googleUser;
   NotificationPermissionStatus? _notificationStatus;
+  String? _appVersion;
 
   @override
   void initState() {
@@ -50,6 +52,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _pdsController.text = config.pdsUrl ?? 'https://bsky.social';
     _checkGoogleStatus();
     _checkNotificationStatus();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _appVersion = packageInfo.version;
+      });
+    }
   }
 
   Future<void> _checkGoogleStatus() async {
@@ -540,6 +552,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: 'Test Notification',
                 body: 'This is a test notification from BluePills',
                 scheduledTime: DateTime.now().add(const Duration(seconds: 5)),
+                repeat: false,
               );
               if (mounted) {
                 messenger.showSnackBar(
@@ -555,7 +568,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSectionHeader(localizations.about),
           ListTile(
             title: Text(localizations.version),
-            subtitle: const Text('1.6.1'),
+            subtitle: Text(_appVersion ?? '...'),
           ),
           ListTile(
             title: Text(localizations.privacyPolicy),

@@ -348,6 +348,12 @@ class NotificationHelper {
   }
 
   /// Schedules a notification to be displayed.
+  ///
+  /// [repeat] (default true) aligns the notification to recur at
+  /// [scheduledTime]'s time-of-day rather than firing once at the exact
+  /// instant given, dropping seconds in the process. Pass `repeat: false`
+  /// for a one-off notification (e.g. a test or snoozed reminder), or a
+  /// near-term [scheduledTime] may get pushed a full day out.
   Future<void> scheduleNotification({
     required int id,
     required String title,
