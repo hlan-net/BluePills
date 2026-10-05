@@ -51,7 +51,7 @@ dependencies:
   googleapis: ^14.0.0
   rxdart: ^0.28.0
   timezone: ^0.11.0
-  table_calendar: ^3.2.1
+  table_calendar: ^3.3.0
   url_launcher: ^6.2.5
   app_settings: ^9.0.0
   package_info_plus: ^9.0.1
