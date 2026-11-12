@@ -136,6 +136,13 @@ jobs:
         flutter-version: ${{ env.FLUTTER_VERSION }}
         cache: true
 
+    - name: Setup Java
+      if: matrix.platform == 'android'
+      uses: actions/setup-java@v6
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
     - name: Setup Linux dependencies
       if: matrix.platform == 'linux'
       run: |
