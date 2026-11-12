@@ -43,13 +43,13 @@ class ImportService {
   Future<void> importMedications() async {
     try {
       // Use file_picker to select a file
-      final result = await FilePicker.pickFiles(
+      final file = await FilePicker.pickFile(
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
 
-      if (result != null && result.files.single.bytes != null) {
-        final jsonString = utf8.decode(result.files.single.bytes!);
+      if (file != null) {
+        final jsonString = utf8.decode(await file.readAsBytes());
         final List<dynamic> jsonList = jsonDecode(jsonString);
 
         for (var jsonMed in jsonList) {
