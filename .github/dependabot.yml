@@ -14,6 +14,13 @@ updates:
       include: "scope"
     labels:
       - "dependencies"
+    groups:
+      # Patch/minor bumps land as one PR (one lockfile change, one CI run).
+      # Major bumps still get individual PRs for separate review.
+      pub-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -28,10 +35,7 @@ updates:
       include: "scope"
     labels:
       - "github-actions"
-
-  # Docker (if you add Docker support later)
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 2
+    groups:
+      github-actions:
+        patterns:
+          - "*"
